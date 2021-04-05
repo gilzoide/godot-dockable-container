@@ -10,6 +10,10 @@ var _panel_container = Container.new()
 func _ready() -> void:
 	add_child(_panel_container)
 	move_child(_panel_container, 0)
+	for c in get_children():
+		if c.get_script() == DockableContainerSplit:
+			c.connect("split_changed", self, "_resort")
+			c.connect("percent_changed", self, "_resort")
 
 
 func _notification(what: int) -> void:
@@ -25,8 +29,7 @@ func _resort() -> void:
 	var current_panel = _get_panel(panel_i)
 	var current_panel_and_children = {
 		"panel": current_panel,
-		"split": DockableContainerSplit.Split.HORIZONTAL,
-		"percent": 1,
+		#"split": null,  # split will be set if encountered in children
 		"children": [],
 	}
 	var all_panel_and_children = [current_panel_and_children]
@@ -34,14 +37,12 @@ func _resort() -> void:
 		var child = get_child(i)
 		if child is DockableContainerSplit:
 			if not current_panel_and_children.children.empty():
-				current_panel_and_children.split = child.split
-				current_panel_and_children.percent = child.percent
+				current_panel_and_children.split = child
 				panel_i += 1
 				current_panel = _get_panel(panel_i)
 				current_panel_and_children = {
 					"panel": current_panel,
-					"split": DockableContainerSplit.Split.HORIZONTAL,
-					"percent": 1,
+					#"split": null,  # split will be set if encountered in children
 					"children": [],
 				}
 				all_panel_and_children.append(current_panel_and_children)
@@ -51,18 +52,26 @@ func _resort() -> void:
 			current_panel_and_children.children.append(child)
 	if current_panel_and_children.children.empty():
 		all_panel_and_children.pop_back()
+	if all_panel_and_children.empty():
+		return
+	var last_split = all_panel_and_children[-1].get("split")
+	if last_split:
+		last_split.percent = 1
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
 	for data in all_panel_and_children:
 		var panel = data.panel
-		if data.children.empty():
-			_panel_container.remove_child(panel)
+		panel.track_nodes(data.children)
+		var split = data.get("split")
+		if split:
+			var split_rects = split.get_split_rects(rect)
+			_panel_container.fit_child_in_rect(panel, split_rects.first)
+			fit_child_in_rect(split, split_rects.self)
+
+			rect = split_rects.second
 		else:
-			var panel_rect = DockableContainerSplit.first_rect(rect, data.split, data.percent)
-			_panel_container.fit_child_in_rect(panel, panel_rect)
-			panel.track_nodes(data.children)
-			rect = DockableContainerSplit.second_rect(rect, data.split, data.percent)
+			_panel_container.fit_child_in_rect(panel, rect)
 
 
 func _get_panel(idx: int):
@@ -71,4 +80,5 @@ func _get_panel(idx: int):
 		return _panel_container.get_child(idx)
 	var panel = DockableContainerPanel.new()
 	_panel_container.add_child(panel)
+	
 	return panel
