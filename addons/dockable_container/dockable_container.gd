@@ -11,9 +11,8 @@ func _ready() -> void:
 	add_child(_panel_container)
 	move_child(_panel_container, 0)
 	for c in get_children():
-		if c.get_script() == DockableContainerSplit:
-			c.connect("split_changed", self, "_resort")
-			c.connect("percent_changed", self, "_resort")
+		if c is DockableContainerSplit:
+			c.connect("changed", self, "queue_sort")
 
 
 func _notification(what: int) -> void:
@@ -36,7 +35,9 @@ func _resort() -> void:
 	for i in range(1, get_child_count()):
 		var child = get_child(i)
 		if child is DockableContainerSplit:
-			if not current_panel_and_children.children.empty():
+			if current_panel_and_children.children.empty():
+				call_deferred("remove_child", child)
+			else:
 				current_panel_and_children.split = child
 				panel_i += 1
 				current_panel = _get_panel(panel_i)

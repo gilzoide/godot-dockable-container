@@ -14,31 +14,34 @@ __meta__ = {
 [node name="Control" type="ColorRect" parent="."]
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 163.992
+margin_right = 299.6
 margin_bottom = 596.0
 
 [node name="Split_0" type="Control" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 303.6
+margin_right = 315.6
+margin_bottom = 600.0
 script = ExtResource( 2 )
-percent = 0.386
+percent = 0.3
 
 [node name="Control2" type="ColorRect" parent="."]
-margin_left = 183.992
+margin_left = 319.6
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 172.4
+margin_bottom = 290.0
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
 [node name="Split_1" type="Control" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 315.6
+margin_top = 294.0
+margin_right = 1024.0
+margin_bottom = 306.0
 script = ExtResource( 2 )
 split = 1
 
 [node name="Control3" type="ColorRect" parent="."]
-margin_left = 183.992
-margin_top = 220.4
+margin_left = 319.6
+margin_top = 338.0
 margin_right = 1020.0
 margin_bottom = 596.0
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
