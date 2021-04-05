@@ -1,7 +1,7 @@
 tool
 extends Container
-class_name DockableContainer
 
+const DockableContainerSplit = preload("res://addons/dockable_container/dockable_container_split.gd")
 const DockableContainerPanel = preload("res://addons/dockable_container/dockable_container_panel.gd")
 
 var _panel_container = Container.new()
@@ -56,10 +56,13 @@ func _resort() -> void:
 	fit_child_in_rect(_panel_container, rect)
 	for data in all_panel_and_children:
 		var panel = data.panel
-		var panel_rect = DockableContainerSplit.first_rect(rect, data.split, data.percent)
-		_panel_container.fit_child_in_rect(panel, panel_rect)
-		panel.track_nodes(data.children)
-		rect = DockableContainerSplit.second_rect(rect, data.split, data.percent)
+		if data.children.empty():
+			_panel_container.remove_child(panel)
+		else:
+			var panel_rect = DockableContainerSplit.first_rect(rect, data.split, data.percent)
+			_panel_container.fit_child_in_rect(panel, panel_rect)
+			panel.track_nodes(data.children)
+			rect = DockableContainerSplit.second_rect(rect, data.split, data.percent)
 
 
 func _get_panel(idx: int):

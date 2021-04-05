@@ -1,5 +1,8 @@
+tool
 extends Node
-class_name DockableContainerSplit
+
+signal split_changed()
+signal percent_changed()
 
 enum Split {
 	HORIZONTAL,
@@ -15,6 +18,7 @@ var _percent = 0.5
 
 func set_split(value: int) -> void:
 	_split = value
+	emit_signal("split_changed")
 
 
 func get_split() -> int:
@@ -23,6 +27,7 @@ func get_split() -> int:
 
 func set_percent(value: float) -> void:
 	_percent = clamp(value, 0, 1)
+	emit_signal("percent_changed")
 
 
 func get_percent() -> float:

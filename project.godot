@@ -8,22 +8,6 @@
 
 config_version=4
 
-_global_script_classes=[ {
-"base": "Container",
-"class": "DockableContainer",
-"language": "GDScript",
-"path": "res://addons/dockable_container/dockable_container.gd"
-}, {
-"base": "Node",
-"class": "DockableContainerSplit",
-"language": "GDScript",
-"path": "res://addons/dockable_container/dockable_container_split.gd"
-} ]
-_global_script_class_icons={
-"DockableContainer": "",
-"DockableContainerSplit": ""
-}
-
 [application]
 
 config/name="Dockable Container"

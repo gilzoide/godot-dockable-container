@@ -20,3 +20,5 @@ func track_nodes(nodes: Array) -> void:
 		assert(ref_control is DockableContainerReferenceControl, "DockableContainerPanel children should always be DockableContainerReferenceControl")
 		ref_control.reference_to = nodes[i]
 		set_tab_title(i, nodes[i].name)
+	
+	visible = not nodes.empty()
