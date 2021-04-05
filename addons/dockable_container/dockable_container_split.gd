@@ -33,7 +33,7 @@ static func first_rect(rect: Rect2, split: int, percent: float) -> Rect2:
 	if split == Split.HORIZONTAL:
 		return rect.grow_margin(MARGIN_RIGHT, -rect.size.x * (1.0 - percent))
 	else:
-		return rect.grow_margin(MARGIN_TOP, -rect.size.y * (1.0 - percent))
+		return rect.grow_margin(MARGIN_BOTTOM, -rect.size.y * (1.0 - percent))
 
 
 static func second_rect(rect: Rect2, split: int, percent: float) -> Rect2:

@@ -1,49 +1,22 @@
 tool
-extends Container
-class_name DockableContainerPanel
+extends TabContainer
 
-var _tabs = Tabs.new()
-var _panel = PanelContainer.new()
+const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
 
 
 func _ready() -> void:
-	add_child(_panel)
-	add_child(_tabs)
-	_tabs.drag_to_rearrange_enabled = true
+	drag_to_rearrange_enabled = true
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_SORT_CHILDREN:
-		var tabs_size = _tabs.get_combined_minimum_size()
-		var tabs_rect = Rect2(0, 0, rect_size.x, tabs_size.y)
-		fit_child_in_rect(_tabs, tabs_rect)
-		
-		var panel_rect = Rect2(0, tabs_size.y - 2, rect_size.x, rect_size.y - (tabs_size.y - 2))
-		fit_child_in_rect(_panel, panel_rect)
-
-
-func set_tab_names(tab_names: PoolStringArray) -> void:
-	var min_size = min(tab_names.size(), _tabs.get_tab_count())
+func track_nodes(nodes: Array) -> void:
+	var min_size = min(nodes.size(), get_child_count())
+	for i in range(min_size, get_child_count()):
+		remove_child(get_child(min_size))
+	for i in range(min_size, nodes.size()):
+		var ref_control = DockableContainerReferenceControl.new()
+		add_child(ref_control)
 	for i in min_size:
-		_tabs.set_tab_title(i, tab_names[i])
-	for i in range(min_size, tab_names.size()):
-		_tabs.add_tab(tab_names[i])
-	for i in range(min_size, _tabs.get_tab_count()):
-		_tabs.remove_tab(i)
-
-
-func clear_tabs() -> void:
-	for i in _tabs.get_tab_count():
-		_tabs.remove_tab(0)
-
-
-func push_tab(named: String) -> void:
-	_tabs.add_tab(named)
-
-
-func get_panel_rect() -> Rect2:
-	var rect = _panel.get_rect()
-	var style = _panel.get_stylebox("panel")
-	if style:
-		rect = rect.grow_individual(-style.content_margin_left, -style.content_margin_top, -style.content_margin_right, -style.content_margin_bottom)
-	return rect
+		var ref_control: DockableContainerReferenceControl = get_child(i)
+		assert(ref_control is DockableContainerReferenceControl, "DockableContainerPanel children should always be DockableContainerReferenceControl")
+		ref_control.reference_to = nodes[i]
+		set_tab_title(i, nodes[i].name)

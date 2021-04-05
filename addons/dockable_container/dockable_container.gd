@@ -2,6 +2,8 @@ tool
 extends Container
 class_name DockableContainer
 
+const DockableContainerPanel = preload("res://addons/dockable_container/dockable_container_panel.gd")
+
 var _panel_container = Container.new()
 
 
@@ -28,7 +30,6 @@ func _resort() -> void:
 		"children": [],
 	}
 	var all_panel_and_children = [current_panel_and_children]
-	current_panel.clear_tabs()
 	for i in range(1, get_child_count()):
 		var child = get_child(i)
 		if child is DockableContainerSplit:
@@ -37,7 +38,6 @@ func _resort() -> void:
 				current_panel_and_children.percent = child.percent
 				panel_i += 1
 				current_panel = _get_panel(panel_i)
-				current_panel.clear_tabs()
 				current_panel_and_children = {
 					"panel": current_panel,
 					"split": DockableContainerSplit.Split.HORIZONTAL,
@@ -48,7 +48,6 @@ func _resort() -> void:
 		elif not child is Control or child.is_set_as_toplevel():
 			continue
 		else:
-			current_panel.push_tab(child.name)
 			current_panel_and_children.children.append(child)
 	if current_panel_and_children.children.empty():
 		all_panel_and_children.pop_back()
@@ -59,9 +58,7 @@ func _resort() -> void:
 		var panel = data.panel
 		var panel_rect = DockableContainerSplit.first_rect(rect, data.split, data.percent)
 		_panel_container.fit_child_in_rect(panel, panel_rect)
-		var children_rect = panel.get_panel_rect()
-		for c in data.children:
-			fit_child_in_rect(c, children_rect)
+		panel.track_nodes(data.children)
 		rect = DockableContainerSplit.second_rect(rect, data.split, data.percent)
 
 

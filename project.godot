@@ -14,26 +14,14 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/dockable_container/dockable_container.gd"
 }, {
-"base": "Container",
-"class": "DockableContainerPanel",
-"language": "GDScript",
-"path": "res://addons/dockable_container/dockable_container_panel.gd"
-}, {
 "base": "Node",
 "class": "DockableContainerSplit",
 "language": "GDScript",
 "path": "res://addons/dockable_container/dockable_container_split.gd"
-}, {
-"base": "Reference",
-"class": "DockableContainerTree",
-"language": "GDScript",
-"path": "res://addons/dockable_container/dockable_container_tree.gd"
 } ]
 _global_script_class_icons={
 "DockableContainer": "",
-"DockableContainerPanel": "",
-"DockableContainerSplit": "",
-"DockableContainerTree": ""
+"DockableContainerSplit": ""
 }
 
 [application]
