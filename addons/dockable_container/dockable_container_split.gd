@@ -29,15 +29,15 @@ func get_percent() -> float:
 	return _percent
 
 
-func first_rect(rect: Rect2) -> Rect2:
-	if _split == Split.HORIZONTAL:
-		return rect.grow_margin(MARGIN_RIGHT, -rect.size.x * (1.0 - _percent))
+static func first_rect(rect: Rect2, split: int, percent: float) -> Rect2:
+	if split == Split.HORIZONTAL:
+		return rect.grow_margin(MARGIN_RIGHT, -rect.size.x * (1.0 - percent))
 	else:
-		return rect.grow_margin(MARGIN_TOP, -rect.size.y * (1.0 - _percent))
+		return rect.grow_margin(MARGIN_TOP, -rect.size.y * (1.0 - percent))
 
 
-func second_rect(rect: Rect2) -> Rect2:
-	if _split == Split.HORIZONTAL:
-		return rect.grow_margin(MARGIN_LEFT, -rect.size.x * _percent)
+static func second_rect(rect: Rect2, split: int, percent: float) -> Rect2:
+	if split == Split.HORIZONTAL:
+		return rect.grow_margin(MARGIN_LEFT, -rect.size.x * percent)
 	else:
-		return rect.grow_margin(MARGIN_TOP, -rect.size.y * _percent)
+		return rect.grow_margin(MARGIN_TOP, -rect.size.y * percent)

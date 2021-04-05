@@ -4,6 +4,7 @@ class_name DockableContainer
 
 var _panel_container = Container.new()
 
+
 func _ready() -> void:
 	add_child(_panel_container)
 	move_child(_panel_container, 0)
@@ -18,27 +19,50 @@ func _resort() -> void:
 	assert(_panel_container, "FIXME: resorting without _panel_container")
 	assert(_panel_container.get_position_in_parent() == 0, "FIXME: _panel_container is not first child")
 	
-	var rect = Rect2(Vector2.ZERO, rect_size)
-	fit_child_in_rect(_panel_container, rect)
-	
 	var panel_i = 0
 	var current_panel = _get_panel(panel_i)
+	var current_panel_and_children = {
+		"panel": current_panel,
+		"split": DockableContainerSplit.Split.HORIZONTAL,
+		"percent": 1,
+		"children": [],
+	}
+	var all_panel_and_children = [current_panel_and_children]
 	current_panel.clear_tabs()
 	for i in range(1, get_child_count()):
 		var child = get_child(i)
 		if child is DockableContainerSplit:
-			_panel_container.fit_child_in_rect(current_panel, child.first_rect(rect))
-			panel_i += 1
-			current_panel = _get_panel(panel_i)
-			rect = child.second_rect(rect)
-			_panel_container.fit_child_in_rect(current_panel, rect)
-			current_panel.clear_tabs()
+			if not current_panel_and_children.children.empty():
+				current_panel_and_children.split = child.split
+				current_panel_and_children.percent = child.percent
+				panel_i += 1
+				current_panel = _get_panel(panel_i)
+				current_panel.clear_tabs()
+				current_panel_and_children = {
+					"panel": current_panel,
+					"split": DockableContainerSplit.Split.HORIZONTAL,
+					"percent": 1,
+					"children": [],
+				}
+				all_panel_and_children.append(current_panel_and_children)
 		elif not child is Control or child.is_set_as_toplevel():
 			continue
 		else:
 			current_panel.push_tab(child.name)
-			fit_child_in_rect(child, current_panel.get_panel_rect())
-	_panel_container.fit_child_in_rect(current_panel, rect)
+			current_panel_and_children.children.append(child)
+	if current_panel_and_children.children.empty():
+		all_panel_and_children.pop_back()
+	
+	var rect = Rect2(Vector2.ZERO, rect_size)
+	fit_child_in_rect(_panel_container, rect)
+	for data in all_panel_and_children:
+		var panel = data.panel
+		var panel_rect = DockableContainerSplit.first_rect(rect, data.split, data.percent)
+		_panel_container.fit_child_in_rect(panel, panel_rect)
+		var children_rect = panel.get_panel_rect()
+		for c in data.children:
+			fit_child_in_rect(c, children_rect)
+		rect = DockableContainerSplit.second_rect(rect, data.split, data.percent)
 
 
 func _get_panel(idx: int):
