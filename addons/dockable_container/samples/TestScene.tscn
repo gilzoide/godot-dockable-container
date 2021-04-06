@@ -1,7 +1,26 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=1]
-[ext_resource path="res://addons/dockable_container/dockable_container_split.gd" type="Script" id=2]
+[ext_resource path="res://addons/dockable_container/dockable_container_tree.gd" type="Script" id=2]
+[ext_resource path="res://addons/dockable_container/dockable_container_tree_leaf.gd" type="Script" id=3]
+
+[sub_resource type="Resource" id=1]
+resource_name = "Leaf"
+script = ExtResource( 3 )
+nodes = PoolIntArray( 2, 1 )
+
+[sub_resource type="Resource" id=2]
+resource_name = "Leaf"
+script = ExtResource( 3 )
+nodes = PoolIntArray( 3, 4 )
+
+[sub_resource type="Resource" id=3]
+resource_name = "Tree"
+script = ExtResource( 2 )
+split = 2
+percent = 0.5
+first = SubResource( 1 )
+second = SubResource( 2 )
 
 [node name="TestScene" type="Container"]
 anchor_right = 1.0
@@ -10,38 +29,34 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+split_tree = SubResource( 3 )
 
 [node name="Control" type="ColorRect" parent="."]
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 299.6
+margin_right = 1020.0
 margin_bottom = 596.0
 
-[node name="Split_0" type="Control" parent="."]
-margin_left = 303.6
-margin_right = 315.6
-margin_bottom = 600.0
-script = ExtResource( 2 )
-percent = 0.3
-
-[node name="Control2" type="ColorRect" parent="."]
-margin_left = 319.6
+[node name="Control5" type="ColorRect" parent="."]
+visible = false
+margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 290.0
+margin_bottom = 596.0
+color = Color( 0.129412, 0.121569, 0.121569, 1 )
+
+[node name="Control2" type="ColorRect" parent="."]
+visible = false
+margin_left = 4.0
+margin_top = 32.0
+margin_right = 1020.0
+margin_bottom = 596.0
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
-[node name="Split_1" type="Control" parent="."]
-margin_left = 315.6
-margin_top = 294.0
-margin_right = 1024.0
-margin_bottom = 306.0
-script = ExtResource( 2 )
-split = 1
-
 [node name="Control3" type="ColorRect" parent="."]
-margin_left = 319.6
-margin_top = 338.0
+visible = false
+margin_left = 4.0
+margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 596.0
 color = Color( 0.741176, 0.188235, 0.188235, 1 )

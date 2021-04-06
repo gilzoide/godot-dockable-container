@@ -2,6 +2,8 @@ extends Control
 
 const MARGIN_NONE = -1
 
+export(Color) var color = Color(0.2, 0.2, 0.2, 0.9)
+
 var _hover_margin = MARGIN_NONE
 
 
@@ -30,7 +32,11 @@ func _draw() -> void:
 	elif _hover_margin == MARGIN_BOTTOM:
 		var half_height = rect_size.y * 0.5
 		rect = Rect2(0, half_height, rect_size.x, half_height)
-	draw_rect(rect, Color.white)
+	draw_rect(rect, color)
+
+
+func get_hover_margin() -> int:
+	return _hover_margin
 
 
 func _find_hover_margin(point: Vector2):

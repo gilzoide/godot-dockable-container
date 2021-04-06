@@ -3,31 +3,38 @@ extends Control
 
 signal changed()
 
-enum Split {
-	HORIZONTAL,
-	VERTICAL,
+enum Margin {
+	MARGIN_LEFT,
+	MARGIN_TOP,
+	MARGIN_RIGHT,
+	MARGIN_BOTTOM,
 }
 
 const SPLIT_THEME_CLASS = [
-	"HSplitContainer",  # SPLIT_THEME_CLASS[Split.HORIZONTAL]
-	"VSplitContainer",  # SPLIT_THEME_CLASS[Split.VERTICAL]
+	"HSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_LEFT]
+	"VSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_TOP]
+	"HSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_RIGHT]
+	"VSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_BOTTOM]
 ]
-var SPLIT_MOUSE_CURSOR_SHAPE = [
-	CURSOR_HSPLIT,
-	CURSOR_VSPLIT,
+const SPLIT_MOUSE_CURSOR_SHAPE = [
+	Control.CURSOR_HSPLIT,
+	Control.CURSOR_VSPLIT,
+	Control.CURSOR_HSPLIT,
+	Control.CURSOR_VSPLIT,
 ]
 
-export(Split) var split = Split.HORIZONTAL setget set_split, get_split
-export(float, 0, 1) var percent = 0.5 setget set_percent, get_percent
+var split_tree setget set_split_tree, get_split_tree
 
-var _split = Split.HORIZONTAL
-var _percent = 0.5
+var _split_tree
+var _mouse_hovering = false
 var _dragging = false
 
 
 func _draw() -> void:
-	var icon = get_icon("grabber", SPLIT_THEME_CLASS[_split])
-	if not icon:
+	var theme_class = SPLIT_THEME_CLASS[_split_tree.split]
+	var icon = get_icon("grabber", theme_class)
+	var autohide = bool(get_constant("autohide", theme_class))
+	if not icon or (autohide and not _mouse_hovering):
 		return
 	
 	draw_texture(icon, (rect_size - icon.get_size()) * 0.5 )
@@ -38,54 +45,49 @@ func _gui_input(event: InputEvent) -> void:
 		_dragging = event.is_pressed()
 	elif event is InputEventMouseMotion and _dragging:
 		var size = get_parent_control().rect_size
-		if _split == Split.HORIZONTAL:
-			set_percent((rect_position.x + event.position.x) / size.x)
+		if _split_tree.is_horizontal():
+			_split_tree.set_percent((rect_position.x + event.position.x) / size.x)
 		else:
-			set_percent((rect_position.y + event.position.y) / size.y)
+			_split_tree.set_percent((rect_position.y + event.position.y) / size.y)
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_ENTER:
+		_mouse_hovering = true
 		set_split_cursor(true)
+		if bool(get_constant("autohide", SPLIT_THEME_CLASS[_split_tree.split])):
+			update()
 	elif what == NOTIFICATION_MOUSE_EXIT:
+		_mouse_hovering = false
 		set_split_cursor(false)
+		if bool(get_constant("autohide", SPLIT_THEME_CLASS[_split_tree.split])):
+			update()
+	elif what == NOTIFICATION_FOCUS_EXIT:
+		_dragging = false
 
 
-func set_split(value: int) -> void:
-	if value != _split:
-		_split = value
-		emit_signal("changed")
+func set_split_tree(value):
+	_split_tree = value
 
 
-func get_split() -> int:
-	return _split
-
-
-func set_percent(value: float, emit_changed = true) -> void:
-	var clamped_value = clamp(value, 0, 1)
-	if not is_equal_approx(_percent, clamped_value):
-		_percent = clamped_value
-		if emit_changed:
-			emit_signal("changed")
-
-
-func get_percent() -> float:
-	return _percent
+func get_split_tree():
+	return _split_tree
 
 
 func set_split_cursor(value: bool) -> void:
 	if value:
-		mouse_default_cursor_shape = SPLIT_MOUSE_CURSOR_SHAPE[_split]
+		mouse_default_cursor_shape = SPLIT_MOUSE_CURSOR_SHAPE[_split_tree.split]
 	else:
 		mouse_default_cursor_shape = CURSOR_ARROW
 
 
 func get_split_rects(rect: Rect2) -> Dictionary:
-	var separation = get_constant("separation", SPLIT_THEME_CLASS[_split])
+	var separation = get_constant("separation", SPLIT_THEME_CLASS[_split_tree.split])
 	var origin = rect.position
 	var size = rect.size
-	if _split == Split.HORIZONTAL:
-		var first_width = (size.x - separation) * _percent
+	var percent = _split_tree.percent
+	if _split_tree.is_horizontal():
+		var first_width = (size.x - separation) * percent
 		var second_width = (size.x - separation) - first_width
 		return {
 			"first": Rect2(origin.x, origin.y, first_width, size.y),
@@ -93,7 +95,7 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 			"second": Rect2(origin.x + first_width + separation, origin.y, second_width, size.y),
 		}
 	else:
-		var first_height = (size.y - separation) * _percent
+		var first_height = (size.y - separation) * percent
 		var second_height = (size.y - separation) - first_height
 		return {
 			"first": Rect2(origin.x, origin.y, size.x, first_height),
