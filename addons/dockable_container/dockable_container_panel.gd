@@ -5,23 +5,10 @@ signal control_moved(control)
 signal control_dropped(control, margin)
 
 const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
-const DockableContainerTree = preload("res://addons/dockable_container/dockable_container_tree.gd")
-
-var leaf setget set_leaf, get_leaf
-
-var _leaf: DockableContainerTree.Leaf
 
 
 func _ready() -> void:
 	drag_to_rearrange_enabled = true
-
-
-func set_leaf(value: DockableContainerTree.Leaf) -> void:
-	_leaf = value
-
-
-func get_leaf() -> DockableContainerTree.Leaf:
-	return _leaf
 
 
 func track_nodes(nodes: Array) -> void:

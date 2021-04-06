@@ -6,11 +6,14 @@ const DockableContainerPanel = preload("res://addons/dockable_container/dockable
 const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
 const DockableContainerDragDrawer = preload("res://addons/dockable_container/dockable_container_drag_drawer.gd")
 const DockableContainerTree = preload("res://addons/dockable_container/dockable_container_tree.gd")
+const DockableContainerTreeBranch = preload("res://addons/dockable_container/dockable_container_tree_branch.gd")
+const DockableContainerTreeLeaf = DockableContainerTreeBranch.Leaf
 
 export(int) var rearrange_group = 0
 export(Resource) var split_tree setget set_split_tree, get_split_tree
 
-var _split_tree
+var _split_tree: DockableContainerTree
+var _split_data: Dictionary
 var _panel_container = Container.new()
 var _split_container = Container.new()
 var _drag_checker = DockableContainerDragDrawer.new()
@@ -30,6 +33,8 @@ func _ready() -> void:
 	_drag_checker.set_drag_forwarding(self)
 	_drag_checker.visible = false
 	add_child(_drag_checker)
+	
+	_split_data = _split_tree.ensure_indices_in_range(1, get_child_count() - 2)
 
 
 func _notification(what: int) -> void:
@@ -74,8 +79,8 @@ func _resort() -> void:
 	_untrack_children_after(_split_container, _current_split_index + 1)
 
 
-func _set_tree_or_leaf_rect(tree_or_leaf, rect):
-	if tree_or_leaf is DockableContainerTree:
+func _set_tree_or_leaf_rect(tree_or_leaf: DockableContainerTree, rect: Rect2) -> void:
+	if tree_or_leaf is DockableContainerTreeBranch:
 		var split = _get_split(_current_split_index)
 		split.split_tree = tree_or_leaf
 		_current_split_index += 1
@@ -83,29 +88,30 @@ func _set_tree_or_leaf_rect(tree_or_leaf, rect):
 		_split_container.fit_child_in_rect(split, split_rects.self)
 		_set_tree_or_leaf_rect(tree_or_leaf.first, split_rects.first)
 		_set_tree_or_leaf_rect(tree_or_leaf.second, split_rects.second)
-	elif tree_or_leaf is DockableContainerTree.Leaf:
+	elif tree_or_leaf is DockableContainerTreeLeaf:
 		var panel = _get_panel(_current_panel_index)
 		_current_panel_index += 1
-		panel.leaf = tree_or_leaf
 		var nodes = []
 		for n in tree_or_leaf.nodes:
 			nodes.append(get_child(n))
 		panel.track_nodes(nodes)
 		_panel_container.fit_child_in_rect(panel, rect)
 	else:
-		assert(false, "Invalid Resource, should be tree or leaf, found %s" % tree_or_leaf)
+		assert(false, "Invalid Resource, should be branch or leaf, found %s" % tree_or_leaf)
 
 
-func set_split_tree(value) -> void:
+func set_split_tree(value: DockableContainerTree) -> void:
+	if _split_tree and _split_tree.is_connected("changed", self, "queue_sort"):
+		_split_tree.disconnect("changed", self, "queue_sort")
 	if value == null:
 		var nodes = range(1, get_child_count() - 1)
-		_split_tree = DockableContainerTree.Leaf.new(nodes)
-		print(_split_tree.get_script())
+		_split_tree = DockableContainerTreeLeaf.new(nodes)
 	else:
 		_split_tree = value
+	_split_tree.connect("changed", self, "queue_sort")
 
 
-func get_split_tree():
+func get_split_tree() -> DockableContainerTree:
 	return _split_tree
 
 
