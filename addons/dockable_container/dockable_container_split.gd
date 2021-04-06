@@ -45,11 +45,11 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		_dragging = event.is_pressed()
 	elif event is InputEventMouseMotion and _dragging:
-		var size = _parent_rect.size
+		var mouse_in_parent = get_parent_control().get_local_mouse_position()
 		if _split_tree.is_horizontal():
-			_split_tree.set_percent((rect_position.x + event.position.x) / size.x)
+			_split_tree.set_percent((mouse_in_parent.x - _parent_rect.position.x) / _parent_rect.size.x)
 		else:
-			_split_tree.set_percent((rect_position.y + event.position.y) / size.y)
+			_split_tree.set_percent((mouse_in_parent.y - _parent_rect.position.y) / _parent_rect.size.y)
 
 
 func _notification(what: int) -> void:

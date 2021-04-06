@@ -50,36 +50,47 @@ func move_node_to_leaf(node_index: int, leaf, relative_position: int) -> void:
 	var previous_leaf = data[node_index]
 	previous_leaf.remove_node(node_index)
 	if previous_leaf.empty():
-		# TODO: merge parent branch
-		pass
+		_remove_leaf(previous_leaf)
 	
 	leaf.insert_node(relative_position, node_index)
 	data[node_index] = leaf
+	
+	_print_tree()
+	emit_changed()
 
 
 func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
-	var previous_leaf = data[node_index]
-	previous_leaf.remove_node(node_index)
-	if previous_leaf.empty():
-		# TODO: merge parent branch
-		pass
-	
-	var previous_parent = leaf.parent
-	var new_leaf = DockableContainerTreeLeaf.new([node_index])
+	var root_branch = leaf.parent
+	var new_leaf = DockableContainerTreeLeaf.new()
 	var new_branch = DockableContainerTreeBranch.new()
 	new_branch.split = margin
-	if previous_parent == self:
-		self.root = new_branch
-	else:
-		if leaf == previous_parent.first:
-			previous_parent.first = new_branch
-		elif leaf == previous_parent.second:
-			previous_parent.second = new_branch
 	new_branch.first = leaf
 	new_branch.second = new_leaf
-	data[node_index] = new_leaf
-	_print_tree()
-	emit_changed()
+	if root_branch == self:
+		self.root = new_branch
+	elif leaf == root_branch.first:
+		root_branch.first = new_branch
+	else:
+		root_branch.second = new_branch
+	
+	move_node_to_leaf(node_index, new_leaf, 0)
+
+
+func _remove_leaf(leaf) -> void:
+	assert(leaf.empty(), "FIXME: trying to remove a leaf with nodes")
+	var collapsed_branch = leaf.parent
+	if collapsed_branch == self:
+		return
+	assert(collapsed_branch is DockableContainerTreeBranch, "FIXME: leaf is not a child of branch")
+	var kept_branch = collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
+	var root_branch = collapsed_branch.parent
+	if root_branch == self:
+		self.root = kept_branch
+	elif collapsed_branch == root_branch.first:
+		root_branch.first = kept_branch
+	else:
+		root_branch.second = kept_branch
+	
 
 
 func _print_tree() -> void:

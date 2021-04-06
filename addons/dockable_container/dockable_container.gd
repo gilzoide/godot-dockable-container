@@ -38,8 +38,8 @@ func _ready() -> void:
 	if Engine.editor_hint:
 		yield(get_tree(), "idle_frame")
 	_split_tree.root = _split_tree_root_node
-	_split_tree.connect("changed", self, "queue_sort")
 	_split_tree.ensure_indices_in_range(1, get_child_count() - 2)
+	_split_tree.connect("changed", self, "queue_sort")
 
 
 func _notification(what: int) -> void:
@@ -127,7 +127,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	assert(from_control == _drag_checker, "FIXME")
 	
 	var from_node: DockableContainerPanel = get_node(data.from_path)
-	if from_node == _drag_panel and _drag_panel.get_child_count() == 1:
+	if _drag_panel == null or (from_node == _drag_panel and _drag_panel.get_child_count() == 1):
 		return
 	
 	var moved_tab = from_node.get_tab_control(data.tabc_element)
