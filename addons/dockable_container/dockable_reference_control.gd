@@ -7,9 +7,18 @@ var reference_to: Control setget set_reference_to, get_reference_to
 var _reference_to: Control = null
 var _parented = false
 
+
 func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
+
+
+func _enter_tree() -> void:
 	connect("item_rect_changed", self, "_on_rect_changed")
+
+
+func _exit_tree() -> void:
+	disconnect("item_rect_changed", self, "_on_rect_changed")
+
 
 
 func _notification(what: int) -> void:
