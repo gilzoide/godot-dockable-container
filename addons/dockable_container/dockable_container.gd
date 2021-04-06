@@ -4,10 +4,11 @@ extends Container
 const DockableContainerSplit = preload("res://addons/dockable_container/dockable_container_split.gd")
 const DockableContainerPanel = preload("res://addons/dockable_container/dockable_container_panel.gd")
 const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
+const DockableContainerDragDrawer = preload("res://addons/dockable_container/dockable_container_drag_drawer.gd")
 
 export(int) var rearrange_group = 0
 var _panel_container = Container.new()
-var _drag_checker = Control.new()
+var _drag_checker = DockableContainerDragDrawer.new()
 var _drag_panel
 
 
