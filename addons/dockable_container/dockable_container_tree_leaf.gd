@@ -1,6 +1,9 @@
 extends "res://addons/dockable_container/dockable_container_tree.gd"
 
 export(PoolIntArray) var nodes = PoolIntArray()
+export(int) var current_tab: int setget set_current_tab, get_current_tab
+
+var _current_tab: int = 0
 
 
 func _init(nodes_ = []) -> void:
@@ -33,6 +36,14 @@ func remove_node(node_index: int) -> void:
 
 func empty() -> bool:
 	return nodes.empty()
+
+
+func set_current_tab(value: int) -> void:
+	_current_tab = clamp(value, 0, nodes.size() - 1)
+
+
+func get_current_tab() -> int:
+	return _current_tab
 
 
 func _ensure_indices_in_range(data: Dictionary):
