@@ -51,8 +51,7 @@ func move_node_to_leaf(node_index: int, leaf, relative_position: int) -> void:
 	
 	leaf.insert_node(relative_position, node_index)
 	data[node_index] = leaf
-	
-	_print_tree()
+#	_print_tree()
 	emit_changed()
 
 
