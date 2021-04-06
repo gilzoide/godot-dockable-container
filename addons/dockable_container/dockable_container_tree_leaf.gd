@@ -2,11 +2,9 @@ extends "res://addons/dockable_container/dockable_container_tree.gd"
 
 export(PoolIntArray) var nodes = PoolIntArray()
 
-var parent = null
 
-
-func _init(nodes_ = PoolIntArray()) -> void:
-	nodes = nodes_
+func _init(nodes_ = []) -> void:
+	nodes = PoolIntArray(nodes_)
 	resource_name = "Leaf"
 
 
@@ -18,8 +16,12 @@ func remove_node(parent_index: int) -> void:
 	for i in nodes.size():
 		if nodes[i] == parent_index:
 			nodes.remove(i)
-			emit_changed()
-			break
+			return
+	assert(false, "Remove failed, node %d was not found" % parent_index)
+
+
+func empty() -> bool:
+	return nodes.empty()
 
 
 func _ensure_indices_in_range(data: Dictionary):

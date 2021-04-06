@@ -6,12 +6,14 @@ signal control_dropped(control, margin)
 
 const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
 
+var leaf
+
 
 func _ready() -> void:
 	drag_to_rearrange_enabled = true
 
 
-func track_nodes(nodes: Array) -> void:
+func track_nodes(nodes: Array, leaf) -> void:
 	var min_size = min(nodes.size(), get_child_count())
 	for i in range(min_size, get_child_count()):
 		var child = get_child(min_size)
@@ -27,7 +29,7 @@ func track_nodes(nodes: Array) -> void:
 		assert(ref_control is DockableContainerReferenceControl, "DockableContainerPanel children should always be DockableContainerReferenceControl")
 		ref_control.reference_to = nodes[i]
 		set_tab_title(i, nodes[i].name)
-	
+	self.leaf = leaf
 	visible = not nodes.empty()
 
 

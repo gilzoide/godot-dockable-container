@@ -89,16 +89,20 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 	if _split_tree.is_horizontal():
 		var first_width = (size.x - separation) * percent
 		var second_width = (size.x - separation) - first_width
+		var left = Rect2(origin.x, origin.y, first_width, size.y)
+		var right = Rect2(origin.x + first_width + separation, origin.y, second_width, size.y)
 		return {
-			"first": Rect2(origin.x, origin.y, first_width, size.y),
+			"first": left if _split_tree.split == MARGIN_RIGHT else right,
 			"self": Rect2(origin.x + first_width, origin.y, separation, size.y),
-			"second": Rect2(origin.x + first_width + separation, origin.y, second_width, size.y),
+			"second": right if _split_tree.split == MARGIN_RIGHT else left,
 		}
 	else:
 		var first_height = (size.y - separation) * percent
 		var second_height = (size.y - separation) - first_height
+		var top = Rect2(origin.x, origin.y, size.x, first_height)
+		var bottom = Rect2(origin.x, origin.y + first_height + separation, size.x, second_height)
 		return {
-			"first": Rect2(origin.x, origin.y, size.x, first_height),
+			"first": top if _split_tree.split == MARGIN_BOTTOM else bottom,
 			"self": Rect2(origin.x, origin.y + first_height, size.x, separation),
-			"second": Rect2(origin.x, origin.y + first_height + separation, size.x, second_height),
+			"second": bottom if _split_tree.split == MARGIN_BOTTOM else top,
 		}

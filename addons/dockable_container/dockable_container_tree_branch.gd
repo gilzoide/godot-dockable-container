@@ -1,4 +1,3 @@
-tool
 extends "res://addons/dockable_container/dockable_container_tree.gd"
 
 enum Margin {
@@ -12,15 +11,13 @@ const Leaf = preload("res://addons/dockable_container/dockable_container_tree_le
 
 export(Margin) var split = MARGIN_RIGHT setget set_split, get_split
 export(float, 0, 1) var percent = 0.5 setget set_percent, get_percent
-export(Resource) var first setget set_first, get_first
-export(Resource) var second setget set_second, get_second
-
-var parent = null
+export(Resource) var first = Leaf.new() setget set_first, get_first
+export(Resource) var second = Leaf.new() setget set_second, get_second
 
 var _split = MARGIN_RIGHT
 var _percent = 0.5
-var _first = Leaf.new()
-var _second = Leaf.new()
+var _first
+var _second
 
 
 func _init() -> void:
@@ -28,17 +25,11 @@ func _init() -> void:
 
 
 func set_first(value) -> void:
-	if _first:
-		if _first.is_connected("changed", self, "_on_child_changed"):
-			_first.disconnect("changed", self, "_on_child_changed")
-		_first.parent = null
 	if value == null:
 		_first = Leaf.new()
 	else:
 		_first = value
 	_first.parent = self
-	_first.connect("changed", self, "_on_child_changed")
-	emit_changed()
 
 
 func get_first():
@@ -46,17 +37,11 @@ func get_first():
 
 
 func set_second(value) -> void:
-	if _second:
-		if _second.is_connected("changed", self, "_on_child_changed"):
-			_second.disconnect("changed", self, "_on_child_changed")
-		_second.parent = null
 	if value == null:
 		_second = Leaf.new()
 	else:
 		_second = value
 	_second.parent = self
-	_second.connect("changed", self, "_on_child_changed")
-	emit_changed()
 
 
 func get_second():
@@ -66,7 +51,7 @@ func get_second():
 func set_split(value: int) -> void:
 	if value != _split:
 		_split = value
-		emit_changed()
+		get_root().emit_changed()
 
 
 func get_split() -> int:
@@ -77,7 +62,7 @@ func set_percent(value: float) -> void:
 	var clamped_value = clamp(value, 0, 1)
 	if not is_equal_approx(_percent, clamped_value):
 		_percent = clamped_value
-		emit_changed()
+		get_root().emit_changed()
 
 
 func get_percent() -> float:
@@ -103,7 +88,3 @@ static func is_horizontal_margin(margin: int) -> bool:
 
 static func is_split_before_margin(margin: int) -> bool:
 	return margin == MARGIN_LEFT or margin == MARGIN_TOP
-
-
-func _on_child_changed() -> void:
-	emit_changed()

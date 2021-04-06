@@ -5,15 +5,16 @@ const DockableContainerSplit = preload("res://addons/dockable_container/dockable
 const DockableContainerPanel = preload("res://addons/dockable_container/dockable_container_panel.gd")
 const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
 const DockableContainerDragDrawer = preload("res://addons/dockable_container/dockable_container_drag_drawer.gd")
-const DockableContainerTree = preload("res://addons/dockable_container/dockable_container_tree.gd")
+const DockableContainerTreeNode = preload("res://addons/dockable_container/dockable_container_tree.gd")
+const DockableContainerTreeRoot = preload("res://addons/dockable_container/dockable_container_tree_root.gd")
 const DockableContainerTreeBranch = preload("res://addons/dockable_container/dockable_container_tree_branch.gd")
 const DockableContainerTreeLeaf = DockableContainerTreeBranch.Leaf
 
 export(int) var rearrange_group = 0
-export(Resource) var split_tree setget set_split_tree, get_split_tree
+export(Resource) var split_tree_root_node setget set_split_tree_root_node, get_split_tree_root_node
 
-var _split_tree: DockableContainerTree
-var _split_data: Dictionary
+var _split_tree_root_node
+var _split_tree = DockableContainerTreeRoot.new()
 var _panel_container = Container.new()
 var _split_container = Container.new()
 var _drag_checker = DockableContainerDragDrawer.new()
@@ -34,7 +35,11 @@ func _ready() -> void:
 	_drag_checker.visible = false
 	add_child(_drag_checker)
 	
-	_split_data = _split_tree.ensure_indices_in_range(1, get_child_count() - 2)
+	if Engine.editor_hint:
+		yield(get_tree(), "idle_frame")
+	_split_tree.root = _split_tree_root_node
+	_split_tree.connect("changed", self, "queue_sort")
+	_split_tree.ensure_indices_in_range(1, get_child_count() - 2)
 
 
 func _notification(what: int) -> void:
@@ -52,7 +57,8 @@ func _input(event: InputEvent) -> void:
 	assert(get_viewport().gui_is_dragging(), "FIXME: should only be called when dragging")
 	if event is InputEventMouseMotion:
 		var panel
-		for p in _panel_container.get_children():
+		for i in range(1, _panel_container.get_child_count()):
+			var p = _panel_container.get_child(i)
 			if p.get_rect().has_point(event.position):
 				panel = p
 				break
@@ -74,12 +80,12 @@ func _resort() -> void:
 	
 	_current_panel_index = 1
 	_current_split_index = 0
-	_set_tree_or_leaf_rect(_split_tree, rect)
+	_set_tree_or_leaf_rect(_split_tree.root, rect)
 	_untrack_children_after(_panel_container, _current_panel_index + 1)
 	_untrack_children_after(_split_container, _current_split_index + 1)
 
 
-func _set_tree_or_leaf_rect(tree_or_leaf: DockableContainerTree, rect: Rect2) -> void:
+func _set_tree_or_leaf_rect(tree_or_leaf: DockableContainerTreeNode, rect: Rect2) -> void:
 	if tree_or_leaf is DockableContainerTreeBranch:
 		var split = _get_split(_current_split_index)
 		split.split_tree = tree_or_leaf
@@ -94,25 +100,23 @@ func _set_tree_or_leaf_rect(tree_or_leaf: DockableContainerTree, rect: Rect2) ->
 		var nodes = []
 		for n in tree_or_leaf.nodes:
 			nodes.append(get_child(n))
-		panel.track_nodes(nodes)
+		panel.track_nodes(nodes, tree_or_leaf)
 		_panel_container.fit_child_in_rect(panel, rect)
 	else:
 		assert(false, "Invalid Resource, should be branch or leaf, found %s" % tree_or_leaf)
 
 
-func set_split_tree(value: DockableContainerTree) -> void:
-	if _split_tree and _split_tree.is_connected("changed", self, "queue_sort"):
-		_split_tree.disconnect("changed", self, "queue_sort")
+func set_split_tree_root_node(value: DockableContainerTreeNode) -> void:
 	if value == null:
 		var nodes = range(1, get_child_count() - 1)
-		_split_tree = DockableContainerTreeLeaf.new(nodes)
+		_split_tree_root_node = DockableContainerTreeLeaf.new(nodes)
 	else:
-		_split_tree = value
-	_split_tree.connect("changed", self, "queue_sort")
+		_split_tree_root_node = value
+	_split_tree.root = _split_tree_root_node
 
 
-func get_split_tree() -> DockableContainerTree:
-	return _split_tree
+func get_split_tree_root_node() -> DockableContainerTreeNode:
+	return _split_tree_root_node
 
 
 func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
@@ -122,39 +126,16 @@ func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
 func drop_data_fw(position: Vector2, data, from_control) -> void:
 	assert(from_control == _drag_checker, "FIXME")
 	
-	var from_node: TabContainer = get_node(data.from_path)
+	var from_node: DockableContainerPanel = get_node(data.from_path)
 	if from_node == _drag_panel and _drag_panel.get_child_count() == 1:
 		return
 	
-	var margin = _drag_checker.get_hover_margin()
-	var split_before = DockableContainerSplit.is_split_before_margin(margin)
-	var old_reference_position
-	var new_reference_position
-	var split_position
-	if split_before:
-		var first_child = _drag_panel.get_child(0)
-		old_reference_position = first_child.reference_to.get_position_in_parent()
-		new_reference_position = max(1, old_reference_position - 1)
-	else:
-		var last_child = _drag_panel.get_child(_drag_panel.get_child_count() - 1)
-		old_reference_position = last_child.reference_to.get_position_in_parent()
-		new_reference_position = min(get_child_count() - 2, old_reference_position + 1)
-	
 	var moved_tab = from_node.get_tab_control(data.tabc_element)
 	var moved_reference = moved_tab.reference_to
+	var moved_parent_index = moved_reference.get_position_in_parent()
 	
-	var new_split = DockableContainerSplit.new()
-	new_split.split = margin
-	new_split.connect("changed", self, "queue_sort")
-	new_split.priority = 1 if not split_before and get_child(old_reference_position) is DockableContainerSplit else 0
-	add_child(new_split)
-	
-	if split_before:
-		move_child(new_split, new_reference_position)
-		move_child(moved_reference, new_reference_position)
-	else:
-		move_child(moved_reference, new_reference_position)
-		move_child(new_split, new_reference_position)
+	var margin = _drag_checker.get_hover_margin()
+	_split_tree.split_leaf_with_node(_drag_panel.leaf, moved_parent_index, margin)
 	
 	queue_sort()
 
