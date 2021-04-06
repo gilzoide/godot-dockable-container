@@ -2,7 +2,7 @@ tool
 extends TabContainer
 
 signal control_moved(control)
-signal control_dropped(control, margin)
+
 
 const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
 
@@ -25,6 +25,7 @@ func track_nodes(nodes: Array, leaf) -> void:
 		add_child(ref_control)
 		ref_control.connect("tree_entered", self, "_on_control_moved", [ref_control])
 		ref_control.connect("moved_in_parent", self, "_on_control_moved")
+	assert(nodes.size() == get_child_count(), "FIXME")
 	for i in nodes.size():
 		var ref_control: DockableContainerReferenceControl = get_child(i)
 		assert(ref_control is DockableContainerReferenceControl, "DockableContainerPanel children should always be DockableContainerReferenceControl")

@@ -21,6 +21,7 @@ var _drag_checker = DockableContainerDragDrawer.new()
 var _drag_panel: DockableContainerPanel
 var _current_panel_index = 0
 var _current_split_index = 0
+var _last_sort_child_count = 0
 
 
 func _ready() -> void:
@@ -38,7 +39,6 @@ func _ready() -> void:
 	if Engine.editor_hint:
 		yield(get_tree(), "idle_frame")
 	_split_tree.root = _split_tree_root_node
-	_split_tree.ensure_indices_in_range(1, get_child_count() - 2)
 	_split_tree.connect("changed", self, "queue_sort")
 
 
@@ -68,11 +68,57 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_checker, panel.get_child_rect())
 
 
+func set_split_tree_root_node(value: DockableContainerTreeNode) -> void:
+	if value == null:
+		_split_tree_root_node = DockableContainerTreeLeaf.new()
+	else:
+		_split_tree_root_node = value
+	_split_tree.root = _split_tree_root_node
+
+
+func get_split_tree_root_node() -> DockableContainerTreeNode:
+	return _split_tree_root_node
+
+
+func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
+	return from_control == _drag_checker and data is Dictionary and data.get("type") == "tabc_element"
+
+
+func drop_data_fw(position: Vector2, data, from_control) -> void:
+	assert(from_control == _drag_checker, "FIXME")
+	
+	var from_node: DockableContainerPanel = get_node(data.from_path)
+	if _drag_panel == null or (from_node == _drag_panel and _drag_panel.get_child_count() == 1):
+		return
+	
+	var moved_tab = from_node.get_tab_control(data.tabc_element)
+	var moved_reference = moved_tab.reference_to
+	var moved_parent_index = moved_reference.get_position_in_parent()
+	
+	var margin = _drag_checker.get_hover_margin()
+	_split_tree.split_leaf_with_node(_drag_panel.leaf, moved_parent_index, margin)
+	
+	queue_sort()
+
+
+func _update_tree_indices() -> void:
+	var indices = PoolIntArray()
+	for i in range(1, get_child_count() - 1):
+		var c = get_child(i)
+		if c is Control and not c.is_set_as_toplevel():
+			indices.append(i)
+	_split_tree.update_indices(indices)
+
+
 func _resort() -> void:
 	assert(_panel_container, "FIXME: resorting without _panel_container")
 	assert(_panel_container.get_position_in_parent() == 0, "FIXME: _panel_container is not first child")
 	if _drag_checker.get_position_in_parent() < get_child_count() - 1:
 		_drag_checker.raise()
+	
+	if get_child_count() != _last_sort_child_count:
+		_last_sort_child_count = get_child_count()
+		_update_tree_indices()
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
@@ -104,40 +150,6 @@ func _set_tree_or_leaf_rect(tree_or_leaf: DockableContainerTreeNode, rect: Rect2
 		_panel_container.fit_child_in_rect(panel, rect)
 	else:
 		assert(false, "Invalid Resource, should be branch or leaf, found %s" % tree_or_leaf)
-
-
-func set_split_tree_root_node(value: DockableContainerTreeNode) -> void:
-	if value == null:
-		var nodes = range(1, get_child_count() - 1)
-		_split_tree_root_node = DockableContainerTreeLeaf.new(nodes)
-	else:
-		_split_tree_root_node = value
-	_split_tree.root = _split_tree_root_node
-
-
-func get_split_tree_root_node() -> DockableContainerTreeNode:
-	return _split_tree_root_node
-
-
-func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
-	return from_control == _drag_checker and data is Dictionary and data.get("type") == "tabc_element"
-
-
-func drop_data_fw(position: Vector2, data, from_control) -> void:
-	assert(from_control == _drag_checker, "FIXME")
-	
-	var from_node: DockableContainerPanel = get_node(data.from_path)
-	if _drag_panel == null or (from_node == _drag_panel and _drag_panel.get_child_count() == 1):
-		return
-	
-	var moved_tab = from_node.get_tab_control(data.tabc_element)
-	var moved_reference = moved_tab.reference_to
-	var moved_parent_index = moved_reference.get_position_in_parent()
-	
-	var margin = _drag_checker.get_hover_margin()
-	_split_tree.split_leaf_with_node(_drag_panel.leaf, moved_parent_index, margin)
-	
-	queue_sort()
 
 
 func _get_panel(idx: int) -> DockableContainerPanel:

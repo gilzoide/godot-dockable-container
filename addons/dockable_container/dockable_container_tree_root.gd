@@ -24,23 +24,20 @@ func get_parent():
 	return null
 
 
-func ensure_indices_in_range(from: int, to: int):
+func update_indices(indices) -> void:
 	"""
-	Add nodes in range on first leaf, if missing, and remove nodes outside
-	range from leaves.
+	Add missing nodes on first leaf and remove nodes outside indices from leaves.
 	
-	Returns: {
-		from = from,
-		to = to,
+	data = {
 		(numeric keys) from ... to = respective Leaf that holds the node index,
 		first = first leaf,
 	}
 	"""
-	data = { from = from, to = to }
+	data = { indices = indices }
 	_root._ensure_indices_in_range(data)
 	var first = data.first
 	assert(first, "FIXME: no leaves were found in tree")
-	for i in range(from, to + 1):
+	for i in indices:
 		if not data.has(i):
 			first.push_node(i)
 			data[i] = first

@@ -1,56 +1,76 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=1]
 [ext_resource path="res://addons/dockable_container/dockable_container_tree_leaf.gd" type="Script" id=2]
+[ext_resource path="res://addons/dockable_container/samples/AddControlButton.gd" type="Script" id=3]
 
 [sub_resource type="Resource" id=1]
 resource_name = "Leaf"
 script = ExtResource( 2 )
 nodes = PoolIntArray( 1, 2, 3, 4, 5 )
 
-[node name="TestScene" type="Container"]
+[node name="Control6" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="."]
+margin_right = 127.0
+margin_bottom = 20.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "(+) ADD CONTROL"
+script = ExtResource( 3 )
+container_path = NodePath("../TestScene")
+
+[node name="TestScene" type="Container" parent="."]
+margin_top = 24.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 split_tree_root_node = SubResource( 1 )
 
-[node name="Control" type="ColorRect" parent="."]
+[node name="Control" type="ColorRect" parent="TestScene"]
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 596.0
+margin_bottom = 572.0
 
-[node name="Control1" type="ColorRect" parent="."]
+[node name="Control1" type="ColorRect" parent="TestScene"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 596.0
+margin_bottom = 572.0
 color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
-[node name="Control2" type="ColorRect" parent="."]
+[node name="Control2" type="ColorRect" parent="TestScene"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 596.0
+margin_bottom = 572.0
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
-[node name="Control3" type="ColorRect" parent="."]
+[node name="Control3" type="ColorRect" parent="TestScene"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 596.0
+margin_bottom = 572.0
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
-[node name="Control4" type="ColorRect" parent="."]
+[node name="Control4" type="ColorRect" parent="TestScene"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 596.0
+margin_bottom = 572.0
 color = Color( 0.129412, 0.121569, 0.121569, 1 )

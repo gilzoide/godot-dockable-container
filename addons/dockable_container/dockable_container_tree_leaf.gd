@@ -29,13 +29,12 @@ func empty() -> bool:
 
 
 func _ensure_indices_in_range(data: Dictionary):
-	var from = data.from
-	var to = data.to
+	var indices = data.indices
 	var i = 0
 	var removed_once = false
 	while i < nodes.size():
 		var current = nodes[i]
-		if current < from or current > to or data.has(current):
+		if not current in indices or data.has(current):
 			nodes.remove(i)
 			removed_once = true
 		else:
