@@ -33,7 +33,8 @@ func track_nodes(nodes: Array, new_leaf) -> void:
 		ref_control.reference_to = nodes[i]
 		set_tab_title(i, nodes[i].name)
 	set_leaf(new_leaf)
-	current_tab = new_leaf.current_tab
+	if get_tab_count() > 0:
+		current_tab = new_leaf.current_tab
 
 
 func get_child_rect() -> Rect2:

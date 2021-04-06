@@ -9,5 +9,8 @@ currently selected.
 
 
 ## TODO
+- Document how to use
+- Respect minimum size of panels
+- Web build on GitHub pages and link here on README
 - Add custom editor for layout Resources
 
