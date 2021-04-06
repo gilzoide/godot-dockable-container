@@ -3,19 +3,13 @@ extends Control
 
 signal changed()
 
-enum Margin {
-	MARGIN_LEFT,
-	MARGIN_TOP,
-	MARGIN_RIGHT,
-	MARGIN_BOTTOM,
-}
-
 const SPLIT_THEME_CLASS = [
 	"HSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_LEFT]
 	"VSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_TOP]
 	"HSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_RIGHT]
 	"VSplitContainer",  # SPLIT_THEME_CLASS[MARGIN_BOTTOM]
 ]
+
 const SPLIT_MOUSE_CURSOR_SHAPE = [
 	Control.CURSOR_HSPLIT,
 	Control.CURSOR_VSPLIT,

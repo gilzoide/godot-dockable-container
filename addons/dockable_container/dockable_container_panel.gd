@@ -3,7 +3,7 @@ extends TabContainer
 
 signal control_moved(control)
 
-const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
+const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_container_reference_control.gd")
 const DockableContainerTreeLeaf = preload("res://addons/dockable_container/dockable_container_tree_leaf.gd")
 
 var leaf: DockableContainerTreeLeaf setget set_leaf, get_leaf

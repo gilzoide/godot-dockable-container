@@ -3,7 +3,7 @@ extends Container
 
 const DockableContainerSplit = preload("res://addons/dockable_container/dockable_container_split.gd")
 const DockableContainerPanel = preload("res://addons/dockable_container/dockable_container_panel.gd")
-const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_reference_control.gd")
+const DockableContainerReferenceControl = preload("res://addons/dockable_container/dockable_container_reference_control.gd")
 const DockableContainerDragDrawer = preload("res://addons/dockable_container/dockable_container_drag_drawer.gd")
 const DockableContainerTreeNode = preload("res://addons/dockable_container/dockable_container_tree.gd")
 const DockableContainerTreeRoot = preload("res://addons/dockable_container/dockable_container_tree_root.gd")

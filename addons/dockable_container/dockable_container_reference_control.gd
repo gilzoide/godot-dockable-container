@@ -1,4 +1,7 @@
 extends Control
+"""
+Control that mimics its own visibility and rect into another Control.
+"""
 
 signal moved_in_parent(control)
 
@@ -18,7 +21,6 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	disconnect("item_rect_changed", self, "_on_rect_changed")
-
 
 
 func _notification(what: int) -> void:
