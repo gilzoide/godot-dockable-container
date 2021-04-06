@@ -61,11 +61,12 @@ func get_split() -> int:
 	return _split
 
 
-func set_percent(value: float) -> void:
+func set_percent(value: float, emit_changed = true) -> void:
 	var clamped_value = clamp(value, 0, 1)
 	if not is_equal_approx(_percent, clamped_value):
 		_percent = clamped_value
-		emit_signal("changed")
+		if emit_changed:
+			emit_signal("changed")
 
 
 func get_percent() -> float:
