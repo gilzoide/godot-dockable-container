@@ -90,19 +90,18 @@ func _remove_leaf(leaf) -> void:
 		root_branch.first = kept_branch
 	else:
 		root_branch.second = kept_branch
-	
 
 
 func _print_tree() -> void:
 	print("TREE")
-	_print_tree_step(_root, 0)
+	_print_tree_step(_root, 0, 0)
 	print("")
 
 
-func _print_tree_step(tree_or_leaf, level) -> void:
+func _print_tree_step(tree_or_leaf, level, idx) -> void:
 	if tree_or_leaf is DockableContainerTreeLeaf:
-		print("  ".repeat(level), "+ ", tree_or_leaf.nodes)
+		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.nodes)
 	else:
-		print("  ".repeat(level + 1), "\\ ", tree_or_leaf.split, " ", tree_or_leaf.percent)
-		_print_tree_step(tree_or_leaf.first, level + 1)
-		_print_tree_step(tree_or_leaf.second, level + 1)
+		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.split, " ", tree_or_leaf.percent)
+		_print_tree_step(tree_or_leaf.first, level + 1, 1)
+		_print_tree_step(tree_or_leaf.second, level + 1, 2)

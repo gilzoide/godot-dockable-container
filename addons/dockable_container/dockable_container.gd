@@ -81,8 +81,8 @@ func _resort() -> void:
 	_current_panel_index = 1
 	_current_split_index = 0
 	_set_tree_or_leaf_rect(_split_tree.root, rect)
-	_untrack_children_after(_panel_container, _current_panel_index + 1)
-	_untrack_children_after(_split_container, _current_split_index + 1)
+	_untrack_children_after(_panel_container, _current_panel_index)
+	_untrack_children_after(_split_container, _current_split_index)
 
 
 func _set_tree_or_leaf_rect(tree_or_leaf: DockableContainerTreeNode, rect: Rect2) -> void:
