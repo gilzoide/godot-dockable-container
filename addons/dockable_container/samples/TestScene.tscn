@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id=1]
 resource_name = "Leaf"
 script = ExtResource( 2 )
-nodes = PoolIntArray( 1, 2, 3, 4, 5 )
+nodes = PoolIntArray(  )
 current_tab = 0
 
 [node name="SampleScene" type="VBoxContainer"]

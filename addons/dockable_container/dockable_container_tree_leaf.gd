@@ -6,8 +6,8 @@ export(int) var current_tab: int setget set_current_tab, get_current_tab
 var _current_tab: int = 0
 
 
-func _init(nodes_ = []) -> void:
-	nodes = PoolIntArray(nodes_)
+func _init(new_nodes = []) -> void:
+	nodes = PoolIntArray(new_nodes)
 	resource_name = "Leaf"
 
 
@@ -43,7 +43,7 @@ func set_current_tab(value: int) -> void:
 
 
 func get_current_tab() -> int:
-	return _current_tab
+	return int(clamp(_current_tab, 0, nodes.size() - 1))
 
 
 func _ensure_indices_in_range(data: Dictionary):
