@@ -10,6 +10,7 @@ const DockableContainerTreeRoot = preload("res://addons/dockable_container/docka
 const DockableContainerTreeBranch = preload("res://addons/dockable_container/dockable_container_tree_branch.gd")
 const DockableContainerTreeLeaf = DockableContainerTreeBranch.Leaf
 
+export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER
 export(int) var rearrange_group = 0
 export(Resource) var split_tree_root_node setget set_split_tree_root_node, get_split_tree_root_node
 
@@ -182,6 +183,7 @@ func _get_panel(idx: int) -> DockableContainerPanel:
 	if idx < _panel_container.get_child_count():
 		return _panel_container.get_child(idx)
 	var panel = DockableContainerPanel.new()
+	panel.tab_align = tab_align
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
 	panel.connect("control_moved", self, "_on_reference_control_moved")
