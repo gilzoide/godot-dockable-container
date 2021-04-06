@@ -170,14 +170,12 @@ static func _untrack_children_after(node, idx: int) -> void:
 func _on_reference_control_moved(control: Control) -> void:
 	var panel = control.get_parent_control()
 	assert(panel is DockableContainerPanel, "FIXME: reference control was moved to something other than DockableContainerPanel")
+	
 	if panel.get_child_count() <= 1:
 		return
-	var position_in_parent = control.get_position_in_parent()
-	if position_in_parent == 0:
-		var next = panel.get_child(position_in_parent + 1)
-		assert(next is DockableContainerReferenceControl, "FIXME")
-		move_child(control.reference_to, next.reference_to.get_position_in_parent())
-	else:
-		var previous = panel.get_child(position_in_parent - 1)
-		assert(previous is DockableContainerReferenceControl, "FIXME")
-		move_child(control.reference_to, previous.reference_to.get_position_in_parent() + 1)
+	
+	var position_in_parent = control.reference_to.get_position_in_parent()
+	var relative_position_in_leaf = control.get_position_in_parent()
+	_split_tree.move_node_to_leaf(position_in_parent, panel.leaf, relative_position_in_leaf)
+	
+	queue_sort()

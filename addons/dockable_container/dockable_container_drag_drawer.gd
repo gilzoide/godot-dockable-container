@@ -10,6 +10,8 @@ var _hover_margin = MARGIN_NONE
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_EXIT:
 		_hover_margin = MARGIN_NONE
+	elif what == NOTIFICATION_DRAG_BEGIN:
+		_hover_margin = MARGIN_NONE
 
 
 func _gui_input(event: InputEvent) -> void:

@@ -20,20 +20,20 @@ split_tree_root_node = SubResource( 1 )
 [node name="Control" type="ColorRect" parent="."]
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 502.0
+margin_right = 1020.0
 margin_bottom = 596.0
 
 [node name="Control1" type="ColorRect" parent="."]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 502.0
+margin_right = 1020.0
 margin_bottom = 596.0
 color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
 [node name="Control2" type="ColorRect" parent="."]
 visible = false
-margin_left = 522.0
+margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 596.0
@@ -41,7 +41,7 @@ color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
 [node name="Control3" type="ColorRect" parent="."]
 visible = false
-margin_left = 522.0
+margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 596.0
@@ -51,6 +51,6 @@ color = Color( 0.741176, 0.188235, 0.188235, 1 )
 visible = false
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 502.0
+margin_right = 1020.0
 margin_bottom = 596.0
 color = Color( 0.129412, 0.121569, 0.121569, 1 )

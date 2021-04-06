@@ -12,6 +12,10 @@ func push_node(parent_index: int) -> void:
 	nodes.append(parent_index)
 
 
+func insert_node(position: int, parent_index: int) -> void:
+	nodes.insert(position, parent_index)
+
+
 func remove_node(parent_index: int) -> void:
 	for i in nodes.size():
 		if nodes[i] == parent_index:

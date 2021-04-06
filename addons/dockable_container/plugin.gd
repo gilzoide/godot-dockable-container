@@ -6,8 +6,8 @@ const DockableContainerTreeBranch = preload("res://addons/dockable_container/doc
 
 func _enter_tree() -> void:
 	add_custom_type("DockableContainerTreeNode", "Resource", DockableContainerTree, null)
-	add_custom_type("DockableContainerBranch", "DockableContainerTree", DockableContainerTreeBranch, null)
-	add_custom_type("DockableContainerLeaf", "DockableContainerTree", DockableContainerTreeBranch.Leaf, null)
+	add_custom_type("DockableContainerBranch", "DockableContainerTreeNode", DockableContainerTreeBranch, null)
+	add_custom_type("DockableContainerLeaf", "DockableContainerTreeNode", DockableContainerTreeBranch.Leaf, null)
 
 
 func _exit_tree() -> void:

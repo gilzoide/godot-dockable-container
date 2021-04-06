@@ -46,6 +46,17 @@ func ensure_indices_in_range(from: int, to: int):
 			data[i] = first
 
 
+func move_node_to_leaf(node_index: int, leaf, relative_position: int) -> void:
+	var previous_leaf = data[node_index]
+	previous_leaf.remove_node(node_index)
+	if previous_leaf.empty():
+		# TODO: merge parent branch
+		pass
+	
+	leaf.insert_node(relative_position, node_index)
+	data[node_index] = leaf
+
+
 func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
 	var previous_leaf = data[node_index]
 	previous_leaf.remove_node(node_index)
@@ -67,16 +78,20 @@ func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
 	new_branch.first = leaf
 	new_branch.second = new_leaf
 	data[node_index] = new_leaf
-	print("TREE")
-	_print_tree(_root, 0)
-	print("")
+	_print_tree()
 	emit_changed()
 
 
-func _print_tree(tree_or_leaf, level) -> void:
+func _print_tree() -> void:
+	print("TREE")
+	_print_tree_step(_root, 0)
+	print("")
+
+
+func _print_tree_step(tree_or_leaf, level) -> void:
 	if tree_or_leaf is DockableContainerTreeLeaf:
 		print("  ".repeat(level), "+ ", tree_or_leaf.nodes)
 	else:
 		print("  ".repeat(level + 1), "\\ ", tree_or_leaf.split, " ", tree_or_leaf.percent)
-		_print_tree(tree_or_leaf.first, level + 1)
-		_print_tree(tree_or_leaf.second, level + 1)
+		_print_tree_step(tree_or_leaf.first, level + 1)
+		_print_tree_step(tree_or_leaf.second, level + 1)
