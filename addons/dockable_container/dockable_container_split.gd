@@ -25,6 +25,7 @@ const SPLIT_MOUSE_CURSOR_SHAPE = [
 
 var split_tree setget set_split_tree, get_split_tree
 
+var _parent_rect
 var _split_tree
 var _mouse_hovering = false
 var _dragging = false
@@ -44,7 +45,7 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		_dragging = event.is_pressed()
 	elif event is InputEventMouseMotion and _dragging:
-		var size = get_parent_control().rect_size
+		var size = _parent_rect.size
 		if _split_tree.is_horizontal():
 			_split_tree.set_percent((rect_position.x + event.position.x) / size.x)
 		else:
@@ -82,6 +83,7 @@ func set_split_cursor(value: bool) -> void:
 
 
 func get_split_rects(rect: Rect2) -> Dictionary:
+	_parent_rect = rect
 	var separation = get_constant("separation", SPLIT_THEME_CLASS[_split_tree.split])
 	var origin = rect.position
 	var size = rect.size
