@@ -9,3 +9,4 @@ func _pressed() -> void:
 	control.color = Color(randf(), randf(), randf())
 	control.name = "Control"
 	_container.add_child(control, true)
+	_container.call_deferred("set_control_as_current_tab", control)

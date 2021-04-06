@@ -56,6 +56,10 @@ func move_node_to_leaf(node_index: int, leaf, relative_position: int) -> void:
 	emit_changed()
 
 
+func get_leaf_for_node(node_index: int):
+	return data.get(node_index)
+
+
 func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
 	var root_branch = leaf.parent
 	var new_leaf = DockableContainerTreeLeaf.new()

@@ -8,20 +8,27 @@ func _init(nodes_ = []) -> void:
 	resource_name = "Leaf"
 
 
-func push_node(parent_index: int) -> void:
-	nodes.append(parent_index)
+func push_node(node_index: int) -> void:
+	nodes.append(node_index)
 
 
-func insert_node(position: int, parent_index: int) -> void:
-	nodes.insert(position, parent_index)
+func insert_node(position: int, node_index: int) -> void:
+	nodes.insert(position, node_index)
 
 
-func remove_node(parent_index: int) -> void:
+func find_node(node_index: int) -> int:
 	for i in nodes.size():
-		if nodes[i] == parent_index:
-			nodes.remove(i)
-			return
-	assert(false, "Remove failed, node %d was not found" % parent_index)
+		if nodes[i] == node_index:
+			return i
+	return -1
+
+
+func remove_node(node_index: int) -> void:
+	var i = find_node(node_index)
+	if i >= 0:
+		nodes.remove(i)
+	else:
+		assert(false, "Remove failed, node %d was not found" % node_index)
 
 
 func empty() -> bool:

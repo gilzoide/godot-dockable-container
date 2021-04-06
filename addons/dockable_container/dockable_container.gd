@@ -101,6 +101,26 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	queue_sort()
 
 
+func set_control_as_current_tab(control: Control) -> void:
+	assert(control.get_parent_control() == self, "Trying to focus a control not managed by this container")
+	var position_in_parent = control.get_position_in_parent()
+	var leaf = _split_tree.get_leaf_for_node(position_in_parent)
+	if not leaf:
+		return
+	var position_in_leaf = leaf.find_node(position_in_parent)
+	if position_in_leaf < 0:
+		return
+	var panel
+	for i in range(1, _panel_container.get_child_count()):
+		var p = _panel_container.get_child(i)
+		if p.leaf == leaf:
+			panel = p
+			break
+	if not panel:
+		return
+	panel.current_tab = position_in_leaf
+
+
 func _update_tree_indices() -> void:
 	var indices = PoolIntArray()
 	for i in range(1, get_child_count() - 1):
