@@ -2,7 +2,7 @@
 
 [ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=1]
 [ext_resource path="res://addons/dockable_container/dockable_container_tree_leaf.gd" type="Script" id=2]
-[ext_resource path="res://addons/dockable_container/samples/AddControlButton.gd" type="Script" id=3]
+[ext_resource path="res://addons/dockable_container/samples/TestScene.gd" type="Script" id=4]
 
 [sub_resource type="Resource" id=1]
 resource_name = "Leaf"
@@ -10,23 +10,45 @@ script = ExtResource( 2 )
 nodes = PoolIntArray( 1, 2, 3, 4, 5 )
 current_tab = 0
 
-[node name="Control6" type="VBoxContainer"]
+[node name="SampleScene" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" type="Button" parent="."]
-margin_right = 127.0
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 20.0
+custom_constants/separation = 16
+alignment = 1
+
+[node name="AddControlButton" type="Button" parent="HBoxContainer"]
+margin_left = 345.0
+margin_right = 472.0
 margin_bottom = 20.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "(+) ADD CONTROL"
-script = ExtResource( 3 )
-container_path = NodePath("../TestScene")
 
-[node name="TestScene" type="Container" parent="."]
+[node name="SaveLayoutButton" type="Button" parent="HBoxContainer"]
+margin_left = 488.0
+margin_right = 575.0
+margin_bottom = 20.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Save Layout"
+
+[node name="LoadLayoutButton" type="Button" parent="HBoxContainer"]
+margin_left = 591.0
+margin_right = 679.0
+margin_bottom = 20.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Load Layout"
+
+[node name="DockableContainer" type="Container" parent="."]
 margin_top = 24.0
 margin_right = 1024.0
 margin_bottom = 600.0
@@ -38,13 +60,13 @@ __meta__ = {
 }
 split_tree_root_node = SubResource( 1 )
 
-[node name="Control" type="ColorRect" parent="TestScene"]
+[node name="Control" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
 
-[node name="Control1" type="ColorRect" parent="TestScene"]
+[node name="Control1" type="ColorRect" parent="DockableContainer"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
@@ -52,7 +74,7 @@ margin_right = 1020.0
 margin_bottom = 572.0
 color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
-[node name="Control2" type="ColorRect" parent="TestScene"]
+[node name="Control2" type="ColorRect" parent="DockableContainer"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
@@ -60,7 +82,7 @@ margin_right = 1020.0
 margin_bottom = 572.0
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
-[node name="Control3" type="ColorRect" parent="TestScene"]
+[node name="Control3" type="ColorRect" parent="DockableContainer"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
@@ -68,10 +90,14 @@ margin_right = 1020.0
 margin_bottom = 572.0
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
-[node name="Control4" type="ColorRect" parent="TestScene"]
+[node name="Control4" type="ColorRect" parent="DockableContainer"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
 color = Color( 0.129412, 0.121569, 0.121569, 1 )
+
+[connection signal="pressed" from="HBoxContainer/AddControlButton" to="." method="_on_add_pressed"]
+[connection signal="pressed" from="HBoxContainer/SaveLayoutButton" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="HBoxContainer/LoadLayoutButton" to="." method="_on_load_pressed"]

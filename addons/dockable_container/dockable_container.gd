@@ -74,10 +74,14 @@ func set_split_tree_root_node(value: DockableContainerTreeNode) -> void:
 	else:
 		_split_tree_root_node = value
 	_split_tree.root = _split_tree_root_node
+	_update_tree_indices()
 
 
 func get_split_tree_root_node() -> DockableContainerTreeNode:
-	return _split_tree_root_node
+	if Engine.editor_hint:
+		return _split_tree_root_node
+	else:
+		return _split_tree.root
 
 
 func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
@@ -128,6 +132,7 @@ func _update_tree_indices() -> void:
 		if c is Control and not c.is_set_as_toplevel():
 			indices.append(i)
 	_split_tree.update_indices(indices)
+	queue_sort()
 
 
 func _resort() -> void:
