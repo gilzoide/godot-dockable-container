@@ -27,6 +27,6 @@ func _on_save_pressed() -> void:
 func _on_load_pressed() -> void:
 	var res = load(SAVED_LAYOUT_PATH)
 	if res:
-		_container.set_layout(res)
+		_container.set_layout(res.clone())
 	else:
 		print("Error")

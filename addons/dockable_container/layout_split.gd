@@ -26,6 +26,15 @@ func _init() -> void:
 	resource_name = "Split"
 
 
+func clone():
+	var new_split = get_script().new()
+	new_split._split = _split
+	new_split._percent = _percent
+	new_split.first = _first.clone()
+	new_split.second = _second.clone()
+	return new_split
+
+
 func set_first(value) -> void:
 	if value == null:
 		_first = LayoutPanel.new()

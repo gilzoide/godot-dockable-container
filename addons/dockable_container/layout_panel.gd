@@ -15,6 +15,13 @@ func _init(new_nodes = []) -> void:
 	resource_name = "Tabs"
 
 
+func clone():
+	var new_panel = get_script().new()
+	new_panel.nodes = nodes
+	new_panel._current_tab = _current_tab
+	return new_panel
+
+
 func push_node(node_index: int) -> void:
 	nodes.append(node_index)
 
