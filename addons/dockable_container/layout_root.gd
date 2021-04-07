@@ -1,17 +1,28 @@
 extends Resource
 
+#signal changed()
+signal root_changed()
+
 const Layout = preload("res://addons/dockable_container/layout.gd")
 
+export(Resource) var root = Layout.LayoutPanel.new() setget set_root, get_root
 var parent setget , get_parent
-var root setget set_root, get_root
 var data: Dictionary
 
 var _root: Layout.LayoutNode
 
 
-func set_root(value: Layout.LayoutNode) -> void:
+func _init() -> void:
+	resource_name = "LayoutRoot"
+
+
+func set_root(value: Layout.LayoutNode, should_emit_changed = true) -> void:
+	if not value:
+		value = Layout.LayoutPanel.new()
 	_root = value
 	_root.parent = self
+	if should_emit_changed:
+		emit_changed()
 
 
 func get_root() -> Layout.LayoutNode:
@@ -72,6 +83,10 @@ func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
 		root_branch.second = new_branch
 	
 	move_node_to_leaf(node_index, new_leaf, 0)
+
+
+#func emit_changed() -> void:
+#	emit_signal("changed")
 
 
 func _remove_leaf(leaf) -> void:

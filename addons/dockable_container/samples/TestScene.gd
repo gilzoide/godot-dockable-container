@@ -20,13 +20,13 @@ func _on_add_pressed() -> void:
 
 
 func _on_save_pressed() -> void:
-	if ResourceSaver.save(SAVED_LAYOUT_PATH, _container.split_tree_root_node) != OK:
+	if ResourceSaver.save(SAVED_LAYOUT_PATH, _container.get_layout()) != OK:
 		print("ERROR")
 
 
 func _on_load_pressed() -> void:
 	var res = load(SAVED_LAYOUT_PATH)
 	if res:
-		_container.split_tree_root_node = res
+		_container.set_layout(res)
 	else:
 		print("Error")
