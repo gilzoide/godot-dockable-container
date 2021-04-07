@@ -1,22 +1,20 @@
 extends Resource
 
-const DockableContainerTreeNode = preload("res://addons/dockable_container/dockable_container_tree.gd")
-const DockableContainerTreeBranch = preload("res://addons/dockable_container/dockable_container_tree_branch.gd")
-const DockableContainerTreeLeaf = preload("res://addons/dockable_container/dockable_container_tree_leaf.gd")
+const Layout = preload("res://addons/dockable_container/layout.gd")
 
 var parent setget , get_parent
 var root setget set_root, get_root
 var data: Dictionary
 
-var _root: DockableContainerTreeNode
+var _root: Layout.LayoutNode
 
 
-func set_root(value: DockableContainerTreeNode) -> void:
+func set_root(value: Layout.LayoutNode) -> void:
 	_root = value
 	_root.parent = self
 
 
-func get_root() -> DockableContainerTreeNode:
+func get_root() -> Layout.LayoutNode:
 	return _root
 
 
@@ -61,8 +59,8 @@ func get_leaf_for_node(node_index: int):
 
 func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
 	var root_branch = leaf.parent
-	var new_leaf = DockableContainerTreeLeaf.new()
-	var new_branch = DockableContainerTreeBranch.new()
+	var new_leaf = Layout.LayoutPanel.new()
+	var new_branch = Layout.LayoutSplit.new()
 	new_branch.split = margin
 	new_branch.first = leaf
 	new_branch.second = new_leaf
@@ -81,7 +79,7 @@ func _remove_leaf(leaf) -> void:
 	var collapsed_branch = leaf.parent
 	if collapsed_branch == self:
 		return
-	assert(collapsed_branch is DockableContainerTreeBranch, "FIXME: leaf is not a child of branch")
+	assert(collapsed_branch is Layout.LayoutSplit, "FIXME: leaf is not a child of branch")
 	var kept_branch = collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
 	var root_branch = collapsed_branch.parent
 	if root_branch == self:
@@ -99,7 +97,7 @@ func _print_tree() -> void:
 
 
 func _print_tree_step(tree_or_leaf, level, idx) -> void:
-	if tree_or_leaf is DockableContainerTreeLeaf:
+	if tree_or_leaf is Layout.LayoutPanel:
 		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.nodes)
 	else:
 		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.split, " ", tree_or_leaf.percent)

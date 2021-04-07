@@ -1,14 +1,15 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=1]
-[ext_resource path="res://addons/dockable_container/dockable_container_tree_leaf.gd" type="Script" id=2]
 [ext_resource path="res://addons/dockable_container/samples/TestScene.gd" type="Script" id=4]
 
-[sub_resource type="Resource" id=1]
-resource_name = "Leaf"
-script = ExtResource( 2 )
+[sub_resource type="GDScript" id=1]
+
+[sub_resource type="Resource" id=2]
+resource_name = "Tabs"
+script = SubResource( 1 )
 nodes = PoolIntArray(  )
-current_tab = 0
+current_tab = -1
 
 [node name="SampleScene" type="VBoxContainer"]
 anchor_right = 1.0
@@ -58,7 +59,7 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-split_tree_root_node = SubResource( 1 )
+layout = SubResource( 2 )
 
 [node name="Control" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0

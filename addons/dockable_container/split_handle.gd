@@ -1,4 +1,3 @@
-tool
 extends Control
 
 signal changed()
@@ -11,10 +10,10 @@ const SPLIT_THEME_CLASS = [
 ]
 
 const SPLIT_MOUSE_CURSOR_SHAPE = [
-	Control.CURSOR_HSPLIT,
-	Control.CURSOR_VSPLIT,
-	Control.CURSOR_HSPLIT,
-	Control.CURSOR_VSPLIT,
+	Control.CURSOR_HSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[MARGIN_LEFT]
+	Control.CURSOR_VSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[MARGIN_TOP]
+	Control.CURSOR_HSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[MARGIN_RIGHT]
+	Control.CURSOR_VSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[MARGIN_BOTTOM]
 ]
 
 var split_tree setget set_split_tree, get_split_tree

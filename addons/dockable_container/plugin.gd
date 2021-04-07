@@ -1,16 +1,18 @@
 tool
 extends EditorPlugin
 
-const DockableContainerTree = preload("res://addons/dockable_container/dockable_container_tree.gd")
-const DockableContainerTreeBranch = preload("res://addons/dockable_container/dockable_container_tree_branch.gd")
+const Layout = preload("res://addons/dockable_container/layout.gd")
+const LayoutInspectorPlugin = preload("res://addons/dockable_container/inspector_plugin/editor_inspector_plugin.gd")
+
+var _layout_inspector_plugin = LayoutInspectorPlugin.new()
 
 func _enter_tree() -> void:
-	add_custom_type("DockableContainerTreeNode", "Resource", DockableContainerTree, null)
-	add_custom_type("DockableContainerBranch", "DockableContainerTreeNode", DockableContainerTreeBranch, null)
-	add_custom_type("DockableContainerLeaf", "DockableContainerTreeNode", DockableContainerTreeBranch.Leaf, null)
+	add_custom_type("DockableContainerLayoutPanel", "Resource", Layout.LayoutPanel, null)
+	add_custom_type("DockableContainerLayoutSplit", "Resource", Layout.LayoutSplit, null)
+	add_inspector_plugin(_layout_inspector_plugin)
 
 
 func _exit_tree() -> void:
-	remove_custom_type("DockableContainerLeaf")
-	remove_custom_type("DockableContainerBranch")
-	remove_custom_type("DockableContainerTreeNode")
+	remove_inspector_plugin(_layout_inspector_plugin)
+	remove_custom_type("DockableContainerLayoutSplit")
+	remove_custom_type("DockableContainerLayoutPanel")
