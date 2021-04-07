@@ -1,3 +1,4 @@
+tool
 extends TabContainer
 
 signal control_moved(control)

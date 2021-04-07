@@ -1,3 +1,4 @@
+tool
 extends Control
 
 signal changed()
@@ -88,7 +89,7 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 	if _split_tree.is_horizontal():
 		var first_width = max((size.x - separation) * percent, first_minimum_size.x)
 		var split_offset = clamp(size.x * percent - separation * 0.5, first_minimum_size.x, size.x - second_minimum_size.x - separation)
-		var second_width = size.x - split_offset + separation
+		var second_width = size.x - split_offset - separation
 		
 		var left = Rect2(origin.x, origin.y, split_offset, size.y)
 		var right = Rect2(split_offset + separation, origin.y, second_width, size.y)
@@ -100,7 +101,7 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 	else:
 		var first_height = max((size.y - separation) * percent, first_minimum_size.y)
 		var split_offset = clamp(size.y * percent - separation * 0.5, first_minimum_size.y, size.y - second_minimum_size.y - separation)
-		var second_height = size.y - split_offset + separation
+		var second_height = size.y - split_offset - separation
 		
 		var top = Rect2(origin.x, origin.y, size.x, split_offset)
 		var bottom = Rect2(origin.x, split_offset + separation, size.x, second_height)

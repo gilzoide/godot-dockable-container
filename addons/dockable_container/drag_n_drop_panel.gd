@@ -1,3 +1,4 @@
+tool
 extends Control
 
 const MARGIN_NONE = -1

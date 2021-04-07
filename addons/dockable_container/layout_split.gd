@@ -1,3 +1,4 @@
+tool
 extends "res://addons/dockable_container/layout_node.gd"
 """Layout binary tree nodes, defining subtrees and leaf panels"""
 

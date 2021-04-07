@@ -1,3 +1,4 @@
+tool
 extends Resource
 """Base class for Layout tree nodes"""
 

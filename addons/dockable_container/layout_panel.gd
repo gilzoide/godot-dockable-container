@@ -1,3 +1,4 @@
+tool
 extends "res://addons/dockable_container/layout_node.gd"
 """Layout leaf nodes, defining tabs"""
 

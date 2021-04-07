@@ -1,3 +1,4 @@
+tool
 extends Control
 """
 Control that mimics its own visibility and rect into another Control.
