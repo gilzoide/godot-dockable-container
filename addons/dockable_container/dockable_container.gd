@@ -228,7 +228,7 @@ func _on_reference_control_moved(control: Control) -> void:
 
 
 func _on_panel_tab_changed(tab: int, panel: DockablePanel) -> void:
-	if not panel.leaf:
+	if not panel.leaf or panel.leaf.nodes.empty():
 		return
 	var child_index = panel.leaf.nodes[tab]
 	emit_signal("child_tab_selected", child_index)
