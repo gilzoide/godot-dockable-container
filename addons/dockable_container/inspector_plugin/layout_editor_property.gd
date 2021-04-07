@@ -44,4 +44,4 @@ func _on_layout_changed() -> void:
 func update_property() -> void:
 	var original_container: DockableContainer = get_edited_object()
 	_container.set(get_edited_property(), original_container.get(get_edited_property()))
-	original_container.call_deferred("queue_sort")
+	original_container.queue_sort()

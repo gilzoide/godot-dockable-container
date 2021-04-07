@@ -8,7 +8,7 @@ func can_handle(object: Object) -> bool:
 
 
 func parse_property(object: Object, type: int, path: String, hint: int, hint_text: String, usage: int) -> bool:
-	if path == 'layout_root':
+	if path == "layout_root":
 		var editor_property = LayoutEditorProperty.new()
 		add_property_editor("layout_root", editor_property)
 	return false

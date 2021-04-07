@@ -3,8 +3,6 @@ extends Control
 
 const MARGIN_NONE = -1
 
-export(Color) var color = Color(0.2, 0.2, 0.2, 0.9)
-
 var _hover_margin = MARGIN_NONE
 
 
@@ -35,7 +33,8 @@ func _draw() -> void:
 	elif _hover_margin == MARGIN_BOTTOM:
 		var half_height = rect_size.y * 0.5
 		rect = Rect2(0, half_height, rect_size.x, half_height)
-	draw_rect(rect, color)
+	var stylebox = get_stylebox("panel", "TooltipPanel")
+	draw_style_box(stylebox, rect)
 
 
 func get_hover_margin() -> int:

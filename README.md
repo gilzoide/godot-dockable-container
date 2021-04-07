@@ -11,9 +11,9 @@ Child Controls are only moved visually and and have their NodePaths and order ma
 
 
 ## Theming
-Panels are actual TabContainer instances and split handles use VSplitContainer
-and HSplitContainer theme configurations. Tabs alignment and rearrange group
-are exported in DockableContainer.
+Panels are actual TabContainer instances, split handles use VSplitContainer and
+HSplitContainer theme configurations, drop preview uses TooltipPanel `panel` StyleBox.
+Tabs alignment and rearrange group are exported in DockableContainer.
 
 
 ## TODO
