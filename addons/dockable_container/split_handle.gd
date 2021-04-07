@@ -92,10 +92,10 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 		var second_width = size.x - split_offset - separation
 		
 		var left = Rect2(origin.x, origin.y, split_offset, size.y)
-		var right = Rect2(split_offset + separation, origin.y, second_width, size.y)
+		var right = Rect2(origin.x + split_offset + separation, origin.y, second_width, size.y)
 		return {
 			"first": left if _split_tree.split == MARGIN_RIGHT else right,
-			"self": Rect2(split_offset, origin.y, separation, size.y),
+			"self": Rect2(origin.x + split_offset, origin.y, separation, size.y),
 			"second": right if _split_tree.split == MARGIN_RIGHT else left,
 		}
 	else:
@@ -104,9 +104,9 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 		var second_height = size.y - split_offset - separation
 		
 		var top = Rect2(origin.x, origin.y, size.x, split_offset)
-		var bottom = Rect2(origin.x, split_offset + separation, size.x, second_height)
+		var bottom = Rect2(origin.x, origin.y + split_offset + separation, size.x, second_height)
 		return {
 			"first": top if _split_tree.split == MARGIN_BOTTOM else bottom,
-			"self": Rect2(origin.x, split_offset, size.x, separation),
+			"self": Rect2(origin.x, origin.y + split_offset, size.x, separation),
 			"second": bottom if _split_tree.split == MARGIN_BOTTOM else top,
 		}
