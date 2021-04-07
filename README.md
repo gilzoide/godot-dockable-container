@@ -19,7 +19,6 @@ are exported in DockableContainer.
 ## TODO
 - Add way to specify icon and custom name for tabs, based on a property or method on children
 - Document how to use
-- Respect minimum size of panels
 - Web build on GitHub pages and link here on README
 - Add custom editor for layout Resources
 

@@ -79,5 +79,14 @@ func is_horizontal() -> bool:
 	return is_horizontal_margin(_split)
 
 
+func get_minimum_size() -> Vector2:
+	var first_minimum_size = _first.get_minimum_size()
+	var second_minimum_size = _second.get_minimum_size()
+	if is_horizontal():
+		return Vector2(first_minimum_size.x + second_minimum_size.x, max(first_minimum_size.y, second_minimum_size.y))
+	else:
+		return Vector2(max(first_minimum_size.x, second_minimum_size.x), first_minimum_size.y + second_minimum_size.y)
+
+
 static func is_horizontal_margin(margin: int) -> bool:
 	return margin == MARGIN_LEFT or margin == MARGIN_RIGHT

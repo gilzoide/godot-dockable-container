@@ -4,6 +4,8 @@ extends "res://addons/dockable_container/layout_node.gd"
 export(PoolIntArray) var nodes = PoolIntArray()
 export(int) var current_tab: int setget set_current_tab, get_current_tab
 
+var minimum_size: Vector2
+
 var _current_tab: int = 0
 
 
@@ -45,6 +47,10 @@ func set_current_tab(value: int) -> void:
 
 func get_current_tab() -> int:
 	return int(clamp(_current_tab, 0, nodes.size() - 1))
+
+
+func get_minimum_size() -> Vector2:
+	return minimum_size
 
 
 func _ensure_indices_in_range(data: Dictionary):

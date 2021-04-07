@@ -41,6 +41,7 @@ func set_reference_to(control: Control) -> void:
 		_reference_to = control
 		_reference_to.connect("renamed", self, "_on_reference_to_renamed")
 		_reference_to.visible = visible
+		rect_min_size = _reference_to.get_combined_minimum_size()
 		_reposition_reference()
 
 
