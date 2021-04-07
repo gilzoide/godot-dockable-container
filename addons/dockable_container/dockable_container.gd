@@ -1,6 +1,8 @@
 tool
 extends Container
 
+signal layout_changed()
+
 const SplitHandle = preload("res://addons/dockable_container/split_handle.gd")
 const DockablePanel = preload("res://addons/dockable_container/dockable_panel.gd")
 const DragNDropPanel = preload("res://addons/dockable_container/drag_n_drop_panel.gd")
@@ -100,6 +102,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	var margin = _drag_n_drop_panel.get_hover_margin()
 	_layout_root.split_leaf_with_node(_drag_panel.leaf, moved_parent_index, margin)
 	
+	emit_signal("layout_changed")
 	queue_sort()
 
 
@@ -214,4 +217,5 @@ func _on_reference_control_moved(control: Control) -> void:
 	var relative_position_in_leaf = control.get_position_in_parent()
 	_layout_root.move_node_to_leaf(position_in_parent, panel.leaf, relative_position_in_leaf)
 	
+	emit_signal("layout_changed")
 	queue_sort()

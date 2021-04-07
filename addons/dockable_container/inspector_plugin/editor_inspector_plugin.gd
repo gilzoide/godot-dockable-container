@@ -6,6 +6,9 @@ const LayoutEditorProperty = preload("res://addons/dockable_container/inspector_
 func can_handle(object: Object) -> bool:
 	return object is DockableContainer
 
-func parse_begin(object: Object) -> void:
-	var editor_property = LayoutEditorProperty.new()
-	add_property_editor("split_tree_root_node", editor_property)
+
+func parse_property(object: Object, type: int, path: String, hint: int, hint_text: String, usage: int) -> bool:
+	if path == 'layout':
+		var editor_property = LayoutEditorProperty.new()
+		add_property_editor("layout", editor_property)
+	return false
