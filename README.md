@@ -10,6 +10,13 @@ currently selected.
 Child Controls are only moved visually and and have their NodePaths and order maintained.
 
 
+## Plugin
+Enable `Dockable Container` plugin at `Project -> Project Settings -> Plugin` to edit
+the layout directly in the inspector!
+
+![](screenshots/video-editor.gif)
+
+
 ## Theming
 Panels are actual TabContainer instances, split handles use VSplitContainer and
 HSplitContainer theme configurations, drop preview uses TooltipPanel `panel` StyleBox.
