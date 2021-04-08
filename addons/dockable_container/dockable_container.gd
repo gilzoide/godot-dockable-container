@@ -10,7 +10,7 @@ const DragNDropPanel = preload("res://addons/dockable_container/drag_n_drop_pane
 const Layout = preload("res://addons/dockable_container/layout.gd")
 const LayoutRoot = preload("res://addons/dockable_container/layout_root.gd")
 
-export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER
+export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
 export(int) var rearrange_group = 0
 export(Resource) var layout_root = LayoutRoot.new()
 
@@ -23,6 +23,7 @@ var _drag_panel: DockablePanel
 var _current_panel_index = 0
 var _current_split_index = 0
 var _last_sort_child_count = 0
+var _tab_align = TabContainer.ALIGN_CENTER
 
 
 func _ready() -> void:
@@ -130,6 +131,17 @@ func get_layout() -> Layout.LayoutNode:
 	return layout_root.root
 
 
+func set_tab_align(tab_align: int) -> void:
+	_tab_align = tab_align
+	for i in range(1, _panel_container.get_child_count()):
+		var panel = _panel_container.get_child(i)
+		panel.tab_align = tab_align
+
+
+func get_tab_align() -> int:
+	return _tab_align
+
+
 func _update_tree_indices() -> void:
 	var indices = PoolIntArray()
 	for i in range(1, get_child_count() - 1):
@@ -188,7 +200,7 @@ func _get_panel(idx: int) -> DockablePanel:
 	if idx < _panel_container.get_child_count():
 		return _panel_container.get_child(idx)
 	var panel = DockablePanel.new()
-	panel.tab_align = tab_align
+	panel.tab_align = _tab_align
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
 	panel.connect("control_moved", self, "_on_reference_control_moved")
