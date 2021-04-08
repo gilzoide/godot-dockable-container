@@ -80,6 +80,10 @@ func get_percent() -> float:
 	return _percent
 
 
+func empty() -> bool:
+	return _first.empty() and _second.empty()
+
+
 func is_horizontal() -> bool:
 	return is_horizontal_margin(_split)
 

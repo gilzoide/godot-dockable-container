@@ -50,11 +50,14 @@ func update_nodes(names: PoolStringArray) -> void:
 		if not _data.has(n):
 			_first_leaf.push_name(n)
 			_data[n] = _first_leaf
+	emit_changed()
 
 
 func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: int) -> void:
 	var node_name = node.name
-	var previous_leaf = _data[node_name]
+	var previous_leaf = _data.get(node_name)
+	if not previous_leaf:
+		return
 	previous_leaf.remove_node(node)
 	if previous_leaf.empty():
 		_remove_leaf(previous_leaf)
@@ -127,14 +130,14 @@ func _get_all_names(node) -> PoolStringArray:
 		names = node.names
 	elif node is Layout.LayoutSplit:
 		names = _get_all_names(node.first)
-		names.append_array(node.second)
+		names.append_array(_get_all_names(node.second))
 	return names
 
 
 func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray) -> void:
 	if node is Layout.LayoutPanel:
 		node.update_nodes(names, _data)
-		if not _first_leaf and not node.empty():
+		if not _first_leaf:
 			_first_leaf = node
 	elif node is Layout.LayoutSplit:
 		_ensure_names_in_node(node.first, names)

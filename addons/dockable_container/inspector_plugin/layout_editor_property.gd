@@ -15,11 +15,13 @@ func _ready() -> void:
 	_container.connect("layout_changed", self, "_on_layout_changed")
 	_container.connect("child_tab_selected", self, "_on_child_tab_selected")
 	
+	var property = get_edited_object().get(get_edited_property())
+	_container.set(get_edited_property(), property)
 	for i in range(1, _container.get_child_count() - 1):
 		var child = _container.get_child(i)
 		_container.remove_child(child)
 		child.queue_free()
-	for n in get_edited_object().get(get_edited_property()).get_all_names():
+	for n in property.get_all_names():
 		var child = _create_child_control(n)
 		_container.add_child(child)
 

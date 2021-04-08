@@ -24,6 +24,7 @@ var _current_panel_index = 0
 var _current_split_index = 0
 var _tab_align = TabContainer.ALIGN_CENTER
 var _children_names = {}
+var _layout_dirty = false
 
 
 func _ready() -> void:
@@ -165,6 +166,7 @@ func _update_layout_with_children() -> void:
 		if _track_node(c):
 			names.append(c.name)
 	layout_root.update_nodes(names)
+	_layout_dirty = false
 	queue_sort()
 
 
@@ -186,7 +188,7 @@ func _track_and_add_node(node: Node) -> void:
 		return
 	if tracked_name and tracked_name != node.name:
 		layout_root.rename_node(tracked_name, node.name)
-	layout_root.add_node(node)
+	_layout_dirty = true
 
 
 func _untrack_node(node: Node) -> void:
@@ -196,7 +198,7 @@ func _untrack_node(node: Node) -> void:
 		node.disconnect("renamed", self, "_on_child_renamed")
 	if node.is_connected("tree_exiting", self, "_untrack_node"):
 		node.disconnect("tree_exiting", self, "_untrack_node")
-	layout_root.remove_node(node)
+	_layout_dirty = true
 
 
 func _resort() -> void:
@@ -205,6 +207,9 @@ func _resort() -> void:
 		move_child(_panel_container, 0)
 	if _drag_n_drop_panel.get_position_in_parent() < get_child_count() - 1:
 		_drag_n_drop_panel.raise()
+	
+	if _layout_dirty:
+		_update_layout_with_children()
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)

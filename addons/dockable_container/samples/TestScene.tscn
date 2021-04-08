@@ -8,8 +8,8 @@
 [sub_resource type="Resource" id=1]
 resource_name = "Tabs"
 script = ExtResource( 5 )
-names = PoolStringArray( "Control", "Control1", "Control2", "Control3", "Control4" )
-current_tab = 3
+names = PoolStringArray(  )
+current_tab = -1
 
 [sub_resource type="Resource" id=2]
 resource_name = "LayoutRoot"
@@ -105,16 +105,14 @@ __meta__ = {
 layout_root = SubResource( 2 )
 
 [node name="Control" type="ColorRect" parent="DockableContainer"]
-visible = false
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 1020.0
+margin_right = 502.0
 margin_bottom = 572.0
 rect_min_size = Vector2( 20, 20 )
 
 [node name="Control1" type="ColorRect" parent="DockableContainer"]
-visible = false
-margin_left = 4.0
+margin_left = 522.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
@@ -123,7 +121,7 @@ color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
 [node name="Control2" type="ColorRect" parent="DockableContainer"]
 visible = false
-margin_left = 4.0
+margin_left = 522.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
@@ -131,7 +129,8 @@ rect_min_size = Vector2( 20, 20 )
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
 [node name="Control3" type="ColorRect" parent="DockableContainer"]
-margin_left = 4.0
+visible = false
+margin_left = 522.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
@@ -140,7 +139,7 @@ color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
 [node name="Control4" type="ColorRect" parent="DockableContainer"]
 visible = false
-margin_left = 4.0
+margin_left = 522.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
