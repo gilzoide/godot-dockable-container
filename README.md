@@ -31,3 +31,6 @@ Tabs alignment and rearrange group are exported in DockableContainer.
 - Document how to use
 - Web build on GitHub pages and link here on README
 
+
+## Credits
+**Dashboard** icon by The Icon Z from the Noun Project: https://thenounproject.com/term/dashboard/3846734
