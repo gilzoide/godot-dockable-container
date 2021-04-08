@@ -91,10 +91,9 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	
 	var moved_tab = from_node.get_tab_control(data.tabc_element)
 	var moved_reference = moved_tab.reference_to
-	var moved_parent_index = moved_reference.get_position_in_parent()
 	
 	var margin = _drag_n_drop_panel.get_hover_margin()
-	layout_root.split_leaf_with_node(_drag_panel.leaf, moved_parent_index, margin)
+	layout_root.split_leaf_with_node(_drag_panel.leaf, moved_reference, margin)
 	
 	emit_signal("layout_changed")
 	queue_sort()
@@ -102,11 +101,10 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 
 func set_control_as_current_tab(control: Control) -> void:
 	assert(control.get_parent_control() == self, "Trying to focus a control not managed by this container")
-	var position_in_parent = control.get_position_in_parent()
-	var leaf = layout_root.get_leaf_for_node(position_in_parent)
+	var leaf = layout_root.get_leaf_for_node(control)
 	if not leaf:
 		return
-	var position_in_leaf = leaf.find_node(position_in_parent)
+	var position_in_leaf = leaf.find_node(control)
 	if position_in_leaf < 0:
 		return
 	var panel
@@ -231,9 +229,8 @@ func _on_reference_control_moved(control: Control) -> void:
 	if panel.get_child_count() <= 1:
 		return
 	
-	var position_in_parent = control.reference_to.get_position_in_parent()
 	var relative_position_in_leaf = control.get_position_in_parent()
-	layout_root.move_node_to_leaf(position_in_parent, panel.leaf, relative_position_in_leaf)
+	layout_root.move_node_to_leaf(control.reference_to, panel.leaf, relative_position_in_leaf)
 	
 	emit_signal("layout_changed")
 	queue_sort()

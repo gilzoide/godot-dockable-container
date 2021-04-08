@@ -12,5 +12,15 @@ func get_root():
 	return last
 
 
+func clone():
+	"""
+	Returns a deep copy of the layout.
+	
+	Use this instead of `Resource.duplicate(true)` to ensure objects have the
+	right script and parenting is correctly set for each node.
+	"""
+	assert("FIXME: implement on child")
+
+
 func _ensure_indices_in_range(data: Dictionary) -> void:
 	assert("FIXME: implement on child")

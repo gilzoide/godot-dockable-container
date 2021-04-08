@@ -26,23 +26,25 @@ func push_node(node_index: int) -> void:
 	nodes.append(node_index)
 
 
-func insert_node(position: int, node_index: int) -> void:
+func insert_node(position: int, node: Node) -> void:
+	var node_index = node.get_position_in_parent()
 	nodes.insert(position, node_index)
 
 
-func find_node(node_index: int) -> int:
+func find_node(node: Node) -> int:
+	var node_index = node.get_position_in_parent()
 	for i in nodes.size():
 		if nodes[i] == node_index:
 			return i
 	return -1
 
 
-func remove_node(node_index: int) -> void:
-	var i = find_node(node_index)
+func remove_node(node: Node) -> void:
+	var i = find_node(node)
 	if i >= 0:
 		nodes.remove(i)
 	else:
-		assert(false, "Remove failed, node %d was not found" % node_index)
+		assert(false, "Remove failed, node '%s' was not found" % node)
 
 
 func empty() -> bool:

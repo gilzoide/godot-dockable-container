@@ -53,23 +53,25 @@ func update_indices(indices) -> void:
 			data[i] = first
 
 
-func move_node_to_leaf(node_index: int, leaf, relative_position: int) -> void:
+func move_node_to_leaf(node: Node, leaf, relative_position: int) -> void:
+	var node_index = node.get_position_in_parent()
 	var previous_leaf = data[node_index]
-	previous_leaf.remove_node(node_index)
+	previous_leaf.remove_node(node)
 	if previous_leaf.empty():
 		_remove_leaf(previous_leaf)
 	
-	leaf.insert_node(relative_position, node_index)
+	leaf.insert_node(relative_position, node)
 	data[node_index] = leaf
 #	_print_tree()
 	emit_changed()
 
 
-func get_leaf_for_node(node_index: int):
-	return data.get(node_index)
+func get_leaf_for_node(node: Node):
+	return data.get(node.get_position_in_parent())
 
 
-func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
+func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
+	var node_index = node.get_position_in_parent()
 	var root_branch = leaf.parent
 	var new_leaf = Layout.LayoutPanel.new()
 	var new_branch = Layout.LayoutSplit.new()
@@ -83,7 +85,7 @@ func split_leaf_with_node(leaf, node_index: int, margin: int) -> void:
 	else:
 		root_branch.second = new_branch
 	
-	move_node_to_leaf(node_index, new_leaf, 0)
+	move_node_to_leaf(node, new_leaf, 0)
 
 
 #func emit_changed() -> void:
