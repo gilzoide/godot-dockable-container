@@ -44,7 +44,6 @@ func get_child_rect() -> Rect2:
 func set_leaf(value: Layout.LayoutPanel) -> void:
 	if _leaf and is_connected("tab_changed", _leaf, "set_current_tab"):
 		disconnect("tab_changed", _leaf, "set_current_tab")
-		_leaf.current_tab = current_tab
 	_leaf = value
 	_leaf.minimum_size = get_combined_minimum_size()
 	connect("tab_changed", _leaf, "set_current_tab")
