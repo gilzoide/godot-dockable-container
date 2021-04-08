@@ -29,12 +29,15 @@ func insert_node(position: int, node: Node) -> void:
 	names.insert(position, node.name)
 
 
-func find_node(node: Node) -> int:
-	var name = node.name
+func find_name(node_name: String) -> int:
 	for i in names.size():
-		if names[i] == name:
+		if names[i] == node_name:
 			return i
 	return -1
+
+
+func find_node(node: Node):
+	return find_name(node.name)
 
 
 func remove_node(node: Node) -> void:
@@ -42,7 +45,15 @@ func remove_node(node: Node) -> void:
 	if i >= 0:
 		names.remove(i)
 	else:
-		assert(false, "Remove failed, node '%s' was not found" % node)
+		push_warning("Remove failed, node '%s' was not found" % node)
+
+
+func rename_node(previous_name: String, new_name: String) -> void:
+	var i = find_name(previous_name)
+	if i >= 0:
+		names.set(i, new_name)
+	else:
+		push_warning("Rename failed, name '%s' was not found" % previous_name)
 
 
 func empty() -> bool:

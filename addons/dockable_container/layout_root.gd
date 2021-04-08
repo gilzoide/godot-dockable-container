@@ -86,6 +86,37 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	move_node_to_leaf(node, new_leaf, 0)
 
 
+func add_node(node: Node) -> void:
+	var node_name = node.name
+	if _data.has(node_name):
+		return
+	_first_leaf.push_name(node_name)
+	_data[node_name] = _first_leaf
+	emit_changed()
+
+
+func remove_node(node: Node) -> void:
+	var node_name = node.name
+	var leaf: Layout.LayoutPanel = _data.get(node_name)
+	if not leaf:
+		return
+	leaf.remove_node(node)
+	_data.erase(node_name)
+	if leaf.empty():
+		_remove_leaf(leaf)
+	emit_changed()
+
+
+func rename_node(previous_name: String, new_name: String) -> void:
+	var leaf = _data.get(previous_name)
+	if not leaf:
+		return
+	leaf.rename_node(previous_name, new_name)
+	_data.erase(previous_name)
+	_data[new_name] = leaf
+	emit_changed()
+
+
 func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray) -> void:
 	if node is Layout.LayoutPanel:
 		node.update_nodes(names, _data)

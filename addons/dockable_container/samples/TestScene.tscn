@@ -1,49 +1,20 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=1]
 [ext_resource path="res://addons/dockable_container/layout_root.gd" type="Script" id=2]
-[ext_resource path="res://addons/dockable_container/layout_split.gd" type="Script" id=3]
 [ext_resource path="res://addons/dockable_container/samples/TestScene.gd" type="Script" id=4]
 [ext_resource path="res://addons/dockable_container/layout_panel.gd" type="Script" id=5]
 
 [sub_resource type="Resource" id=1]
 resource_name = "Tabs"
 script = ExtResource( 5 )
-nodes = PoolIntArray( 1, 2, 3 )
-current_tab = 2
+names = PoolStringArray( "Control", "Control1", "Control2", "Control3", "Control4" )
+current_tab = 3
 
 [sub_resource type="Resource" id=2]
-resource_name = "Tabs"
-script = ExtResource( 5 )
-nodes = PoolIntArray( 5 )
-current_tab = 0
-
-[sub_resource type="Resource" id=3]
-resource_name = "Split"
-script = ExtResource( 3 )
-split = 3
-percent = 0.707031
-first = SubResource( 1 )
-second = SubResource( 2 )
-
-[sub_resource type="Resource" id=4]
-resource_name = "Tabs"
-script = ExtResource( 5 )
-nodes = PoolIntArray( 4 )
-current_tab = 0
-
-[sub_resource type="Resource" id=5]
-resource_name = "Split"
-script = ExtResource( 3 )
-split = 2
-percent = 0.5
-first = SubResource( 3 )
-second = SubResource( 4 )
-
-[sub_resource type="Resource" id=6]
 resource_name = "LayoutRoot"
 script = ExtResource( 2 )
-root = SubResource( 5 )
+root = SubResource( 1 )
 
 [node name="SampleScene" type="VBoxContainer"]
 anchor_right = 1.0
@@ -83,6 +54,44 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Load Layout"
 
+[node name="ControlPrefab" type="ColorRect" parent="HBoxContainer"]
+visible = false
+margin_left = 677.0
+margin_right = 697.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 20 )
+color = Color( 0.129412, 0.121569, 0.121569, 1 )
+
+[node name="Buttons" type="VBoxContainer" parent="HBoxContainer/ControlPrefab"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.5
+margin_top = -22.0
+margin_right = 65.5
+margin_bottom = 22.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rename" type="Button" parent="HBoxContainer/ControlPrefab/Buttons"]
+margin_right = 131.0
+margin_bottom = 20.0
+text = "Rename"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Remove" type="Button" parent="HBoxContainer/ControlPrefab/Buttons"]
+margin_top = 24.0
+margin_right = 131.0
+margin_bottom = 44.0
+text = "REMOVE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="DockableContainer" type="Container" parent="."]
 margin_top = 24.0
 margin_right = 1024.0
@@ -93,21 +102,22 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-layout_root = SubResource( 6 )
+layout_root = SubResource( 2 )
 
 [node name="Control" type="ColorRect" parent="DockableContainer"]
+visible = false
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 502.0
-margin_bottom = 397.25
+margin_right = 1020.0
+margin_bottom = 572.0
 rect_min_size = Vector2( 20, 20 )
 
 [node name="Control1" type="ColorRect" parent="DockableContainer"]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 502.0
-margin_bottom = 397.25
+margin_right = 1020.0
+margin_bottom = 572.0
 rect_min_size = Vector2( 20, 20 )
 color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
@@ -115,13 +125,13 @@ color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 visible = false
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 502.0
-margin_bottom = 397.25
+margin_right = 1020.0
+margin_bottom = 572.0
 rect_min_size = Vector2( 20, 20 )
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
 [node name="Control3" type="ColorRect" parent="DockableContainer"]
-margin_left = 522.0
+margin_left = 4.0
 margin_top = 32.0
 margin_right = 1020.0
 margin_bottom = 572.0
@@ -129,9 +139,10 @@ rect_min_size = Vector2( 20, 20 )
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
 [node name="Control4" type="ColorRect" parent="DockableContainer"]
+visible = false
 margin_left = 4.0
-margin_top = 445.25
-margin_right = 502.0
+margin_top = 32.0
+margin_right = 1020.0
 margin_bottom = 572.0
 rect_min_size = Vector2( 20, 20 )
 color = Color( 0.129412, 0.121569, 0.121569, 1 )

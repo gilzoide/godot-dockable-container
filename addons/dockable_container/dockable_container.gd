@@ -22,7 +22,6 @@ var _drag_n_drop_panel = DragNDropPanel.new()
 var _drag_panel: DockablePanel
 var _current_panel_index = 0
 var _current_split_index = 0
-var _last_sort_child_count = 0
 var _tab_align = TabContainer.ALIGN_CENTER
 var _children_names = {}
 
@@ -30,7 +29,7 @@ var _children_names = {}
 func _ready() -> void:
 	set_process_input(false)
 	_panel_container.name = "_panel_container"
-	add_child(_panel_container)
+	.add_child(_panel_container)
 	move_child(_panel_container, 0)
 	_split_container.name = "_split_container"
 	_split_container.mouse_filter = MOUSE_FILTER_PASS
@@ -40,7 +39,7 @@ func _ready() -> void:
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
 	_drag_n_drop_panel.set_drag_forwarding(self)
 	_drag_n_drop_panel.visible = false
-	add_child(_drag_n_drop_panel)
+	.add_child(_drag_n_drop_panel)
 	
 	if Engine.editor_hint:
 		yield(get_tree(), "idle_frame")
@@ -77,6 +76,23 @@ func _input(event: InputEvent) -> void:
 		if not panel:
 			return
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
+
+
+func add_child(node: Node, legible_unique_name: bool = false) -> void:
+	.add_child(node, legible_unique_name)
+	_drag_n_drop_panel.raise()
+	_track_and_add_node(node)
+
+
+func add_child_below_node(node: Node, child_node: Node, legible_unique_name: bool = false) -> void:
+	.add_child_below_node(node, child_node, legible_unique_name)
+	_drag_n_drop_panel.raise()
+	_track_and_add_node(child_node)
+
+
+func remove_child(node: Node) -> void:
+	.remove_child(node)
+	_untrack_node(node)
 
 
 func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
@@ -146,12 +162,41 @@ func _update_layout_with_children() -> void:
 	_children_names.clear()
 	for i in range(1, get_child_count() - 1):
 		var c = get_child(i)
-		if c is Control and not c.is_set_as_toplevel():
+		if _track_node(c):
 			names.append(c.name)
-			_children_names[c] = c.name
-			_children_names[c.name] = c
 	layout_root.update_nodes(names)
 	queue_sort()
+
+
+func _track_node(node: Node) -> bool:
+	if node == _panel_container or node == _drag_n_drop_panel or not node is Control or node.is_set_as_toplevel():
+		return false
+	_children_names[node] = node.name
+	_children_names[node.name] = node
+	if not node.is_connected("renamed", self, "_on_child_renamed"):
+		node.connect("renamed", self, "_on_child_renamed", [node])
+	if not node.is_connected("tree_exiting", self, "_untrack_node"):
+		node.connect("tree_exiting", self, "_untrack_node", [node])
+	return true
+
+
+func _track_and_add_node(node: Node) -> void:
+	var tracked_name = _children_names.get(node)
+	if not _track_node(node):
+		return
+	if tracked_name and tracked_name != node.name:
+		layout_root.rename_node(tracked_name, node.name)
+	layout_root.add_node(node)
+
+
+func _untrack_node(node: Node) -> void:
+	_children_names.erase(node)
+	_children_names.erase(node.name)
+	if node.is_connected("renamed", self, "_on_child_renamed"):
+		node.disconnect("renamed", self, "_on_child_renamed")
+	if node.is_connected("tree_exiting", self, "_untrack_node"):
+		node.disconnect("tree_exiting", self, "_untrack_node")
+	layout_root.remove_node(node)
 
 
 func _resort() -> void:
@@ -160,10 +205,6 @@ func _resort() -> void:
 		move_child(_panel_container, 0)
 	if _drag_n_drop_panel.get_position_in_parent() < get_child_count() - 1:
 		_drag_n_drop_panel.raise()
-	
-	if get_child_count() != _last_sort_child_count:
-		_last_sort_child_count = get_child_count()
-		_update_layout_with_children()
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
@@ -246,3 +287,13 @@ func _on_panel_tab_changed(tab: int, panel: DockablePanel) -> void:
 	if not panel.leaf or panel.leaf.empty():
 		return
 	emit_signal("child_tab_selected")
+
+
+func _on_child_renamed(child: Node) -> void:
+	var old_name = _children_names.get(child)
+	if not old_name:
+		return
+	_children_names.erase(old_name)
+	_children_names[child] = child.name
+	_children_names[child.name] = child
+	layout_root.rename_node(old_name, child.name)

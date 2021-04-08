@@ -3,6 +3,7 @@ extends VBoxContainer
 const SAVED_LAYOUT_PATH = "user://layout.tres"
 
 onready var _container = $DockableContainer
+onready var _clone_control = $HBoxContainer/ControlPrefab
 
 
 func _ready() -> void:
@@ -12,9 +13,12 @@ func _ready() -> void:
 
 
 func _on_add_pressed() -> void:
-	var control = ColorRect.new()
+	var control = _clone_control.duplicate()
+	control.get_node("Buttons/Rename").connect("pressed", self, "_on_control_rename_button_pressed", [control])
+	control.get_node("Buttons/Remove").connect("pressed", self, "_on_control_remove_button_pressed", [control])
 	control.color = Color(randf(), randf(), randf())
 	control.name = "Control"
+	
 	_container.add_child(control, true)
 	_container.call_deferred("set_control_as_current_tab", control)
 
@@ -30,3 +34,12 @@ func _on_load_pressed() -> void:
 		_container.set_layout(res.clone())
 	else:
 		print("Error")
+
+
+func _on_control_rename_button_pressed(control: Control) -> void:
+	control.name += " =D"
+
+
+func _on_control_remove_button_pressed(control: Control) -> void:
+	_container.remove_child(control)
+	control.queue_free()
