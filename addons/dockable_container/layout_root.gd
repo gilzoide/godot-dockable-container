@@ -117,6 +117,20 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	emit_changed()
 
 
+func get_all_names() -> PoolStringArray:
+	return _get_all_names(_root)
+
+
+func _get_all_names(node) -> PoolStringArray:
+	var names
+	if node is Layout.LayoutPanel:
+		names = node.names
+	elif node is Layout.LayoutSplit:
+		names = _get_all_names(node.first)
+		names.append_array(node.second)
+	return names
+
+
 func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray) -> void:
 	if node is Layout.LayoutPanel:
 		node.update_nodes(names, _data)

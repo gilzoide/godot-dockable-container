@@ -15,15 +15,13 @@ func _ready() -> void:
 	_container.connect("layout_changed", self, "_on_layout_changed")
 	_container.connect("child_tab_selected", self, "_on_child_tab_selected")
 	
-	var original_container: DockableContainer = get_edited_object()
-	for i in range(1, original_container.get_child_count() - 1):
-		var child = original_container.get_child(i)
-		var new_control = Label.new()
-		new_control.name = child.name
-		new_control.align = Label.ALIGN_CENTER
-		new_control.valign = Label.VALIGN_CENTER
-		new_control.text = child.name
-		_container.add_child(new_control)
+	for i in range(1, _container.get_child_count() - 1):
+		var child = _container.get_child(i)
+		_container.remove_child(child)
+		child.queue_free()
+	for n in get_edited_object().get(get_edited_property()).get_all_names():
+		var child = _create_child_control(n)
+		_container.add_child(child)
 
 
 func update_property() -> void:
@@ -50,3 +48,12 @@ func _on_layout_changed() -> void:
 	emit_changed(get_edited_property(), _container.get(get_edited_property()))
 	var original_container: DockableContainer = get_edited_object()
 	original_container.queue_sort()
+
+
+func _create_child_control(named: String) -> Control:
+	var new_control = Label.new()
+	new_control.name = named
+	new_control.align = Label.ALIGN_CENTER
+	new_control.valign = Label.VALIGN_CENTER
+	new_control.text = named
+	return new_control
