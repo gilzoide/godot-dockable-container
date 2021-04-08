@@ -44,8 +44,13 @@ func update_nodes(names: PoolStringArray) -> void:
 	"""
 	_data = {}
 	_first_leaf = null
-	_ensure_names_in_node(_root, names)
-	assert(_first_leaf, "FIXME: no leaves were found in tree")
+	var empty_leaves = []
+	_ensure_names_in_node(_root, names, empty_leaves)
+	for l in empty_leaves:
+		_remove_leaf(l)
+	if not _first_leaf:
+		_first_leaf = Layout.LayoutPanel.new()
+		root = _first_leaf
 	for n in names:
 		if not _data.has(n):
 			_first_leaf.push_name(n)
@@ -134,14 +139,16 @@ func _get_all_names(node) -> PoolStringArray:
 	return names
 
 
-func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray) -> void:
+func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray, empty_leaves: Array) -> void:
 	if node is Layout.LayoutPanel:
 		node.update_nodes(names, _data)
+		if node.empty():
+			empty_leaves.append(node)
 		if not _first_leaf:
 			_first_leaf = node
 	elif node is Layout.LayoutSplit:
-		_ensure_names_in_node(node.first, names)
-		_ensure_names_in_node(node.second, names)
+		_ensure_names_in_node(node.first, names, empty_leaves)
+		_ensure_names_in_node(node.second, names, empty_leaves)
 	else:
 		assert(false, "Invalid Resource, should be branch or leaf, found %s" % node)
 
