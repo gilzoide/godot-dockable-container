@@ -80,11 +80,6 @@ func get_percent() -> float:
 	return _percent
 
 
-func update_nodes(data: Dictionary) -> void:
-	_first.update_nodes(data)
-	_second.update_nodes(data)
-
-
 func is_horizontal() -> bool:
 	return is_horizontal_margin(_split)
 

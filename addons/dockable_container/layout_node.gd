@@ -20,7 +20,3 @@ func clone():
 	right script and parenting is correctly set for each node.
 	"""
 	assert("FIXME: implement on child")
-
-
-func update_nodes(data: Dictionary) -> void:
-	assert("FIXME: implement on child")

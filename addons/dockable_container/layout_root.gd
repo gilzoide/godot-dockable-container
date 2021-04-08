@@ -1,7 +1,6 @@
 tool
 extends Resource
 
-#signal changed()
 signal root_changed()
 
 const Layout = preload("res://addons/dockable_container/layout.gd")
@@ -11,6 +10,7 @@ var parent setget , get_parent
 
 var _data: Dictionary
 var _root: Layout.LayoutNode
+var _first_leaf: Layout.LayoutPanel
 
 
 func _init() -> void:
@@ -38,19 +38,18 @@ func update_nodes(names: PoolStringArray) -> void:
 	"""
 	Add missing nodes on first leaf and remove nodes outside indices from leaves.
 	
-	data = {
-		(numeric keys) from ... to = respective Leaf that holds the node index,
-		first = first leaf,
+	_data = {
+		(string keys) = respective Leaf that holds the node name,
 	}
 	"""
-	_data = { names = names }
-	_root.update_nodes(_data)
-	var first = _data.first
-	assert(first, "FIXME: no leaves were found in tree")
+	_data = {}
+	_first_leaf = null
+	_ensure_names_in_node(_root, names)
+	assert(_first_leaf, "FIXME: no leaves were found in tree")
 	for n in names:
 		if not _data.has(n):
-			first.push_name(n)
-			_data[n] = first
+			_first_leaf.push_name(n)
+			_data[n] = _first_leaf
 
 
 func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: int) -> void:
@@ -87,11 +86,19 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	move_node_to_leaf(node, new_leaf, 0)
 
 
-#func emit_changed() -> void:
-#	emit_signal("changed")
+func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray) -> void:
+	if node is Layout.LayoutPanel:
+		node.update_nodes(names, _data)
+		if not _first_leaf and not node.empty():
+			_first_leaf = node
+	elif node is Layout.LayoutSplit:
+		_ensure_names_in_node(node.first, names)
+		_ensure_names_in_node(node.second, names)
+	else:
+		assert(false, "Invalid Resource, should be branch or leaf, found %s" % node)
 
 
-func _remove_leaf(leaf) -> void:
+func _remove_leaf(leaf: Layout.LayoutPanel) -> void:
 	assert(leaf.empty(), "FIXME: trying to remove a leaf with nodes")
 	var collapsed_branch = leaf.parent
 	if collapsed_branch == self:

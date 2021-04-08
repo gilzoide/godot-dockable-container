@@ -61,9 +61,7 @@ func get_minimum_size() -> Vector2:
 	return minimum_size
 
 
-func update_nodes(data: Dictionary):
-	var node_names = data.names
-	
+func update_nodes(node_names: PoolStringArray, data: Dictionary):
 	var i = 0
 	while i < names.size():
 		var current = names[i]
@@ -72,6 +70,3 @@ func update_nodes(data: Dictionary):
 		else:
 			data[current] = self
 			i += 1
-	
-	if not data.has("first"):
-		data.first = self
