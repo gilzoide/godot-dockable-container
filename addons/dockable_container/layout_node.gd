@@ -22,5 +22,5 @@ func clone():
 	assert("FIXME: implement on child")
 
 
-func _ensure_indices_in_range(data: Dictionary) -> void:
+func update_nodes(data: Dictionary) -> void:
 	assert("FIXME: implement on child")

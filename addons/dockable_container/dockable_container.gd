@@ -2,7 +2,7 @@ tool
 extends Container
 
 signal layout_changed()
-signal child_tab_selected(child_index)
+signal child_tab_selected()
 
 const SplitHandle = preload("res://addons/dockable_container/split_handle.gd")
 const DockablePanel = preload("res://addons/dockable_container/dockable_panel.gd")
@@ -24,6 +24,7 @@ var _current_panel_index = 0
 var _current_split_index = 0
 var _last_sort_child_count = 0
 var _tab_align = TabContainer.ALIGN_CENTER
+var _children_names = {}
 
 
 func _ready() -> void:
@@ -47,7 +48,7 @@ func _ready() -> void:
 		layout_root = LayoutRoot.new()
 	if not layout_root.root:
 		layout_root.set_root(Layout.LayoutPanel.new(), false)
-	_update_tree_indices()
+	_update_layout_with_children()
 	layout_root.connect("changed", self, "queue_sort")
 
 
@@ -122,7 +123,7 @@ func set_layout(value: Layout.LayoutNode) -> void:
 	if value == null:
 		value = Layout.LayoutPanel.new()
 	layout_root.set_root(value, false)
-	_update_tree_indices()
+	_update_layout_with_children()
 
 
 func get_layout() -> Layout.LayoutNode:
@@ -140,13 +141,16 @@ func get_tab_align() -> int:
 	return _tab_align
 
 
-func _update_tree_indices() -> void:
-	var indices = PoolIntArray()
+func _update_layout_with_children() -> void:
+	var names = PoolStringArray()
+	_children_names.clear()
 	for i in range(1, get_child_count() - 1):
 		var c = get_child(i)
 		if c is Control and not c.is_set_as_toplevel():
-			indices.append(i)
-	layout_root.update_indices(indices)
+			names.append(c.name)
+			_children_names[c] = c.name
+			_children_names[c.name] = c
+	layout_root.update_nodes(names)
 	queue_sort()
 
 
@@ -159,7 +163,7 @@ func _resort() -> void:
 	
 	if get_child_count() != _last_sort_child_count:
 		_last_sort_child_count = get_child_count()
-		_update_tree_indices()
+		_update_layout_with_children()
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
@@ -185,8 +189,10 @@ func _set_tree_or_leaf_rect(tree_or_leaf: Layout.LayoutNode, rect: Rect2) -> voi
 		var panel = _get_panel(_current_panel_index)
 		_current_panel_index += 1
 		var nodes = []
-		for n in tree_or_leaf.nodes:
-			nodes.append(get_child(n))
+		for n in tree_or_leaf.names:
+			var node = _children_names.get(n)
+			assert(node is Control and node.get_parent_control() == self, "FIXME: node is not a control")
+			nodes.append(node)
 		panel.track_nodes(nodes, tree_or_leaf)
 		_panel_container.fit_child_in_rect(panel, rect)
 	else:
@@ -237,7 +243,6 @@ func _on_reference_control_moved(control: Control) -> void:
 
 
 func _on_panel_tab_changed(tab: int, panel: DockablePanel) -> void:
-	if not panel.leaf or panel.leaf.nodes.empty():
+	if not panel.leaf or panel.leaf.empty():
 		return
-	var child_index = panel.leaf.nodes[tab]
-	emit_signal("child_tab_selected", child_index)
+	emit_signal("child_tab_selected")

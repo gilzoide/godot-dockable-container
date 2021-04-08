@@ -40,6 +40,8 @@ func set_reference_to(control: Control) -> void:
 		if _reference_to:
 			_reference_to.disconnect("renamed", self, "_on_reference_to_renamed")
 		_reference_to = control
+		if not _reference_to:
+			return
 		_reference_to.connect("renamed", self, "_on_reference_to_renamed")
 		_reference_to.visible = visible
 		rect_min_size = _reference_to.get_combined_minimum_size()

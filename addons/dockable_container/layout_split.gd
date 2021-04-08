@@ -80,9 +80,9 @@ func get_percent() -> float:
 	return _percent
 
 
-func _ensure_indices_in_range(data: Dictionary) -> void:
-	_first._ensure_indices_in_range(data)
-	_second._ensure_indices_in_range(data)
+func update_nodes(data: Dictionary) -> void:
+	_first.update_nodes(data)
+	_second.update_nodes(data)
 
 
 func is_horizontal() -> bool:

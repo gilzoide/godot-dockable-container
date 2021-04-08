@@ -8,8 +8,8 @@ const Layout = preload("res://addons/dockable_container/layout.gd")
 
 export(Resource) var root = Layout.LayoutPanel.new() setget set_root, get_root
 var parent setget , get_parent
-var data: Dictionary
 
+var _data: Dictionary
 var _root: Layout.LayoutNode
 
 
@@ -34,7 +34,7 @@ func get_parent():
 	return null
 
 
-func update_indices(indices) -> void:
+func update_nodes(names: PoolStringArray) -> void:
 	"""
 	Add missing nodes on first leaf and remove nodes outside indices from leaves.
 	
@@ -43,35 +43,34 @@ func update_indices(indices) -> void:
 		first = first leaf,
 	}
 	"""
-	data = { indices = indices }
-	_root._ensure_indices_in_range(data)
-	var first = data.first
+	_data = { names = names }
+	_root.update_nodes(_data)
+	var first = _data.first
 	assert(first, "FIXME: no leaves were found in tree")
-	for i in indices:
-		if not data.has(i):
-			first.push_node(i)
-			data[i] = first
+	for n in names:
+		if not _data.has(n):
+			first.push_name(n)
+			_data[n] = first
 
 
-func move_node_to_leaf(node: Node, leaf, relative_position: int) -> void:
-	var node_index = node.get_position_in_parent()
-	var previous_leaf = data[node_index]
+func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: int) -> void:
+	var node_name = node.name
+	var previous_leaf = _data[node_name]
 	previous_leaf.remove_node(node)
 	if previous_leaf.empty():
 		_remove_leaf(previous_leaf)
 	
 	leaf.insert_node(relative_position, node)
-	data[node_index] = leaf
+	_data[node_name] = leaf
 #	_print_tree()
 	emit_changed()
 
 
-func get_leaf_for_node(node: Node):
-	return data.get(node.get_position_in_parent())
+func get_leaf_for_node(node: Node) -> Layout.LayoutPanel:
+	return _data.get(node.name)
 
 
 func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
-	var node_index = node.get_position_in_parent()
 	var root_branch = leaf.parent
 	var new_leaf = Layout.LayoutPanel.new()
 	var new_branch = Layout.LayoutSplit.new()
@@ -116,7 +115,7 @@ func _print_tree() -> void:
 
 func _print_tree_step(tree_or_leaf, level, idx) -> void:
 	if tree_or_leaf is Layout.LayoutPanel:
-		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.nodes)
+		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.names)
 	else:
 		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.split, " ", tree_or_leaf.percent)
 		_print_tree_step(tree_or_leaf.first, level + 1, 1)

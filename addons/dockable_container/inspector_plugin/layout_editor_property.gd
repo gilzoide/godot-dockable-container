@@ -33,14 +33,14 @@ func update_property() -> void:
 		value = LayoutRoot.new()
 		value.root = Layout.LayoutPanel.new()
 		original_container.set(get_edited_property(), value)
-		original_container._update_tree_indices()
+		original_container._update_layout_with_children()
 		value.connect("changed", original_container, "queue_sort")
 		value.connect("changed", _container, "queue_sort")
 	_container.set(get_edited_property(), value)
-	_container._update_tree_indices()
+	_container._update_layout_with_children()
 
 
-func _on_child_tab_selected(_child_index: int) -> void:
+func _on_child_tab_selected() -> void:
 	emit_changed(get_edited_property(), _container.get(get_edited_property()))
 	var original_container: DockableContainer = get_edited_object()
 	original_container.queue_sort()
