@@ -15,7 +15,6 @@ func _ready() -> void:
 
 
 func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
-	assert(nodes.size() == new_leaf.names.size())
 	var min_size = min(nodes.size(), get_child_count())
 	for i in range(min_size, get_child_count()):
 		var child = get_child(min_size)

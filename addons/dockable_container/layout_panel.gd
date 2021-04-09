@@ -23,10 +23,12 @@ func clone():
 
 func push_name(name: String) -> void:
 	names.append(name)
+	emit_signal("changed")
 
 
 func insert_node(position: int, node: Node) -> void:
 	names.insert(position, node.name)
+	emit_signal("changed")
 
 
 func find_name(node_name: String) -> int:
@@ -44,6 +46,7 @@ func remove_node(node: Node) -> void:
 	var i = find_node(node)
 	if i >= 0:
 		names.remove(i)
+		emit_signal("changed")
 	else:
 		push_warning("Remove failed, node '%s' was not found" % node)
 
@@ -52,6 +55,7 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	var i = find_name(previous_name)
 	if i >= 0:
 		names.set(i, new_name)
+		emit_signal("changed")
 	else:
 		push_warning("Rename failed, name '%s' was not found" % previous_name)
 
@@ -62,6 +66,7 @@ func empty() -> bool:
 
 func set_current_tab(value: int) -> void:
 	_current_tab = clamp(value, 0, names.size() - 1)
+	emit_signal("changed")
 
 
 func get_current_tab() -> int:
@@ -74,10 +79,14 @@ func get_minimum_size() -> Vector2:
 
 func update_nodes(node_names: PoolStringArray, data: Dictionary):
 	var i = 0
+	var removed_any = false
 	while i < names.size():
 		var current = names[i]
 		if not current in node_names or data.has(current):
 			names.remove(i)
+			removed_any = true
 		else:
 			data[current] = self
 			i += 1
+	if removed_any:
+		emit_signal("changed")

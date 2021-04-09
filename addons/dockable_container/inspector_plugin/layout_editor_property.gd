@@ -9,21 +9,19 @@ var _container = DockableContainer.new()
 
 func _ready() -> void:
 	rect_min_size = Vector2(128, 256)
-	add_child(_container)
-	set_bottom_editor(_container)
+
 	_container.rect_min_size = rect_min_size
 	_container.connect("layout_changed", self, "_on_layout_changed")
 	_container.connect("child_tab_selected", self, "_on_child_tab_selected")
 	
-	var property = get_edited_object().get(get_edited_property())
-	_container.set(get_edited_property(), property)
-	for i in range(1, _container.get_child_count() - 1):
-		var child = _container.get_child(i)
-		_container.remove_child(child)
-		child.queue_free()
-	for n in property.get_all_names():
+	var original_container: DockableContainer = get_edited_object()
+	var value = original_container.get(get_edited_property())
+	_container.set(get_edited_property(), value)
+	for n in value.get_all_names():
 		var child = _create_child_control(n)
 		_container.add_child(child)
+	add_child(_container)
+	set_bottom_editor(_container)
 
 
 func update_property() -> void:

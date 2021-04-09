@@ -1,8 +1,6 @@
 tool
 extends Resource
 
-signal root_changed()
-
 const Layout = preload("res://addons/dockable_container/layout.gd")
 
 export(Resource) var root = Layout.LayoutPanel.new() setget set_root, get_root
@@ -23,7 +21,7 @@ func set_root(value: Layout.LayoutNode, should_emit_changed = true) -> void:
 	_root = value
 	_root.parent = self
 	if should_emit_changed:
-		emit_changed()
+		emit_signal("changed")
 
 
 func get_root() -> Layout.LayoutNode:
@@ -55,7 +53,7 @@ func update_nodes(names: PoolStringArray) -> void:
 		if not _data.has(n):
 			_first_leaf.push_name(n)
 			_data[n] = _first_leaf
-	emit_changed()
+	emit_signal("changed")
 
 
 func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: int) -> void:
@@ -70,7 +68,7 @@ func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: 
 	leaf.insert_node(relative_position, node)
 	_data[node_name] = leaf
 #	_print_tree()
-	emit_changed()
+	emit_signal("changed")
 
 
 func get_leaf_for_node(node: Node) -> Layout.LayoutPanel:
@@ -100,7 +98,7 @@ func add_node(node: Node) -> void:
 		return
 	_first_leaf.push_name(node_name)
 	_data[node_name] = _first_leaf
-	emit_changed()
+	emit_signal("changed")
 
 
 func remove_node(node: Node) -> void:
@@ -112,7 +110,7 @@ func remove_node(node: Node) -> void:
 	_data.erase(node_name)
 	if leaf.empty():
 		_remove_leaf(leaf)
-	emit_changed()
+	emit_signal("changed")
 
 
 func rename_node(previous_name: String, new_name: String) -> void:
@@ -122,11 +120,15 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	leaf.rename_node(previous_name, new_name)
 	_data.erase(previous_name)
 	_data[new_name] = leaf
-	emit_changed()
+	emit_signal("changed")
 
 
 func get_all_names() -> PoolStringArray:
 	return _get_all_names(_root)
+
+
+func split_parameters_changed() -> void:
+	emit_signal("changed")
 
 
 func _get_all_names(node) -> PoolStringArray:

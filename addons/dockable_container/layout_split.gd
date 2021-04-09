@@ -41,6 +41,7 @@ func set_first(value) -> void:
 	else:
 		_first = value
 	_first.parent = self
+	emit_signal("changed")
 
 
 func get_first():
@@ -53,6 +54,7 @@ func set_second(value) -> void:
 	else:
 		_second = value
 	_second.parent = self
+	emit_signal("changed")
 
 
 func get_second():
@@ -62,7 +64,10 @@ func get_second():
 func set_split(value: int) -> void:
 	if value != _split:
 		_split = value
-		get_root().emit_changed()
+		var root = get_root()
+		if root:
+			root.split_parameters_changed()
+		emit_signal("changed")
 
 
 func get_split() -> int:
@@ -73,7 +78,10 @@ func set_percent(value: float) -> void:
 	var clamped_value = clamp(value, 0, 1)
 	if not is_equal_approx(_percent, clamped_value):
 		_percent = clamped_value
-		get_root().emit_changed()
+		var root = get_root()
+		if root:
+			root.split_parameters_changed()
+		emit_signal("changed")
 
 
 func get_percent() -> float:
