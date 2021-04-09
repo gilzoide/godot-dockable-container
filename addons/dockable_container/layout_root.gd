@@ -1,5 +1,7 @@
 tool
-extends Resource
+extends Reference
+
+signal changed()
 
 const Layout = preload("res://addons/dockable_container/layout.gd")
 
@@ -9,10 +11,6 @@ var parent setget , get_parent
 var _data: Dictionary
 var _root: Layout.LayoutNode
 var _first_leaf: Layout.LayoutPanel
-
-
-func _init() -> void:
-	resource_name = "LayoutRoot"
 
 
 func set_root(value: Layout.LayoutNode, should_emit_changed = true) -> void:
@@ -123,22 +121,8 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	emit_signal("changed")
 
 
-func get_all_names() -> PoolStringArray:
-	return _get_all_names(_root)
-
-
 func split_parameters_changed() -> void:
 	emit_signal("changed")
-
-
-func _get_all_names(node) -> PoolStringArray:
-	var names
-	if node is Layout.LayoutPanel:
-		names = node.names
-	elif node is Layout.LayoutSplit:
-		names = _get_all_names(node.first)
-		names.append_array(_get_all_names(node.second))
-	return names
 
 
 func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray, empty_leaves: Array) -> void:

@@ -88,6 +88,12 @@ func get_percent() -> float:
 	return _percent
 
 
+func get_names() -> PoolStringArray:
+	var names = _first.get_names()
+	names.append_array(_second.get_names())
+	return names
+
+
 func empty() -> bool:
 	return _first.empty() and _second.empty()
 
