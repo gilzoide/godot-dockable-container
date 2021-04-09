@@ -42,8 +42,6 @@ func _ready() -> void:
 	_drag_n_drop_panel.visible = false
 	.add_child(_drag_n_drop_panel)
 	
-	if Engine.editor_hint:
-		yield(get_tree(), "idle_frame")
 	if not layout_root:
 		layout_root = LayoutRoot.new()
 	if not layout_root.root:
@@ -237,8 +235,10 @@ func _set_tree_or_leaf_rect(tree_or_leaf: Layout.LayoutNode, rect: Rect2) -> voi
 		var nodes = []
 		for n in tree_or_leaf.names:
 			var node = _children_names.get(n)
-			assert(node is Control and node.get_parent_control() == self, "FIXME: node is not a control")
-			nodes.append(node)
+			if node:
+				assert(node is Control, "FIXME: node is not a control %s" % node)
+				assert(node.get_parent_control() == self, "FIXME: node is not child of container %s" % node)
+				nodes.append(node)
 		panel.track_nodes(nodes, tree_or_leaf)
 		_panel_container.fit_child_in_rect(panel, rect)
 	else:

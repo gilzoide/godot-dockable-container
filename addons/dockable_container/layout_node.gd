@@ -9,7 +9,7 @@ func get_root():
 	var last = self
 	while last.parent:
 		last = last.parent
-	return last
+	return last if last != self else null
 
 
 func clone():
