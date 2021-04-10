@@ -45,5 +45,6 @@ func _create_child_control(named: String) -> Control:
 	new_control.name = named
 	new_control.align = Label.ALIGN_CENTER
 	new_control.valign = Label.VALIGN_CENTER
+	new_control.clip_text = true
 	new_control.text = named
 	return new_control
