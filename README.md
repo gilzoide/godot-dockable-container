@@ -1,5 +1,5 @@
 # Dockable Container
-Docking panels Container addon for [Godot](https://godotengine.org/).
+Docking/tiling UI panels Container addon for [Godot](https://godotengine.org/).
 
 ![](screenshots/video1.gif)
 

@@ -144,12 +144,12 @@ layout = SubResource( 7 )
 [node name="Control" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 285.879
+margin_right = 285.88
 margin_bottom = 572.0
 rect_min_size = Vector2( 20, 20 )
 
 [node name="Control1" type="ColorRect" parent="DockableContainer"]
-margin_left = 305.879
+margin_left = 305.88
 margin_top = 32.0
 margin_right = 652.94
 margin_bottom = 381.5
@@ -174,7 +174,7 @@ rect_min_size = Vector2( 20, 20 )
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
 [node name="Control4" type="ColorRect" parent="DockableContainer"]
-margin_left = 305.879
+margin_left = 305.88
 margin_top = 429.5
 margin_right = 1020.0
 margin_bottom = 572.0
