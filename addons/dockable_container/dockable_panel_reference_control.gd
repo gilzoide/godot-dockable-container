@@ -35,6 +35,10 @@ func _notification(what: int) -> void:
 		emit_signal("moved_in_parent", self)
 
 
+func _get_minimum_size() -> Vector2:
+	return _reference_to.get_combined_minimum_size() if _reference_to else Vector2.ZERO
+
+
 func set_reference_to(control: Control) -> void:
 	if _reference_to != control:
 		if _reference_to:
@@ -44,7 +48,6 @@ func set_reference_to(control: Control) -> void:
 			return
 		_reference_to.connect("renamed", self, "_on_reference_to_renamed")
 		_reference_to.visible = visible
-		rect_min_size = _reference_to.get_combined_minimum_size()
 		_reposition_reference()
 
 
@@ -59,8 +62,9 @@ func _on_rect_changed() -> void:
 
 func _reposition_reference() -> void:
 	var container = get_parent_control()
-	_reference_to.rect_global_position = container.rect_global_position + rect_position
-	_reference_to.rect_size = rect_size
+	if container:
+		_reference_to.rect_global_position = container.rect_global_position + rect_position
+		_reference_to.rect_size = rect_size
 
 
 func _on_reference_to_renamed() -> void:

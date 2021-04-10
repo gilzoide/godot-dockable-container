@@ -213,37 +213,79 @@ func _resort() -> void:
 	
 	_current_panel_index = 1
 	_current_split_index = 0
-	_set_tree_or_leaf_rect(_layout_root.root, rect)
+	
+	var children_list = []
+	_calculate_panel_and_split_list(children_list, _layout_root.root)
+	_fit_panel_and_split_list_to_rect(children_list, rect)
+	
 	_untrack_children_after(_panel_container, _current_panel_index)
 	_untrack_children_after(_split_container, _current_split_index)
 
 
-func _set_tree_or_leaf_rect(tree_or_leaf: Layout.LayoutNode, rect: Rect2) -> void:
-	if tree_or_leaf is Layout.LayoutSplit:
-		var split = _get_split(_current_split_index)
-		split.split_tree = tree_or_leaf
-		_current_split_index += 1
-		var split_rects = split.get_split_rects(rect)
-		_split_container.fit_child_in_rect(split, split_rects.self)
-		_set_tree_or_leaf_rect(tree_or_leaf.first, split_rects.first)
-		_set_tree_or_leaf_rect(tree_or_leaf.second, split_rects.second)
-	elif tree_or_leaf is Layout.LayoutPanel:
-		var panel = _get_panel(_current_panel_index)
-		_current_panel_index += 1
+func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNode):
+	"""
+	Calculate DockablePanel and SplitHandle minimum sizes, skipping empty branches.
+	
+	Returns a DockablePanel on non-empty leaves, a SplitHandle on non-empty
+	splits, `null` if the whole branch is empty and no space should be used.
+	
+	`result` will be filled with the non-empty nodes in this post-order tree traversal.
+	"""
+	if layout_node is Layout.LayoutPanel:
 		var nodes = []
-		for n in tree_or_leaf.names:
+		for n in layout_node.names:
 			var node = _children_names.get(n)
 			if node:
 				assert(node is Control, "FIXME: node is not a control %s" % node)
 				assert(node.get_parent_control() == self, "FIXME: node is not child of container %s" % node)
 				nodes.append(node)
-		panel.track_nodes(nodes, tree_or_leaf)
-		_panel_container.fit_child_in_rect(panel, rect)
+		if nodes.empty():
+			return null
+		else:
+			var panel = _get_panel(_current_panel_index)
+			_current_panel_index += 1
+			panel.track_nodes(nodes, layout_node)
+			result.append(panel)
+			return panel
+	elif layout_node is Layout.LayoutSplit:
+		# by processing `second` before `first`, traversing `result` from back
+		# to front yields a nice pre-order tree traversal
+		var second_result = _calculate_panel_and_split_list(result, layout_node.second)
+		var first_result = _calculate_panel_and_split_list(result, layout_node.first)
+		if first_result and second_result:
+			var split = _get_split(_current_split_index)
+			_current_split_index += 1
+			split.layout_split = layout_node
+			split.first_minimum_size = first_result.get_layout_minimum_size()
+			split.second_minimum_size = second_result.get_layout_minimum_size()
+			result.append(split)
+			return split
+		elif first_result:
+			return first_result
+		else:  # NOTE: this returns null if `second_result` is null
+			return second_result
 	else:
-		assert(false, "Invalid Resource, should be branch or leaf, found %s" % tree_or_leaf)
+		push_warning("FIXME: invalid Resource, should be branch or leaf, found %s" % layout_node)
+
+
+func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2) -> void:
+	"""
+	Traverse list from back to front fitting controls where they belong.
+	
+	Be sure to call this with the result from `_calculate_split_minimum_sizes`.
+	"""
+	var control = panel_and_split_list.pop_back()
+	if control is DockablePanel:
+		_panel_container.fit_child_in_rect(control, rect)
+	elif control is SplitHandle:
+		var split_rects = control.get_split_rects(rect)
+		_split_container.fit_child_in_rect(control, split_rects.self)
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects.first)
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects.second)
 
 
 func _get_panel(idx: int) -> DockablePanel:
+	"""Get the idx'th DockablePanel, reusing an instanced one if possible"""
 	assert(_panel_container, "FIXME: creating panel without _panel_container")
 	if idx < _panel_container.get_child_count():
 		return _panel_container.get_child(idx)
@@ -257,6 +299,7 @@ func _get_panel(idx: int) -> DockablePanel:
 
 
 func _get_split(idx: int) -> SplitHandle:
+	"""Get the idx'th SplitHandle, reusing an instanced one if possible"""
 	assert(_split_container, "FIXME: creating split without _split_container")
 	if idx < _split_container.get_child_count():
 		return _split_container.get_child(idx)
@@ -266,6 +309,7 @@ func _get_split(idx: int) -> SplitHandle:
 
 
 static func _untrack_children_after(node, idx: int) -> void:
+	"""Helper for removing and freeing all remaining children from node"""
 	for i in range(idx, node.get_child_count()):
 		var child = node.get_child(idx)
 		node.remove_child(child)
@@ -273,6 +317,7 @@ static func _untrack_children_after(node, idx: int) -> void:
 
 
 func _on_reference_control_moved(control: Control) -> void:
+	"""Handler for `DockablePanel.control_moved`, move child to the right LayoutPanel"""
 	var panel = control.get_parent_control()
 	assert(panel is DockablePanel, "FIXME: reference control was moved to something other than DockableContainerPanel")
 	
@@ -287,12 +332,14 @@ func _on_reference_control_moved(control: Control) -> void:
 
 
 func _on_panel_tab_changed(tab: int, panel: DockablePanel) -> void:
+	"""Handler for `DockablePanel.tab_changed`, reemit signal for updating editor"""
 	if not panel.leaf or panel.leaf.empty():
 		return
 	emit_signal("child_tab_selected")
 
 
 func _on_child_renamed(child: Node) -> void:
+	"""Handler for `Node.renamed` signal, updates tracked name for node"""
 	var old_name = _children_names.get(child)
 	if not old_name:
 		return

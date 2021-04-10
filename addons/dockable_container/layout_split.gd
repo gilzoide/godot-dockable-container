@@ -96,18 +96,8 @@ func empty() -> bool:
 	return _first.empty() and _second.empty()
 
 
-func get_minimum_size(hseparation: int, vseparation: int) -> Vector2:
-	var first_minimum_size = _first.get_minimum_size(hseparation, vseparation)
-	var second_minimum_size = _second.get_minimum_size(hseparation, vseparation)
-	if is_horizontal():
-		return Vector2(first_minimum_size.x + hseparation + second_minimum_size.x, max(first_minimum_size.y, second_minimum_size.y))
-	else:
-		return Vector2(max(first_minimum_size.x, second_minimum_size.x), first_minimum_size.y + vseparation + second_minimum_size.y)
-
-
 func is_horizontal() -> bool:
 	return _direction == Direction.HORIZONTAL
-
 
 
 func is_vertical() -> bool:

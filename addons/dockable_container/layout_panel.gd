@@ -5,8 +5,6 @@ extends "res://addons/dockable_container/layout_node.gd"
 export(PoolStringArray) var names: PoolStringArray setget set_names, get_names
 export(int) var current_tab: int setget set_current_tab, get_current_tab
 
-var minimum_size: Vector2
-
 var _names := PoolStringArray()
 var _current_tab := 0
 
@@ -81,10 +79,6 @@ func rename_node(previous_name: String, new_name: String) -> void:
 
 func empty() -> bool:
 	return _names.empty()
-
-
-func get_minimum_size(_hseparation, _vseparation) -> Vector2:
-	return minimum_size
 
 
 func update_nodes(node_names: PoolStringArray, data: Dictionary):
