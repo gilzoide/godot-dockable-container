@@ -83,7 +83,7 @@ func empty() -> bool:
 	return _names.empty()
 
 
-func get_minimum_size() -> Vector2:
+func get_minimum_size(_hseparation, _vseparation) -> Vector2:
 	return minimum_size
 
 

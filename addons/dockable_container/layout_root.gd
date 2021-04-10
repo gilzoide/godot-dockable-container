@@ -77,9 +77,16 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	var root_branch = leaf.parent
 	var new_leaf = Layout.LayoutPanel.new()
 	var new_branch = Layout.LayoutSplit.new()
-	new_branch.split = margin
-	new_branch.first = leaf
-	new_branch.second = new_leaf
+	if margin == MARGIN_LEFT or margin == MARGIN_RIGHT:
+		new_branch.direction = Layout.LayoutSplit.Direction.HORIZONTAL
+	else:
+		new_branch.direction = Layout.LayoutSplit.Direction.VERTICAL
+	if margin == MARGIN_LEFT or margin == MARGIN_TOP:
+		new_branch.first = new_leaf
+		new_branch.second = leaf
+	else:
+		new_branch.first = leaf
+		new_branch.second = new_leaf
 	if root_branch == self:
 		self.root = new_branch
 	elif leaf == root_branch.first:
@@ -165,6 +172,6 @@ func _print_tree_step(tree_or_leaf, level, idx) -> void:
 	if tree_or_leaf is Layout.LayoutPanel:
 		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.names)
 	else:
-		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.split, " ", tree_or_leaf.percent)
+		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.direction, " ", tree_or_leaf.percent)
 		_print_tree_step(tree_or_leaf.first, level + 1, 1)
 		_print_tree_step(tree_or_leaf.second, level + 1, 2)
