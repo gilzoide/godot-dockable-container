@@ -11,6 +11,7 @@ const Layout = preload("res://addons/dockable_container/layout.gd")
 const LayoutRoot = preload("res://addons/dockable_container/layout_root.gd")
 
 export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
+export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size
 export(int) var rearrange_group = 0
 export(Resource) var layout = Layout.LayoutPanel.new() setget set_layout, get_layout
 
@@ -19,9 +20,10 @@ var _panel_container = Container.new()
 var _split_container = Container.new()
 var _drag_n_drop_panel = DragNDropPanel.new()
 var _drag_panel: DockablePanel
+var _tab_align = TabContainer.ALIGN_CENTER
+var _use_hidden_tabs_for_min_size = false
 var _current_panel_index = 0
 var _current_split_index = 0
-var _tab_align = TabContainer.ALIGN_CENTER
 var _children_names = {}
 var _layout_dirty = false
 
@@ -143,15 +145,26 @@ func get_layout() -> Layout.LayoutNode:
 	return _layout_root.root
 
 
-func set_tab_align(tab_align: int) -> void:
-	_tab_align = tab_align
+func set_tab_align(value: int) -> void:
+	_tab_align = value
 	for i in range(1, _panel_container.get_child_count()):
 		var panel = _panel_container.get_child(i)
-		panel.tab_align = tab_align
+		panel.tab_align = value
 
 
 func get_tab_align() -> int:
 	return _tab_align
+
+
+func set_use_hidden_tabs_for_min_size(value: bool) -> void:
+	_use_hidden_tabs_for_min_size = value
+	for i in range(1, _panel_container.get_child_count()):
+		var panel = _panel_container.get_child(i)
+		panel.use_hidden_tabs_for_min_size = value
+
+
+func get_use_hidden_tabs_for_min_size() -> bool:
+	return _use_hidden_tabs_for_min_size
 
 
 func _update_layout_with_children() -> void:
@@ -291,6 +304,7 @@ func _get_panel(idx: int) -> DockablePanel:
 		return _panel_container.get_child(idx)
 	var panel = DockablePanel.new()
 	panel.tab_align = _tab_align
+	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
 	panel.connect("control_moved", self, "_on_reference_control_moved")
