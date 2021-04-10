@@ -1,5 +1,7 @@
 tool
-extends Resource
+extends Reference
+
+signal changed()
 
 const Layout = preload("res://addons/dockable_container/layout.gd")
 
@@ -9,10 +11,6 @@ var parent setget , get_parent
 var _data: Dictionary
 var _root: Layout.LayoutNode
 var _first_leaf: Layout.LayoutPanel
-
-
-func _init() -> void:
-	resource_name = "LayoutRoot"
 
 
 func set_root(value: Layout.LayoutNode, should_emit_changed = true) -> void:
@@ -79,9 +77,16 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	var root_branch = leaf.parent
 	var new_leaf = Layout.LayoutPanel.new()
 	var new_branch = Layout.LayoutSplit.new()
-	new_branch.split = margin
-	new_branch.first = leaf
-	new_branch.second = new_leaf
+	if margin == MARGIN_LEFT or margin == MARGIN_RIGHT:
+		new_branch.direction = Layout.LayoutSplit.Direction.HORIZONTAL
+	else:
+		new_branch.direction = Layout.LayoutSplit.Direction.VERTICAL
+	if margin == MARGIN_LEFT or margin == MARGIN_TOP:
+		new_branch.first = new_leaf
+		new_branch.second = leaf
+	else:
+		new_branch.first = leaf
+		new_branch.second = new_leaf
 	if root_branch == self:
 		self.root = new_branch
 	elif leaf == root_branch.first:
@@ -123,22 +128,8 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	emit_signal("changed")
 
 
-func get_all_names() -> PoolStringArray:
-	return _get_all_names(_root)
-
-
 func split_parameters_changed() -> void:
 	emit_signal("changed")
-
-
-func _get_all_names(node) -> PoolStringArray:
-	var names
-	if node is Layout.LayoutPanel:
-		names = node.names
-	elif node is Layout.LayoutSplit:
-		names = _get_all_names(node.first)
-		names.append_array(_get_all_names(node.second))
-	return names
 
 
 func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray, empty_leaves: Array) -> void:
@@ -181,6 +172,6 @@ func _print_tree_step(tree_or_leaf, level, idx) -> void:
 	if tree_or_leaf is Layout.LayoutPanel:
 		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.names)
 	else:
-		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.split, " ", tree_or_leaf.percent)
+		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.direction, " ", tree_or_leaf.percent)
 		_print_tree_step(tree_or_leaf.first, level + 1, 1)
 		_print_tree_step(tree_or_leaf.second, level + 1, 2)

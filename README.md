@@ -1,5 +1,5 @@
 # Dockable Container
-Docking panels Container addon for [Godot](https://godotengine.org/).
+Docking/tiling UI panels Container addon for [Godot](https://godotengine.org/).
 
 ![](screenshots/video1.gif)
 
@@ -30,7 +30,7 @@ Tabs alignment and rearrange group are exported in DockableContainer.
 
 ## TODO
 - Add way to specify icon and custom name for tabs, based on a property or method on children
-- Document how to use
+- Document better how to use
 
 
 ## Credits

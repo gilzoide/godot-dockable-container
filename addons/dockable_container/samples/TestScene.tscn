@@ -1,63 +1,85 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=1]
 [ext_resource path="res://addons/dockable_container/layout_panel.gd" type="Script" id=2]
 [ext_resource path="res://addons/dockable_container/layout_split.gd" type="Script" id=3]
 [ext_resource path="res://addons/dockable_container/samples/TestScene.gd" type="Script" id=4]
-[ext_resource path="res://addons/dockable_container/layout_root.gd" type="Script" id=5]
 
 [sub_resource type="Resource" id=1]
-resource_name = "Tabs"
-script = ExtResource( 2 )
-names = PoolStringArray( "Control3", "Control2" )
-current_tab = 0
-
-[sub_resource type="Resource" id=2]
-resource_name = "Tabs"
-script = ExtResource( 2 )
-names = PoolStringArray( "Control4" )
-current_tab = 0
-
-[sub_resource type="Resource" id=3]
-resource_name = "Split"
-script = ExtResource( 3 )
-split = 2
-percent = 0.544554
-first = SubResource( 1 )
-second = SubResource( 2 )
-
-[sub_resource type="Resource" id=4]
-resource_name = "Tabs"
-script = ExtResource( 2 )
-names = PoolStringArray( "Control1" )
-current_tab = 0
-
-[sub_resource type="Resource" id=5]
-resource_name = "Split"
-script = ExtResource( 3 )
-split = 1
-percent = 0.453125
-first = SubResource( 3 )
-second = SubResource( 4 )
-
-[sub_resource type="Resource" id=6]
 resource_name = "Tabs"
 script = ExtResource( 2 )
 names = PoolStringArray( "Control" )
 current_tab = 0
 
-[sub_resource type="Resource" id=7]
+[sub_resource type="Resource" id=2]
+resource_name = "Tabs"
+script = ExtResource( 2 )
+names = PoolStringArray( "Control5" )
+current_tab = 0
+
+[sub_resource type="Resource" id=3]
+resource_name = "Tabs"
+script = ExtResource( 2 )
+names = PoolStringArray( "Control6" )
+current_tab = 0
+
+[sub_resource type="Resource" id=4]
 resource_name = "Split"
 script = ExtResource( 3 )
-split = 0
-percent = 0.339785
-first = SubResource( 5 )
-second = SubResource( 6 )
+direction = 1
+percent = 0.5
+first = SubResource( 2 )
+second = SubResource( 3 )
+
+[sub_resource type="Resource" id=5]
+resource_name = "Split"
+script = ExtResource( 3 )
+direction = 1
+percent = 0.333
+first = SubResource( 1 )
+second = SubResource( 4 )
+
+[sub_resource type="Resource" id=6]
+resource_name = "Tabs"
+script = ExtResource( 2 )
+names = PoolStringArray( "Control1" )
+current_tab = 0
+
+[sub_resource type="Resource" id=7]
+resource_name = "Tabs"
+script = ExtResource( 2 )
+names = PoolStringArray( "Control4" )
+current_tab = 0
 
 [sub_resource type="Resource" id=8]
-resource_name = "LayoutRoot"
-script = ExtResource( 5 )
-root = SubResource( 7 )
+resource_name = "Split"
+script = ExtResource( 3 )
+direction = 1
+percent = 0.5
+first = SubResource( 6 )
+second = SubResource( 7 )
+
+[sub_resource type="Resource" id=9]
+resource_name = "Tabs"
+script = ExtResource( 2 )
+names = PoolStringArray( "Control2", "Control3" )
+current_tab = 0
+
+[sub_resource type="Resource" id=10]
+resource_name = "Split"
+script = ExtResource( 3 )
+direction = 0
+percent = 0.65787
+first = SubResource( 8 )
+second = SubResource( 9 )
+
+[sub_resource type="Resource" id=11]
+resource_name = "Split"
+script = ExtResource( 3 )
+direction = 0
+percent = 0.288945
+first = SubResource( 5 )
+second = SubResource( 10 )
 
 [node name="SampleScene" type="VBoxContainer"]
 anchor_right = 1.0
@@ -145,47 +167,63 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-layout_root = SubResource( 8 )
+layout = SubResource( 11 )
 
 [node name="Control" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 337.94
-margin_bottom = 572.0
-rect_min_size = Vector2( 20, 20 )
+margin_right = 285.88
+margin_bottom = 181.808
+rect_min_size = Vector2( 64, 64 )
 
 [node name="Control1" type="ColorRect" parent="DockableContainer"]
-margin_left = 357.94
+margin_left = 305.88
 margin_top = 32.0
-margin_right = 1020.0
-margin_bottom = 251.0
-rect_min_size = Vector2( 20, 20 )
+margin_right = 766.941
+margin_bottom = 278.0
+rect_min_size = Vector2( 128, 128 )
 color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
 [node name="Control2" type="ColorRect" parent="DockableContainer"]
-visible = false
-margin_left = 357.94
-margin_top = 299.0
-margin_right = 708.824
+margin_left = 786.941
+margin_top = 32.0
+margin_right = 1020.0
 margin_bottom = 572.0
-rect_min_size = Vector2( 20, 20 )
+rect_min_size = Vector2( 64, 64 )
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
 [node name="Control3" type="ColorRect" parent="DockableContainer"]
-margin_left = 357.94
-margin_top = 299.0
-margin_right = 708.824
+visible = false
+margin_left = 786.941
+margin_top = 32.0
+margin_right = 1020.0
 margin_bottom = 572.0
-rect_min_size = Vector2( 20, 20 )
+rect_min_size = Vector2( 64, 64 )
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
 [node name="Control4" type="ColorRect" parent="DockableContainer"]
-margin_left = 728.824
-margin_top = 299.0
-margin_right = 1020.0
+margin_left = 305.88
+margin_top = 326.0
+margin_right = 766.941
 margin_bottom = 572.0
-rect_min_size = Vector2( 20, 20 )
+rect_min_size = Vector2( 128, 128 )
 color = Color( 0.129412, 0.121569, 0.121569, 1 )
+
+[node name="Control5" type="ColorRect" parent="DockableContainer"]
+margin_left = 4.0
+margin_top = 229.808
+margin_right = 285.88
+margin_bottom = 376.904
+rect_min_size = Vector2( 64, 64 )
+color = Color( 0.333333, 0.862745, 0.8, 1 )
+
+[node name="Control6" type="ColorRect" parent="DockableContainer"]
+margin_left = 4.0
+margin_top = 424.904
+margin_right = 285.88
+margin_bottom = 572.0
+rect_min_size = Vector2( 64, 64 )
+color = Color( 0.898039, 0.921569, 0.188235, 1 )
 [connection signal="pressed" from="HBoxContainer/AddControlButton" to="." method="_on_add_pressed"]
 [connection signal="pressed" from="HBoxContainer/SaveLayoutButton" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="HBoxContainer/LoadLayoutButton" to="." method="_on_load_pressed"]

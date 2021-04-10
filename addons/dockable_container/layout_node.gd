@@ -26,3 +26,9 @@ func empty() -> bool:
 	"""Returns whether there are any nodes"""
 	assert("FIXME: implement on child")
 	return true
+
+
+func get_names() -> PoolStringArray:
+	"""Returns all tab names in this node"""
+	assert("FIXME: implement on child")
+	return PoolStringArray()
