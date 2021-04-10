@@ -35,9 +35,9 @@ func _draw() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		_dragging = event.is_pressed()
-	elif Engine.editor_hint and event is InputEventMouseButton and event.button_index == BUTTON_RIGHT and not event.is_pressed():
-		layout_split.percent = 0.5
-	elif event is InputEventMouseMotion and _dragging:
+		if event.doubleclick:
+			layout_split.percent = 0.5
+	elif _dragging and event is InputEventMouseMotion:
 		var mouse_in_parent = get_parent_control().get_local_mouse_position()
 		if layout_split.is_horizontal():
 			layout_split.percent = (mouse_in_parent.x - _parent_rect.position.x) / _parent_rect.size.x
