@@ -8,7 +8,8 @@ var _container = DockableContainer.new()
 
 func _ready() -> void:
 	rect_min_size = Vector2(128, 256)
-
+	
+	_container.clone_layout_on_ready = false
 	_container.rect_min_size = rect_min_size
 	_container.connect("layout_changed", self, "_on_layout_changed")
 	_container.connect("child_tab_selected", self, "_on_child_tab_selected")

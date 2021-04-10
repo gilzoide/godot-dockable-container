@@ -14,6 +14,10 @@ export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER
 export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size
 export(int) var rearrange_group = 0
 export(Resource) var layout = Layout.LayoutPanel.new() setget set_layout, get_layout
+# If `clone_layout_on_ready` is true, `layout` will be cloned on `_ready`.
+# This is useful for leaving layout Resources untouched in case you want to
+# restore layout to its default later.
+export(bool) var clone_layout_on_ready = true
 
 var _layout_root = LayoutRoot.new()
 var _panel_container = Container.new()
@@ -45,6 +49,8 @@ func _ready() -> void:
 	
 	if not _layout_root.root:
 		_layout_root.set_root(null, false)
+	elif clone_layout_on_ready and not Engine.editor_hint:
+		_layout_root.set_root(_layout_root.root.clone(), false)
 	_update_layout_with_children()
 	_layout_root.connect("changed", self, "queue_sort")
 
