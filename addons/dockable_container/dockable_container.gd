@@ -114,7 +114,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	
 	var margin = _drag_n_drop_panel.get_hover_margin()
 	_layout_root.split_leaf_with_node(_drag_panel.leaf, moved_reference, margin)
-	
+	_layout_dirty = true
 	
 	queue_sort()
 

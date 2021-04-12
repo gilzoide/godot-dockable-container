@@ -13,9 +13,6 @@ func _ready() -> void:
 	_container.rect_min_size = rect_min_size
 	
 	var original_container: DockableContainer = get_edited_object()
-	# Both containers must share the same LayoutRoot instance, or else layout's
-	# `parent` will be wrong and bad things will happen
-	_container._layout_root = original_container._layout_root
 	var value = original_container.get(get_edited_property())
 	_container.set(get_edited_property(), value)
 	for n in value.get_names():

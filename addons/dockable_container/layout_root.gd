@@ -87,10 +87,11 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 		new_branch.second = new_leaf
 	if _root == leaf:
 		set_root(new_branch, false)
-	elif leaf == root_branch.first:
-		root_branch.first = new_branch
-	else:
-		root_branch.second = new_branch
+	if root_branch:
+		if leaf == root_branch.first:
+			root_branch.first = new_branch
+		else:
+			root_branch.second = new_branch
 	
 	move_node_to_leaf(node, new_leaf, 0)
 
@@ -147,18 +148,19 @@ func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray, empt
 
 func _remove_leaf(leaf: Layout.LayoutPanel) -> void:
 	assert(leaf.empty(), "FIXME: trying to remove a leaf with nodes")
-	var collapsed_branch = leaf.parent
-	if collapsed_branch == self:
+	if _root == leaf:
 		return
+	var collapsed_branch = leaf.parent
 	assert(collapsed_branch is Layout.LayoutSplit, "FIXME: leaf is not a child of branch")
 	var kept_branch = collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
 	var root_branch = collapsed_branch.parent
 	if _root == collapsed_branch:
 		set_root(kept_branch, true)
-	elif collapsed_branch == root_branch.first:
-		root_branch.first = kept_branch
-	else:
-		root_branch.second = kept_branch
+	if root_branch:
+		if collapsed_branch == root_branch.first:
+			root_branch.first = kept_branch
+		else:
+			root_branch.second = kept_branch
 
 
 func _print_tree() -> void:
