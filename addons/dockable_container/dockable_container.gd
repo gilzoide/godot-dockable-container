@@ -1,8 +1,6 @@
 tool
 extends Container
 
-signal child_tab_selected()
-
 const SplitHandle = preload("res://addons/dockable_container/split_handle.gd")
 const DockablePanel = preload("res://addons/dockable_container/dockable_panel.gd")
 const DragNDropPanel = preload("res://addons/dockable_container/drag_n_drop_panel.gd")
@@ -49,7 +47,6 @@ func _ready() -> void:
 		set_layout(null)
 	elif clone_layout_on_ready and not Engine.editor_hint:
 		set_layout(_layout.clone())
-	_update_layout_with_children()
 
 
 func _notification(what: int) -> void:
@@ -184,7 +181,6 @@ func _update_layout_with_children() -> void:
 			names.append(c.name)
 	_layout.update_nodes(names)
 	_layout_dirty = false
-	queue_sort()
 
 
 func _track_node(node: Node) -> bool:
@@ -227,7 +223,6 @@ func _resort() -> void:
 	
 	if _layout_dirty:
 		_update_layout_with_children()
-		return
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
