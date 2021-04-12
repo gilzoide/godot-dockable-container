@@ -48,7 +48,7 @@ func _ready() -> void:
 	if not _layout:
 		set_layout(null)
 	elif clone_layout_on_ready and not Engine.editor_hint:
-		_layout.set_root(_layout.root.clone(), false)
+		set_layout(_layout.clone())
 	_update_layout_with_children()
 
 
@@ -340,8 +340,9 @@ static func _untrack_children_after(node, idx: int) -> void:
 
 func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
 	"""Handler for `DockablePanel.tab_layout_changed`, update its LayoutPanel"""
-	_layout.move_node_to_leaf(panel.get_tab_control(tab).reference_to, panel.leaf, tab)
 	_layout_dirty = true
+	var tab_reference = panel.get_tab_control(tab)
+	_layout.move_node_to_leaf(tab_reference.reference_to, panel.leaf, tab)
 	queue_sort()
 
 

@@ -32,6 +32,7 @@ func set_root(value: LayoutNode, should_emit_changed = true) -> void:
 	if _root and _root.is_connected("changed", self, "_on_root_changed"):
 		_root.disconnect("changed", self, "_on_root_changed")
 	_root = value
+	_root.parent = null
 	_root.connect("changed", self, "_on_root_changed")
 	if should_emit_changed:
 		_on_root_changed()
@@ -59,7 +60,7 @@ func update_nodes(names: PoolStringArray) -> void:
 		(string keys) = respective Leaf that holds the node name,
 	}
 	"""
-	_leaf_by_node_name = {}
+	_leaf_by_node_name.clear()
 	_first_leaf = null
 	var empty_leaves = []
 	_ensure_names_in_node(_root, names, empty_leaves)
@@ -85,7 +86,6 @@ func move_node_to_leaf(node: Node, leaf: LayoutPanel, relative_position: int) ->
 		_remove_leaf(previous_leaf)
 	
 	leaf.insert_node(relative_position, node)
-	leaf.current_tab = relative_position
 	_leaf_by_node_name[node_name] = leaf
 	_on_root_changed()
 
@@ -110,7 +110,7 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 		new_branch.second = new_leaf
 	if _root == leaf:
 		set_root(new_branch, false)
-	if root_branch:
+	elif root_branch:
 		if leaf == root_branch.first:
 			root_branch.first = new_branch
 		else:
@@ -180,9 +180,9 @@ func _remove_leaf(leaf: LayoutPanel) -> void:
 	assert(collapsed_branch is LayoutSplit, "FIXME: leaf is not a child of branch")
 	var kept_branch = collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
 	var root_branch = collapsed_branch.parent
-	if _root == collapsed_branch:
+	if collapsed_branch == _root:
 		set_root(kept_branch, true)
-	if root_branch:
+	elif root_branch:
 		if collapsed_branch == root_branch.first:
 			root_branch.first = kept_branch
 		else:

@@ -22,7 +22,7 @@ func clone():
 
 func set_current_tab(value: int) -> void:
 	if value != _current_tab:
-		_current_tab = clamp(value, 0, _names.size() - 1)
+		_current_tab = value
 		emit_tree_changed()
 
 

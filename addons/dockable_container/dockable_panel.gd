@@ -13,8 +13,16 @@ var _leaf: Layout.LayoutPanel
 
 func _ready() -> void:
 	drag_to_rearrange_enabled = true
+
+
+func _enter_tree() -> void:
 	connect("tab_selected", self, "_on_tab_selected")
 	connect("tab_changed", self, "_on_tab_changed")
+
+
+func _exit_tree() -> void:
+	disconnect("tab_selected", self, "_on_tab_selected")
+	disconnect("tab_changed", self, "_on_tab_changed")
 
 
 func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
@@ -23,6 +31,7 @@ func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
 	# remove spare children
 	for i in range(min_size, get_child_count()):
 		var child = get_child(min_size)
+		child.reference_to = null
 		remove_child(child)
 		child.queue_free()
 	# add missing children
