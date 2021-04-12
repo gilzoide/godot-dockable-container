@@ -21,8 +21,9 @@ func clone():
 
 
 func set_current_tab(value: int) -> void:
-	_current_tab = clamp(value, 0, _names.size() - 1)
-	emit_signal("changed")
+	if value != _current_tab:
+		_current_tab = value
+		emit_tree_changed()
 
 
 func get_current_tab() -> int:
@@ -31,7 +32,7 @@ func get_current_tab() -> int:
 
 func set_names(value: PoolStringArray) -> void:
 	_names = value
-	emit_signal("changed")
+	emit_tree_changed()
 
 
 func get_names() -> PoolStringArray:
@@ -40,12 +41,12 @@ func get_names() -> PoolStringArray:
 
 func push_name(name: String) -> void:
 	_names.append(name)
-	emit_signal("changed")
+	emit_tree_changed()
 
 
 func insert_node(position: int, node: Node) -> void:
 	_names.insert(position, node.name)
-	emit_signal("changed")
+	emit_tree_changed()
 
 
 func find_name(node_name: String) -> int:
@@ -63,7 +64,7 @@ func remove_node(node: Node) -> void:
 	var i = find_node(node)
 	if i >= 0:
 		_names.remove(i)
-		emit_signal("changed")
+		emit_tree_changed()
 	else:
 		push_warning("Remove failed, node '%s' was not found" % node)
 
@@ -72,7 +73,7 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	var i = find_name(previous_name)
 	if i >= 0:
 		_names.set(i, new_name)
-		emit_signal("changed")
+		emit_tree_changed()
 	else:
 		push_warning("Rename failed, name '%s' was not found" % previous_name)
 
@@ -93,4 +94,4 @@ func update_nodes(node_names: PoolStringArray, data: Dictionary):
 			data[current] = self
 			i += 1
 	if removed_any:
-		emit_signal("changed")
+		emit_tree_changed()

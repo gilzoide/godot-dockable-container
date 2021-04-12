@@ -5,11 +5,11 @@ extends Resource
 var parent = null
 
 
-func get_root():
-	var last = self
-	while last.parent:
-		last = last.parent
-	return last if last != self else null
+func emit_tree_changed() -> void:
+	var node = self
+	while node:
+		node.emit_signal("changed")
+		node = node.parent
 
 
 func clone():

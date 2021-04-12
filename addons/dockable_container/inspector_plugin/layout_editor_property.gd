@@ -8,15 +8,11 @@ var _container = DockableContainer.new()
 
 func _ready() -> void:
 	rect_min_size = Vector2(128, 256)
-
+	
+	_container.clone_layout_on_ready = false
 	_container.rect_min_size = rect_min_size
-	_container.connect("layout_changed", self, "_on_layout_changed")
-	_container.connect("child_tab_selected", self, "_on_child_tab_selected")
 	
 	var original_container: DockableContainer = get_edited_object()
-	# Both containers must share the same LayoutRoot instance, or else layout's
-	# `parent` will be wrong and bad things will happen
-	_container._layout_root = original_container._layout_root
 	var value = original_container.get(get_edited_property())
 	_container.set(get_edited_property(), value)
 	for n in value.get_names():
@@ -30,14 +26,6 @@ func update_property() -> void:
 	var original_container: DockableContainer = get_edited_object()
 	var value = original_container.get(get_edited_property())
 	_container.set(get_edited_property(), value)
-
-
-func _on_child_tab_selected() -> void:
-	emit_changed(get_edited_property(), _container.get(get_edited_property()))
-
-
-func _on_layout_changed() -> void:
-	emit_changed(get_edited_property(), _container.get(get_edited_property()))
 
 
 func _create_child_control(named: String) -> Control:

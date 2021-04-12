@@ -20,7 +20,8 @@ func _on_add_pressed() -> void:
 	control.name = "Control"
 	
 	_container.add_child(control, true)
-	_container.call_deferred("set_control_as_current_tab", control)
+	yield(_container, "sort_children")
+	_container.set_control_as_current_tab(control)
 
 
 func _on_save_pressed() -> void:
