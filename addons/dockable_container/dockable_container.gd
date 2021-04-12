@@ -7,18 +7,17 @@ const SplitHandle = preload("res://addons/dockable_container/split_handle.gd")
 const DockablePanel = preload("res://addons/dockable_container/dockable_panel.gd")
 const DragNDropPanel = preload("res://addons/dockable_container/drag_n_drop_panel.gd")
 const Layout = preload("res://addons/dockable_container/layout.gd")
-const LayoutRoot = preload("res://addons/dockable_container/layout_root.gd")
 
 export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
 export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size
 export(int) var rearrange_group = 0
-export(Resource) var layout = Layout.LayoutPanel.new() setget set_layout, get_layout
+export(Resource) var layout = Layout.new() setget set_layout, get_layout
 # If `clone_layout_on_ready` is true, `layout` will be cloned on `_ready`.
 # This is useful for leaving layout Resources untouched in case you want to
 # restore layout to its default later.
 export(bool) var clone_layout_on_ready = true
 
-var _layout_root = LayoutRoot.new()
+var _layout = Layout.new()
 var _panel_container = Container.new()
 var _split_container = Container.new()
 var _drag_n_drop_panel = DragNDropPanel.new()
@@ -46,12 +45,11 @@ func _ready() -> void:
 	_drag_n_drop_panel.visible = false
 	.add_child(_drag_n_drop_panel)
 	
-	if not _layout_root.root:
-		_layout_root.set_root(null, false)
+	if not _layout:
+		set_layout(null)
 	elif clone_layout_on_ready and not Engine.editor_hint:
-		_layout_root.set_root(_layout_root.root.clone(), false)
+		_layout.set_root(_layout.root.clone(), false)
 	_update_layout_with_children()
-	_layout_root.connect("changed", self, "queue_sort")
 
 
 func _notification(what: int) -> void:
@@ -113,7 +111,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	var moved_reference = moved_tab.reference_to
 	
 	var margin = _drag_n_drop_panel.get_hover_margin()
-	_layout_root.split_leaf_with_node(_drag_panel.leaf, moved_reference, margin)
+	_layout.split_leaf_with_node(_drag_panel.leaf, moved_reference, margin)
 	_layout_dirty = true
 	
 	queue_sort()
@@ -121,7 +119,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 
 func set_control_as_current_tab(control: Control) -> void:
 	assert(control.get_parent_control() == self, "Trying to focus a control not managed by this container")
-	var leaf = _layout_root.get_leaf_for_node(control)
+	var leaf = _layout.get_leaf_for_node(control)
 	if not leaf:
 		return
 	var position_in_leaf = leaf.find_node(control)
@@ -135,19 +133,24 @@ func set_control_as_current_tab(control: Control) -> void:
 			break
 	if not panel:
 		return
-	panel.current_tab = position_in_leaf
+	panel.current_tab = clamp(position_in_leaf, 0, panel.get_tab_count() - 1)
 
 
-func set_layout(value: Layout.LayoutNode) -> void:
+func set_layout(value: Layout) -> void:
 	if value == null:
-		value = Layout.LayoutPanel.new()
-	_layout_root.set_root(value, false)
+		value = Layout.new()
+	if value == _layout:
+		return
+	if _layout and _layout.is_connected("changed", self, "queue_sort"):
+		_layout.disconnect("changed", self, "queue_sort")
+	_layout = value
+	_layout.connect("changed", self, "queue_sort")
 	_layout_dirty = true
 	queue_sort()
 
 
-func get_layout() -> Layout.LayoutNode:
-	return _layout_root.root
+func get_layout() -> Layout:
+	return _layout
 
 
 func set_tab_align(value: int) -> void:
@@ -179,7 +182,7 @@ func _update_layout_with_children() -> void:
 		var c = get_child(i)
 		if _track_node(c):
 			names.append(c.name)
-	_layout_root.update_nodes(names)
+	_layout.update_nodes(names)
 	_layout_dirty = false
 	queue_sort()
 
@@ -201,7 +204,7 @@ func _track_and_add_node(node: Node) -> void:
 	if not _track_node(node):
 		return
 	if tracked_name and tracked_name != node.name:
-		_layout_root.rename_node(tracked_name, node.name)
+		_layout.rename_node(tracked_name, node.name)
 	_layout_dirty = true
 
 
@@ -224,6 +227,7 @@ func _resort() -> void:
 	
 	if _layout_dirty:
 		_update_layout_with_children()
+		return
 	
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
@@ -233,7 +237,7 @@ func _resort() -> void:
 	_current_split_index = 0
 	
 	var children_list = []
-	_calculate_panel_and_split_list(children_list, _layout_root.root)
+	_calculate_panel_and_split_list(children_list, _layout.root)
 	_fit_panel_and_split_list_to_rect(children_list, rect)
 	
 	_untrack_children_after(_panel_container, _current_panel_index)
@@ -336,7 +340,7 @@ static func _untrack_children_after(node, idx: int) -> void:
 
 func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
 	"""Handler for `DockablePanel.tab_layout_changed`, update its LayoutPanel"""
-	_layout_root.move_node_to_leaf(panel.get_tab_control(tab).reference_to, panel.leaf, tab)
+	_layout.move_node_to_leaf(panel.get_tab_control(tab).reference_to, panel.leaf, tab)
 	_layout_dirty = true
 	queue_sort()
 
@@ -349,4 +353,4 @@ func _on_child_renamed(child: Node) -> void:
 	_children_names.erase(old_name)
 	_children_names[child] = child.name
 	_children_names[child.name] = child
-	_layout_root.rename_node(old_name, child.name)
+	_layout.rename_node(old_name, child.name)
