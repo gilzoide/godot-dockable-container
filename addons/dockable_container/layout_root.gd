@@ -6,28 +6,28 @@ signal changed()
 const Layout = preload("res://addons/dockable_container/layout.gd")
 
 export(Resource) var root = Layout.LayoutPanel.new() setget set_root, get_root
-var parent setget , get_parent
 
 var _data: Dictionary
 var _root: Layout.LayoutNode
 var _first_leaf: Layout.LayoutPanel
+var _changed_signal_queued = false
 
 
 func set_root(value: Layout.LayoutNode, should_emit_changed = true) -> void:
 	if not value:
 		value = Layout.LayoutPanel.new()
+	if _root == value:
+		return
+	if _root and _root.is_connected("changed", self, "_on_root_changed"):
+		_root.disconnect("changed", self, "_on_root_changed")
 	_root = value
-	_root.parent = self
+	_root.connect("changed", self, "_on_root_changed")
 	if should_emit_changed:
-		emit_signal("changed")
+		_on_root_changed()
 
 
 func get_root() -> Layout.LayoutNode:
 	return _root
-
-
-func get_parent():
-	return null
 
 
 func update_nodes(names: PoolStringArray) -> void:
@@ -46,12 +46,11 @@ func update_nodes(names: PoolStringArray) -> void:
 		_remove_leaf(l)
 	if not _first_leaf:
 		_first_leaf = Layout.LayoutPanel.new()
-		root = _first_leaf
+		set_root(_first_leaf)
 	for n in names:
 		if not _data.has(n):
 			_first_leaf.push_name(n)
 			_data[n] = _first_leaf
-	emit_signal("changed")
 
 
 func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: int) -> void:
@@ -64,9 +63,8 @@ func move_node_to_leaf(node: Node, leaf: Layout.LayoutPanel, relative_position: 
 		_remove_leaf(previous_leaf)
 	
 	leaf.insert_node(relative_position, node)
+	leaf.current_tab = relative_position
 	_data[node_name] = leaf
-#	_print_tree()
-	emit_signal("changed")
 
 
 func get_leaf_for_node(node: Node) -> Layout.LayoutPanel:
@@ -87,8 +85,8 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	else:
 		new_branch.first = leaf
 		new_branch.second = new_leaf
-	if root_branch == self:
-		self.root = new_branch
+	if _root == leaf:
+		set_root(new_branch, false)
 	elif leaf == root_branch.first:
 		root_branch.first = new_branch
 	else:
@@ -103,7 +101,6 @@ func add_node(node: Node) -> void:
 		return
 	_first_leaf.push_name(node_name)
 	_data[node_name] = _first_leaf
-	emit_signal("changed")
 
 
 func remove_node(node: Node) -> void:
@@ -115,7 +112,6 @@ func remove_node(node: Node) -> void:
 	_data.erase(node_name)
 	if leaf.empty():
 		_remove_leaf(leaf)
-	emit_signal("changed")
 
 
 func rename_node(previous_name: String, new_name: String) -> void:
@@ -125,11 +121,14 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	leaf.rename_node(previous_name, new_name)
 	_data.erase(previous_name)
 	_data[new_name] = leaf
-	emit_signal("changed")
 
 
-func split_parameters_changed() -> void:
-	emit_signal("changed")
+func _on_root_changed() -> void:
+	if _changed_signal_queued:
+		return
+	_changed_signal_queued = true
+	set_deferred("_changed_signal_queued", false)
+	call_deferred("emit_signal", "changed")
 
 
 func _ensure_names_in_node(node: Layout.LayoutNode, names: PoolStringArray, empty_leaves: Array) -> void:
@@ -154,8 +153,8 @@ func _remove_leaf(leaf: Layout.LayoutPanel) -> void:
 	assert(collapsed_branch is Layout.LayoutSplit, "FIXME: leaf is not a child of branch")
 	var kept_branch = collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
 	var root_branch = collapsed_branch.parent
-	if root_branch == self:
-		self.root = kept_branch
+	if _root == collapsed_branch:
+		set_root(kept_branch, true)
 	elif collapsed_branch == root_branch.first:
 		root_branch.first = kept_branch
 	else:

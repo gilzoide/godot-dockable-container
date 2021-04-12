@@ -1,7 +1,6 @@
 tool
 extends Container
 
-signal layout_changed()
 signal child_tab_selected()
 
 const SplitHandle = preload("res://addons/dockable_container/split_handle.gd")
@@ -116,7 +115,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 	var margin = _drag_n_drop_panel.get_hover_margin()
 	_layout_root.split_leaf_with_node(_drag_panel.leaf, moved_reference, margin)
 	
-	emit_signal("layout_changed")
+	
 	queue_sort()
 
 
@@ -313,8 +312,7 @@ func _get_panel(idx: int) -> DockablePanel:
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
-	panel.connect("control_moved", self, "_on_reference_control_moved")
-	panel.connect("tab_changed", self, "_on_panel_tab_changed", [panel])
+	panel.connect("tab_layout_changed", self, "_on_panel_tab_layout_changed", [panel])
 	return panel
 
 
@@ -336,26 +334,11 @@ static func _untrack_children_after(node, idx: int) -> void:
 		child.queue_free()
 
 
-func _on_reference_control_moved(control: Control) -> void:
-	"""Handler for `DockablePanel.control_moved`, move child to the right LayoutPanel"""
-	var panel = control.get_parent_control()
-	assert(panel is DockablePanel, "FIXME: reference control was moved to something other than DockableContainerPanel")
-	
-	if panel.get_child_count() <= 1:
-		return
-	
-	var relative_position_in_leaf = control.get_position_in_parent()
-	_layout_root.move_node_to_leaf(control.reference_to, panel.leaf, relative_position_in_leaf)
-	
-	emit_signal("layout_changed")
+func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
+	"""Handler for `DockablePanel.tab_layout_changed`, update its LayoutPanel"""
+	_layout_root.move_node_to_leaf(panel.get_tab_control(tab).reference_to, panel.leaf, tab)
+	_layout_dirty = true
 	queue_sort()
-
-
-func _on_panel_tab_changed(tab: int, panel: DockablePanel) -> void:
-	"""Handler for `DockablePanel.tab_changed`, reemit signal for updating editor"""
-	if not panel.leaf or panel.leaf.empty():
-		return
-	emit_signal("child_tab_selected")
 
 
 func _on_child_renamed(child: Node) -> void:
