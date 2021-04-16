@@ -9,7 +9,7 @@
 [sub_resource type="Resource" id=1]
 resource_name = "Tabs"
 script = ExtResource( 5 )
-names = PoolStringArray( "Control" )
+names = PoolStringArray( "Control0" )
 current_tab = 0
 
 [sub_resource type="Resource" id=2]
@@ -86,6 +86,9 @@ second = SubResource( 10 )
 resource_name = "Layout"
 script = ExtResource( 2 )
 root = SubResource( 11 )
+hidden_tabs = {
+
+}
 
 [node name="SampleScene" type="VBoxContainer"]
 anchor_right = 1.0
@@ -106,7 +109,7 @@ margin_left = 345.0
 margin_right = 472.0
 margin_bottom = 20.0
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 4
 text = "(+) ADD CONTROL"
 
 [node name="SaveLayoutButton" type="Button" parent="HBoxContainer"]
@@ -114,7 +117,7 @@ margin_left = 488.0
 margin_right = 575.0
 margin_bottom = 20.0
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 4
 text = "Save Layout"
 
 [node name="LoadLayoutButton" type="Button" parent="HBoxContainer"]
@@ -122,7 +125,7 @@ margin_left = 591.0
 margin_right = 679.0
 margin_bottom = 20.0
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 4
 text = "Load Layout"
 
 [node name="ControlPrefab" type="ColorRect" parent="HBoxContainer"]
@@ -175,59 +178,59 @@ __meta__ = {
 }
 layout = SubResource( 12 )
 
-[node name="Control" type="ColorRect" parent="DockableContainer"]
+[node name="Control0" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0
 margin_top = 32.0
 margin_right = 225.821
-margin_bottom = 181.808
+margin_bottom = 180.476
 rect_min_size = Vector2( 64, 64 )
 
 [node name="Control1" type="ColorRect" parent="DockableContainer"]
 margin_left = 245.821
 margin_top = 32.0
 margin_right = 740.079
-margin_bottom = 278.0
+margin_bottom = 276.0
 rect_min_size = Vector2( 128, 128 )
 color = Color( 0.141176, 0.0745098, 0.603922, 1 )
 
 [node name="Control2" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0
-margin_top = 229.808
+margin_top = 228.476
 margin_right = 225.821
-margin_bottom = 376.904
+margin_bottom = 374.238
 rect_min_size = Vector2( 64, 64 )
 color = Color( 0.533333, 0.380392, 0.380392, 1 )
 
 [node name="Control3" type="ColorRect" parent="DockableContainer"]
 margin_left = 4.0
-margin_top = 424.904
+margin_top = 422.238
 margin_right = 225.821
-margin_bottom = 572.0
+margin_bottom = 568.0
 rect_min_size = Vector2( 64, 64 )
 color = Color( 0.741176, 0.188235, 0.188235, 1 )
 
 [node name="Control4" type="ColorRect" parent="DockableContainer"]
 margin_left = 245.821
-margin_top = 326.0
+margin_top = 324.0
 margin_right = 740.079
-margin_bottom = 572.0
+margin_bottom = 568.0
 rect_min_size = Vector2( 128, 128 )
 color = Color( 0.129412, 0.121569, 0.121569, 1 )
 
 [node name="Control5" type="ColorRect" parent="DockableContainer"]
-visible = false
 margin_left = 760.079
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 572.0
+margin_bottom = 568.0
 rect_min_size = Vector2( 64, 64 )
 color = Color( 0.333333, 0.862745, 0.8, 1 )
 
 [node name="Control6" type="ColorRect" parent="DockableContainer"]
+visible = false
 margin_left = 760.079
 margin_top = 32.0
 margin_right = 1020.0
-margin_bottom = 572.0
+margin_bottom = 568.0
 rect_min_size = Vector2( 64, 64 )
 color = Color( 0.898039, 0.921569, 0.188235, 1 )
 [connection signal="pressed" from="HBoxContainer/AddControlButton" to="." method="_on_add_pressed"]

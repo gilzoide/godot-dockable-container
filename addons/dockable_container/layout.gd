@@ -1,11 +1,13 @@
 tool
 extends Resource
 """
-Layout Resources definition.
+Layout Resource definition, holding the root LayoutNode and hidden tabs.
 
 LayoutSplit are binary trees with nested LayoutSplit subtrees and LayoutPanel
 leaves. Both of them inherit from LayoutNode to help with type annotation and
 define common funcionality.
+
+Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 """
 
 const LayoutNode = preload("res://addons/dockable_container/layout_node.gd")
@@ -13,9 +15,11 @@ const LayoutPanel = preload("res://addons/dockable_container/layout_panel.gd")
 const LayoutSplit = preload("res://addons/dockable_container/layout_split.gd")
 
 export(Resource) var root = LayoutPanel.new() setget set_root, get_root
+export(Dictionary) var hidden_tabs = {} setget set_hidden_tabs, get_hidden_tabs
 
 var _changed_signal_queued = false
 var _first_leaf: LayoutPanel
+var _hidden_tabs: Dictionary
 var _leaf_by_node_name: Dictionary
 var _root: LayoutNode = LayoutPanel.new()
 
@@ -42,9 +46,20 @@ func get_root() -> LayoutNode:
 	return _root
 
 
+func set_hidden_tabs(value: Dictionary) -> void:
+	if value != _hidden_tabs:
+		_hidden_tabs = value
+		emit_signal("changed")
+
+
+func get_hidden_tabs() -> Dictionary:
+	return _hidden_tabs
+
+
 func clone():
 	var new_layout = get_script().new()
 	new_layout.root = _root.clone()
+	new_layout._hidden_tabs = _hidden_tabs.duplicate()
 	return new_layout
 
 
@@ -148,6 +163,18 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	_leaf_by_node_name.erase(previous_name)
 	_leaf_by_node_name[new_name] = leaf
 	_on_root_changed()
+
+
+func set_node_hidden(node: Node, hidden: bool) -> void:
+	var node_name = node.name
+	if not _leaf_by_node_name.has(node_name):
+		return
+	_hidden_tabs[node_name] = hidden
+	_on_root_changed()
+
+
+func get_node_hidden(node: Node) -> bool:
+	return _hidden_tabs.get(node.name, false)
 
 
 func _on_root_changed() -> void:
