@@ -165,16 +165,26 @@ func rename_node(previous_name: String, new_name: String) -> void:
 	_on_root_changed()
 
 
-func set_node_hidden(node: Node, hidden: bool) -> void:
-	var node_name = node.name
-	if not _leaf_by_node_name.has(node_name):
+func set_tab_hidden(name: String, hidden: bool) -> void:
+	if not _leaf_by_node_name.has(name):
 		return
-	_hidden_tabs[node_name] = hidden
+	if hidden:
+		_hidden_tabs[name] = true
+	else:
+		_hidden_tabs.erase(name)
 	_on_root_changed()
 
 
+func get_tab_hidden(name: String) -> bool:
+	return _hidden_tabs.get(name, false)
+
+
+func set_node_hidden(node: Node, hidden: bool) -> void:
+	set_tab_hidden(node.name, hidden)
+
+
 func get_node_hidden(node: Node) -> bool:
-	return _hidden_tabs.get(node.name, false)
+	return get_tab_hidden(node.name)
 
 
 func _on_root_changed() -> void:
