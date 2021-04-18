@@ -116,6 +116,9 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 
 func set_control_as_current_tab(control: Control) -> void:
 	assert(control.get_parent_control() == self, "Trying to focus a control not managed by this container")
+	if get_control_hidden(control):
+		push_warning("Trying to focus a hidden control")
+		return
 	var leaf = _layout.get_leaf_for_node(control)
 	if not leaf:
 		return
@@ -172,6 +175,39 @@ func get_use_hidden_tabs_for_min_size() -> bool:
 	return _use_hidden_tabs_for_min_size
 
 
+func set_control_hidden(child: Control, hidden: bool) -> void:
+	_layout.set_node_hidden(child, hidden)
+
+
+func get_control_hidden(child: Control) -> bool:
+	return _layout.get_node_hidden(child)
+
+
+func get_tabs() -> Array:
+	var tabs = []
+	for i in get_child_count():
+		var child = get_child(i)
+		if _is_managed_node(child):
+			tabs.append(child)
+	return tabs
+
+
+func get_tab_count() -> int:
+	var count = 0
+	for i in get_child_count():
+		var child = get_child(i)
+		if _is_managed_node(child):
+			count += 1
+	return count
+
+
+func _is_managed_node(node: Node) -> bool:
+	return (node != _panel_container
+			and node != _drag_n_drop_panel
+			and node is Control
+			and not node.is_set_as_toplevel())
+
+
 func _update_layout_with_children() -> void:
 	var names = PoolStringArray()
 	_children_names.clear()
@@ -184,7 +220,7 @@ func _update_layout_with_children() -> void:
 
 
 func _track_node(node: Node) -> bool:
-	if node == _panel_container or node == _drag_n_drop_panel or not node is Control or node.is_set_as_toplevel():
+	if not _is_managed_node(node):
 		return false
 	_children_names[node] = node.name
 	_children_names[node.name] = node
@@ -251,11 +287,14 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 	if layout_node is Layout.LayoutPanel:
 		var nodes = []
 		for n in layout_node.names:
-			var node = _children_names.get(n)
+			var node: Control = _children_names.get(n)
 			if node:
 				assert(node is Control, "FIXME: node is not a control %s" % node)
 				assert(node.get_parent_control() == self, "FIXME: node is not child of container %s" % node)
-				nodes.append(node)
+				if get_control_hidden(node):
+					node.visible = false
+				else:
+					nodes.append(node)
 		if nodes.empty():
 			return null
 		else:

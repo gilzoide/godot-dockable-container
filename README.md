@@ -11,13 +11,15 @@ it's easy to save/load them.
 Child Controls are only moved visually and have their NodePaths and position in
 parent maintained.
 
+Available at the [Asset Library](https://godotengine.org/asset-library/asset/916).
+
 Live preview a sample scene [here](https://gilzoide.github.io/godot-dockable-container/).
 
 
 ## Plugin
 Enable `Dockable Container` plugin at `Project -> Project Settings -> Plugin`
 to edit the layout directly in the inspector! It also registers the
-`DockableContainer` node and the layout Resource types.
+`DockableContainer` node and `DockableContainerLayout` Resource types.
 
 ![](screenshots/video-editor.gif)
 
