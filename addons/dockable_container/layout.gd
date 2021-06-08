@@ -175,7 +175,7 @@ func set_tab_hidden(name: String, hidden: bool) -> void:
 	_on_root_changed()
 
 
-func get_tab_hidden(name: String) -> bool:
+func is_tab_hidden(name: String) -> bool:
 	return _hidden_tabs.get(name, false)
 
 
@@ -183,8 +183,8 @@ func set_node_hidden(node: Node, hidden: bool) -> void:
 	set_tab_hidden(node.name, hidden)
 
 
-func get_node_hidden(node: Node) -> bool:
-	return get_tab_hidden(node.name)
+func is_node_hidden(node: Node) -> bool:
+	return is_tab_hidden(node.name)
 
 
 func _on_root_changed() -> void:

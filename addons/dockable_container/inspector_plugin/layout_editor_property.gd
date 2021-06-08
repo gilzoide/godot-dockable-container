@@ -59,13 +59,13 @@ func _on_hidden_menu_popup_about_to_show() -> void:
 	for i in _hidden_menu_list.size():
 		var tab_name = _hidden_menu_list[i]
 		_hidden_menu_popup.add_check_item(tab_name, i)
-		_hidden_menu_popup.set_item_checked(i, not layout.get_tab_hidden(tab_name))
+		_hidden_menu_popup.set_item_checked(i, not layout.is_tab_hidden(tab_name))
 
 
 func _on_hidden_menu_popup_id_pressed(id: int) -> void:
 	var layout = _get_layout()
 	var tab_name = _hidden_menu_list[id]
-	var new_hidden = not layout.get_tab_hidden(tab_name)
+	var new_hidden = not layout.is_tab_hidden(tab_name)
 	layout.set_tab_hidden(tab_name, new_hidden)
 	_hidden_menu_popup.set_item_checked(id, not new_hidden)
 	emit_changed(get_edited_property(), layout)

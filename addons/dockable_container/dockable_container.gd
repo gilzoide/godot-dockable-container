@@ -116,7 +116,7 @@ func drop_data_fw(position: Vector2, data, from_control) -> void:
 
 func set_control_as_current_tab(control: Control) -> void:
 	assert(control.get_parent_control() == self, "Trying to focus a control not managed by this container")
-	if get_control_hidden(control):
+	if is_control_hidden(control):
 		push_warning("Trying to focus a hidden control")
 		return
 	var leaf = _layout.get_leaf_for_node(control)
@@ -179,8 +179,8 @@ func set_control_hidden(child: Control, hidden: bool) -> void:
 	_layout.set_node_hidden(child, hidden)
 
 
-func get_control_hidden(child: Control) -> bool:
-	return _layout.get_node_hidden(child)
+func is_control_hidden(child: Control) -> bool:
+	return _layout.is_node_hidden(child)
 
 
 func get_tabs() -> Array:
@@ -291,7 +291,7 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 			if node:
 				assert(node is Control, "FIXME: node is not a control %s" % node)
 				assert(node.get_parent_control() == self, "FIXME: node is not child of container %s" % node)
-				if get_control_hidden(node):
+				if is_control_hidden(node):
 					node.visible = false
 				else:
 					nodes.append(node)
