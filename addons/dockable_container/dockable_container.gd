@@ -52,7 +52,7 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_SORT_CHILDREN:
 		_resort()
-	elif what == NOTIFICATION_DRAG_BEGIN:
+	elif what == NOTIFICATION_DRAG_BEGIN and _can_handle_drag_data(get_viewport().gui_get_drag_data()):
 		_drag_n_drop_panel.visible = true
 		set_process_input(true)
 	elif what == NOTIFICATION_DRAG_END:
@@ -94,7 +94,7 @@ func remove_child(node: Node) -> void:
 
 
 func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
-	return from_control == _drag_n_drop_panel and data is Dictionary and data.get("type") == "tabc_element"
+	return from_control == _drag_n_drop_panel and _can_handle_drag_data(data)
 
 
 func drop_data_fw(position: Vector2, data, from_control) -> void:
@@ -199,6 +199,15 @@ func get_tab_count() -> int:
 		if _is_managed_node(child):
 			count += 1
 	return count
+
+
+func _can_handle_drag_data(data):
+	if data is Dictionary and data.get("type") == "tabc_element":
+		var tabc = get_node_or_null(data.get("from_path"))
+		return (tabc
+				and tabc.has_method("get_tabs_rearrange_group")
+				and tabc.get_tabs_rearrange_group() == rearrange_group)
+	return false
 
 
 func _is_managed_node(node: Node) -> bool:
