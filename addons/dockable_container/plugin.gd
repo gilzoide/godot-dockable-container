@@ -1,9 +1,9 @@
 tool
 extends EditorPlugin
 
-const DockableContainer = preload("res://addons/dockable_container/dockable_container.gd")
-const Layout = preload("res://addons/dockable_container/layout.gd")
-const LayoutInspectorPlugin = preload("res://addons/dockable_container/inspector_plugin/editor_inspector_plugin.gd")
+const DockableContainer = preload("dockable_container.gd")
+const Layout = preload("layout.gd")
+const LayoutInspectorPlugin = preload("inspector_plugin/editor_inspector_plugin.gd")
 
 var _layout_inspector_plugin = LayoutInspectorPlugin.new()
 

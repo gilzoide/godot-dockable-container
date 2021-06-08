@@ -1,5 +1,5 @@
 tool
-extends "res://addons/dockable_container/layout_node.gd"
+extends "layout_node.gd"
 """Layout leaf nodes, defining tabs"""
 
 export(PoolStringArray) var names: PoolStringArray setget set_names, get_names

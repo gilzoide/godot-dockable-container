@@ -1,7 +1,7 @@
 tool
 extends Control
 
-const Layout = preload("res://addons/dockable_container/layout.gd")
+const Layout = preload("layout.gd")
 
 const SPLIT_THEME_CLASS = [
 	"HSplitContainer",  # SPLIT_THEME_CLASS[LayoutSplit.Direction.HORIZONTAL]

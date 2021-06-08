@@ -10,9 +10,9 @@ define common funcionality.
 Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 """
 
-const LayoutNode = preload("res://addons/dockable_container/layout_node.gd")
-const LayoutPanel = preload("res://addons/dockable_container/layout_panel.gd")
-const LayoutSplit = preload("res://addons/dockable_container/layout_split.gd")
+const LayoutNode = preload("layout_node.gd")
+const LayoutPanel = preload("layout_panel.gd")
+const LayoutSplit = preload("layout_split.gd")
 
 export(Resource) var root = LayoutPanel.new() setget set_root, get_root
 export(Dictionary) var hidden_tabs = {} setget set_hidden_tabs, get_hidden_tabs

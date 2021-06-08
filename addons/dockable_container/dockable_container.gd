@@ -1,10 +1,10 @@
 tool
 extends Container
 
-const SplitHandle = preload("res://addons/dockable_container/split_handle.gd")
-const DockablePanel = preload("res://addons/dockable_container/dockable_panel.gd")
-const DragNDropPanel = preload("res://addons/dockable_container/drag_n_drop_panel.gd")
-const Layout = preload("res://addons/dockable_container/layout.gd")
+const SplitHandle = preload("split_handle.gd")
+const DockablePanel = preload("dockable_panel.gd")
+const DragNDropPanel = preload("drag_n_drop_panel.gd")
+const Layout = preload("layout.gd")
 
 export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
 export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size

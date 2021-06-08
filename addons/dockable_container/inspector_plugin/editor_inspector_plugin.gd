@@ -1,7 +1,7 @@
 extends EditorInspectorPlugin
 
-const DockableContainer = preload("res://addons/dockable_container/dockable_container.gd")
-const LayoutEditorProperty = preload("res://addons/dockable_container/inspector_plugin/layout_editor_property.gd")
+const DockableContainer = preload("../dockable_container.gd")
+const LayoutEditorProperty = preload("layout_editor_property.gd")
 
 func can_handle(object: Object) -> bool:
 	return object is DockableContainer

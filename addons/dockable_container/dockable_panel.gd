@@ -3,8 +3,8 @@ extends TabContainer
 
 signal tab_layout_changed(tab)
 
-const ReferenceControl = preload("res://addons/dockable_container/dockable_panel_reference_control.gd")
-const Layout = preload("res://addons/dockable_container/layout.gd")
+const ReferenceControl = preload("dockable_panel_reference_control.gd")
+const Layout = preload("layout.gd")
 
 var leaf: Layout.LayoutPanel setget set_leaf, get_leaf
 

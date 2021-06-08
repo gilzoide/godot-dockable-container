@@ -1,7 +1,7 @@
 extends EditorProperty
 
-const DockableContainer = preload("res://addons/dockable_container/dockable_container.gd")
-const Layout = preload("res://addons/dockable_container/layout.gd")
+const DockableContainer = preload("../dockable_container.gd")
+const Layout = preload("../layout.gd")
 
 var _container = DockableContainer.new()
 var _hidden_menu_button = MenuButton.new()
@@ -33,8 +33,7 @@ func _ready() -> void:
 
 
 func update_property() -> void:
-	var original_container: DockableContainer = get_edited_object()
-	var value = original_container.get(get_edited_property())
+	var value = _get_layout()
 	_container.set(get_edited_property(), value)
 
 

@@ -1,5 +1,5 @@
 tool
-extends "res://addons/dockable_container/layout_node.gd"
+extends "layout_node.gd"
 """Layout binary tree nodes, defining subtrees and leaf panels"""
 
 enum Direction {
@@ -7,7 +7,7 @@ enum Direction {
 	VERTICAL,
 }
 
-const LayoutPanel = preload("res://addons/dockable_container/layout_panel.gd")
+const LayoutPanel = preload("layout_panel.gd")
 
 export(Direction) var direction = Direction.HORIZONTAL setget set_direction, get_direction
 export(float, 0, 1) var percent = 0.5 setget set_percent, get_percent
