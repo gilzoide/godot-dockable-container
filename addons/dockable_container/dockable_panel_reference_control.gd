@@ -1,8 +1,7 @@
 tool
 extends Container
-"""
-Control that mimics its own visibility and rect into another Control.
-"""
+
+# Control that mimics its own visibility and rect into another Control.
 
 signal moved_in_parent(control)
 

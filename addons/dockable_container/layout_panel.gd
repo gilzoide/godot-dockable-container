@@ -1,6 +1,6 @@
 tool
 extends "layout_node.gd"
-"""Layout leaf nodes, defining tabs"""
+# Layout leaf nodes, defining tabs
 
 export(PoolStringArray) var names: PoolStringArray setget set_names, get_names
 export(int) var current_tab: int setget set_current_tab, get_current_tab

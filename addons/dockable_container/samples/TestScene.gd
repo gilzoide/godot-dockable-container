@@ -11,7 +11,7 @@ func _ready() -> void:
 	if not OS.is_userfs_persistent():
 		$HBoxContainer/SaveLayoutButton.visible = false
 		$HBoxContainer/LoadLayoutButton.visible = false
-	
+
 	var tabs = _container.get_tabs()
 	for i in tabs.size():
 		var checkbox = CheckBox.new()
@@ -23,11 +23,15 @@ func _ready() -> void:
 
 func _on_add_pressed() -> void:
 	var control = _clone_control.duplicate()
-	control.get_node("Buttons/Rename").connect("pressed", self, "_on_control_rename_button_pressed", [control])
-	control.get_node("Buttons/Remove").connect("pressed", self, "_on_control_remove_button_pressed", [control])
+	control.get_node("Buttons/Rename").connect(
+		"pressed", self, "_on_control_rename_button_pressed", [control]
+	)
+	control.get_node("Buttons/Remove").connect(
+		"pressed", self, "_on_control_remove_button_pressed", [control]
+	)
 	control.color = Color(randf(), randf(), randf())
 	control.name = "Control0"
-	
+
 	_container.add_child(control, true)
 	yield(_container, "sort_children")
 	_container.set_control_as_current_tab(control)

@@ -6,6 +6,7 @@ const LayoutInspectorPlugin = preload("inspector_plugin/editor_inspector_plugin.
 
 var _layout_inspector_plugin = LayoutInspectorPlugin.new()
 
+
 func _enter_tree() -> void:
 	add_custom_type("DockableContainer", "Container", DockableContainer, null)
 	add_inspector_plugin(_layout_inspector_plugin)
