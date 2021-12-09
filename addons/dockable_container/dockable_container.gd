@@ -6,7 +6,9 @@ const DockablePanel = preload("dockable_panel.gd")
 const DragNDropPanel = preload("drag_n_drop_panel.gd")
 const Layout = preload("layout.gd")
 
+# gdlint: ignore=max-line-length
 export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
+# gdlint: ignore=max-line-length
 export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size
 export(int) var rearrange_group = 0
 export(Resource) var layout = Layout.new() setget set_layout, get_layout
@@ -36,13 +38,13 @@ func _ready() -> void:
 	_split_container.name = "_split_container"
 	_split_container.mouse_filter = MOUSE_FILTER_PASS
 	_panel_container.add_child(_split_container)
-	
+
 	_drag_n_drop_panel.name = "_drag_n_drop_panel"
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
 	_drag_n_drop_panel.set_drag_forwarding(self)
 	_drag_n_drop_panel.visible = false
 	.add_child(_drag_n_drop_panel)
-	
+
 	if not _layout:
 		set_layout(null)
 	elif clone_layout_on_ready and not Engine.editor_hint:
@@ -52,7 +54,10 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_SORT_CHILDREN:
 		_resort()
-	elif what == NOTIFICATION_DRAG_BEGIN and _can_handle_drag_data(get_viewport().gui_get_drag_data()):
+	elif (
+		what == NOTIFICATION_DRAG_BEGIN
+		and _can_handle_drag_data(get_viewport().gui_get_drag_data())
+	):
 		_drag_n_drop_panel.visible = true
 		set_process_input(true)
 	elif what == NOTIFICATION_DRAG_END:
@@ -93,29 +98,32 @@ func remove_child(node: Node) -> void:
 	_untrack_node(node)
 
 
-func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
+func can_drop_data_fw(_position: Vector2, data, from_control) -> bool:
 	return from_control == _drag_n_drop_panel and _can_handle_drag_data(data)
 
 
-func drop_data_fw(position: Vector2, data, from_control) -> void:
+func drop_data_fw(_position: Vector2, data, from_control) -> void:
 	assert(from_control == _drag_n_drop_panel, "FIXME")
-	
+
 	var from_node: DockablePanel = get_node(data.from_path)
 	if _drag_panel == null or (from_node == _drag_panel and _drag_panel.get_child_count() == 1):
 		return
-	
+
 	var moved_tab = from_node.get_tab_control(data.tabc_element)
 	var moved_reference = moved_tab.reference_to
-	
+
 	var margin = _drag_n_drop_panel.get_hover_margin()
 	_layout.split_leaf_with_node(_drag_panel.leaf, moved_reference, margin)
 	_layout_dirty = true
-	
+
 	queue_sort()
 
 
 func set_control_as_current_tab(control: Control) -> void:
-	assert(control.get_parent_control() == self, "Trying to focus a control not managed by this container")
+	assert(
+		control.get_parent_control() == self,
+		"Trying to focus a control not managed by this container"
+	)
 	if is_control_hidden(control):
 		push_warning("Trying to focus a hidden control")
 		return
@@ -204,17 +212,21 @@ func get_tab_count() -> int:
 func _can_handle_drag_data(data):
 	if data is Dictionary and data.get("type") == "tabc_element":
 		var tabc = get_node_or_null(data.get("from_path"))
-		return (tabc
-				and tabc.has_method("get_tabs_rearrange_group")
-				and tabc.get_tabs_rearrange_group() == rearrange_group)
+		return (
+			tabc
+			and tabc.has_method("get_tabs_rearrange_group")
+			and tabc.get_tabs_rearrange_group() == rearrange_group
+		)
 	return false
 
 
 func _is_managed_node(node: Node) -> bool:
-	return (node != _panel_container
-			and node != _drag_n_drop_panel
-			and node is Control
-			and not node.is_set_as_toplevel())
+	return (
+		node != _panel_container
+		and node != _drag_n_drop_panel
+		and node is Control
+		and not node.is_set_as_toplevel()
+	)
 
 
 func _update_layout_with_children() -> void:
@@ -265,41 +277,43 @@ func _resort() -> void:
 		move_child(_panel_container, 0)
 	if _drag_n_drop_panel.get_position_in_parent() < get_child_count() - 1:
 		_drag_n_drop_panel.raise()
-	
+
 	if _layout_dirty:
 		_update_layout_with_children()
-	
+
 	var rect = Rect2(Vector2.ZERO, rect_size)
 	fit_child_in_rect(_panel_container, rect)
 	_panel_container.fit_child_in_rect(_split_container, rect)
-	
+
 	_current_panel_index = 1
 	_current_split_index = 0
-	
+
 	var children_list = []
 	_calculate_panel_and_split_list(children_list, _layout.root)
 	_fit_panel_and_split_list_to_rect(children_list, rect)
-	
+
 	_untrack_children_after(_panel_container, _current_panel_index)
 	_untrack_children_after(_split_container, _current_split_index)
 
 
 func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNode):
-	"""
-	Calculate DockablePanel and SplitHandle minimum sizes, skipping empty branches.
-	
-	Returns a DockablePanel on non-empty leaves, a SplitHandle on non-empty
-	splits, `null` if the whole branch is empty and no space should be used.
-	
-	`result` will be filled with the non-empty nodes in this post-order tree traversal.
-	"""
+#	Calculate DockablePanel and SplitHandle minimum sizes, skipping empty branches.
+#
+#	Returns a DockablePanel on non-empty leaves, a SplitHandle on non-empty
+#	splits, `null` if the whole branch is empty and no space should be used.
+#
+#	`result` will be filled with the non-empty nodes in this post-order tree traversal.
+
 	if layout_node is Layout.LayoutPanel:
 		var nodes = []
 		for n in layout_node.names:
 			var node: Control = _children_names.get(n)
 			if node:
 				assert(node is Control, "FIXME: node is not a control %s" % node)
-				assert(node.get_parent_control() == self, "FIXME: node is not child of container %s" % node)
+				assert(
+					node.get_parent_control() == self,
+					"FIXME: node is not child of container %s" % node
+				)
 				if is_control_hidden(node):
 					node.visible = false
 				else:
@@ -334,11 +348,10 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 
 
 func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2) -> void:
-	"""
-	Traverse list from back to front fitting controls where they belong.
-	
-	Be sure to call this with the result from `_calculate_split_minimum_sizes`.
-	"""
+#	Traverse list from back to front fitting controls where they belong.
+#
+#	Be sure to call this with the result from `_calculate_split_minimum_sizes`.
+
 	var control = panel_and_split_list.pop_back()
 	if control is DockablePanel:
 		_panel_container.fit_child_in_rect(control, rect)

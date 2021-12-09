@@ -1,6 +1,6 @@
 tool
 extends "layout_node.gd"
-"""Layout binary tree nodes, defining subtrees and leaf panels"""
+# Layout binary tree nodes, defining subtrees and leaf panels
 
 enum Direction {
 	HORIZONTAL,
