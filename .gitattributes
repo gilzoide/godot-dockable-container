@@ -1,0 +1,13 @@
+# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
+
+# Ignore some files when exporting to a ZIP.
+/.editorconfig      export-ignore
+/.git*              export-ignore
+/.github/**         export-ignore
+/LICENSE            export-ignore
+/README.md          export-ignore
+/*.cfg              export-ignore
+/*.godot            export-ignore
+/*.png*             export-ignore
+/screenshots/**     export-ignore
