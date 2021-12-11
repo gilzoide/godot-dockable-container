@@ -1,6 +1,5 @@
 tool
 extends Resource
-
 # Layout Resource definition, holding the root LayoutNode and hidden tabs.
 #
 # LayoutSplit are binary trees with nested LayoutSplit subtrees and LayoutPanel
@@ -66,13 +65,12 @@ func get_names() -> PoolStringArray:
 	return _root.get_names()
 
 
-func update_nodes(names: PoolStringArray) -> void:
-#	Add missing nodes on first leaf and remove nodes outside indices from leaves.
+# Add missing nodes on first leaf and remove nodes outside indices from leaves.
 #
-#	_leaf_by_node_name = {
-#		(string keys) = respective Leaf that holds the node name,
-#	}
-
+# _leaf_by_node_name = {
+#     (string keys) = respective Leaf that holds the node name,
+# }
+func update_nodes(names: PoolStringArray) -> void:
 	_leaf_by_node_name.clear()
 	_first_leaf = null
 	var empty_leaves = []

@@ -296,14 +296,15 @@ func _resort() -> void:
 	_untrack_children_after(_split_container, _current_split_index)
 
 
+# Calculate DockablePanel and SplitHandle minimum sizes, skipping empty
+# branches.
+#
+# Returns a DockablePanel on non-empty leaves, a SplitHandle on non-empty
+# splits, `null` if the whole branch is empty and no space should be used.
+#
+# `result` will be filled with the non-empty nodes in this post-order tree
+# traversal.
 func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNode):
-#	Calculate DockablePanel and SplitHandle minimum sizes, skipping empty branches.
-#
-#	Returns a DockablePanel on non-empty leaves, a SplitHandle on non-empty
-#	splits, `null` if the whole branch is empty and no space should be used.
-#
-#	`result` will be filled with the non-empty nodes in this post-order tree traversal.
-
 	if layout_node is Layout.LayoutPanel:
 		var nodes = []
 		for n in layout_node.names:
@@ -347,11 +348,10 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 		push_warning("FIXME: invalid Resource, should be branch or leaf, found %s" % layout_node)
 
 
-func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2) -> void:
-#	Traverse list from back to front fitting controls where they belong.
+# Traverse list from back to front fitting controls where they belong.
 #
-#	Be sure to call this with the result from `_calculate_split_minimum_sizes`.
-
+# Be sure to call this with the result from `_calculate_split_minimum_sizes`.
+func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2) -> void:
 	var control = panel_and_split_list.pop_back()
 	if control is DockablePanel:
 		_panel_container.fit_child_in_rect(control, rect)
