@@ -8,6 +8,7 @@ const Layout = preload("layout.gd")
 
 # gdlint: ignore=max-line-length
 export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
+export(bool) var tabs_visible := true setget set_tabs_visible, get_tabs_visible
 # gdlint: ignore=max-line-length
 export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size
 export(int) var rearrange_group = 0
@@ -23,6 +24,7 @@ var _split_container = Container.new()
 var _drag_n_drop_panel = DragNDropPanel.new()
 var _drag_panel: DockablePanel
 var _tab_align = TabContainer.ALIGN_CENTER
+var _tabs_visible = true
 var _use_hidden_tabs_for_min_size = false
 var _current_panel_index = 0
 var _current_split_index = 0
@@ -170,6 +172,17 @@ func set_tab_align(value: int) -> void:
 
 func get_tab_align() -> int:
 	return _tab_align
+
+
+func set_tabs_visible(value: bool) -> void:
+	_tabs_visible = value
+	for i in range(1, _panel_container.get_child_count()):
+		var panel = _panel_container.get_child(i)
+		panel.tabs_visible = value
+
+
+func get_tabs_visible() -> bool:
+	return _tabs_visible
 
 
 func set_use_hidden_tabs_for_min_size(value: bool) -> void:
@@ -369,6 +382,7 @@ func _get_panel(idx: int) -> DockablePanel:
 		return _panel_container.get_child(idx)
 	var panel = DockablePanel.new()
 	panel.tab_align = _tab_align
+	panel.tabs_visible = _tabs_visible
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
