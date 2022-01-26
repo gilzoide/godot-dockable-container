@@ -6,22 +6,22 @@ const Layout = preload("../layout.gd")
 var _container = DockableContainer.new()
 var _hidden_menu_button = MenuButton.new()
 var _hidden_menu_popup: PopupMenu
-var _hidden_menu_list: PoolStringArray
+var _hidden_menu_list: PackedStringArray
 
 
 func _ready() -> void:
 	rect_min_size = Vector2(128, 256)
-
+	
 	_hidden_menu_button.text = "Visible nodes"
 	add_child(_hidden_menu_button)
 	_hidden_menu_popup = _hidden_menu_button.get_popup()
 	_hidden_menu_popup.hide_on_checkable_item_selection = false
-	_hidden_menu_popup.connect("about_to_show", self, "_on_hidden_menu_popup_about_to_show")
-	_hidden_menu_popup.connect("id_pressed", self, "_on_hidden_menu_popup_id_pressed")
-
+	_hidden_menu_popup.connect(&"about_to_show", self._on_hidden_menu_popup_about_to_show)
+	_hidden_menu_popup.connect(&"id_pressed", self._on_hidden_menu_popup_id_pressed)
+	
 	_container.clone_layout_on_ready = false
 	_container.rect_min_size = rect_min_size
-
+	
 	var original_container: DockableContainer = get_edited_object()
 	var value = original_container.get(get_edited_property())
 	_container.set(get_edited_property(), value)

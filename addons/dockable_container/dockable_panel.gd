@@ -1,4 +1,4 @@
-tool
+@tool
 extends TabContainer
 
 signal tab_layout_changed(tab)
@@ -6,7 +6,13 @@ signal tab_layout_changed(tab)
 const ReferenceControl = preload("dockable_panel_reference_control.gd")
 const Layout = preload("layout.gd")
 
-var leaf: Layout.LayoutPanel setget set_leaf, get_leaf
+var leaf: Layout.LayoutPanel:
+	get:
+		# TODO: Manually copy the code from this method.
+		return get_leaf()
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_leaf(value)
 
 var _leaf: Layout.LayoutPanel
 
@@ -16,13 +22,13 @@ func _ready() -> void:
 
 
 func _enter_tree() -> void:
-	connect("tab_selected", self, "_on_tab_selected")
-	connect("tab_changed", self, "_on_tab_changed")
+	connect("tab_selected", Callable(self, "_on_tab_selected"))
+	connect("tab_changed", Callable(self, "_on_tab_changed"))
 
 
 func _exit_tree() -> void:
-	disconnect("tab_selected", self, "_on_tab_selected")
-	disconnect("tab_changed", self, "_on_tab_changed")
+	disconnect("tab_selected", Callable(self, "_on_tab_selected"))
+	disconnect("tab_changed", Callable(self, "_on_tab_changed"))
 
 
 func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:

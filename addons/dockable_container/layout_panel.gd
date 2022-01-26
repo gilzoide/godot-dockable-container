@@ -1,11 +1,23 @@
-tool
+@tool
 extends "layout_node.gd"
 # Layout leaf nodes, defining tabs
 
-export(PoolStringArray) var names: PoolStringArray setget set_names, get_names
-export(int) var current_tab: int setget set_current_tab, get_current_tab
+@export var names: PackedStringArray:
+	get:
+		# TODO: Manually copy the code from this method.
+		return get_names()
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_names(value)
+@export var current_tab: int:
+	get:
+		# TODO: Manually copy the code from this method.
+		return get_current_tab()
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_current_tab(value)
 
-var _names := PoolStringArray()
+var _names := PackedStringArray()
 var _current_tab := 0
 
 
@@ -30,12 +42,12 @@ func get_current_tab() -> int:
 	return int(clamp(_current_tab, 0, _names.size() - 1))
 
 
-func set_names(value: PoolStringArray) -> void:
+func set_names(value: PackedStringArray) -> void:
 	_names = value
 	emit_tree_changed()
 
 
-func get_names() -> PoolStringArray:
+func get_names() -> PackedStringArray:
 	return _names
 
 
@@ -63,7 +75,7 @@ func find_node(node: Node):
 func remove_node(node: Node) -> void:
 	var i = find_node(node)
 	if i >= 0:
-		_names.remove(i)
+		_names.remove_at(i)
 		emit_tree_changed()
 	else:
 		push_warning("Remove failed, node '%s' was not found" % node)
@@ -79,16 +91,16 @@ func rename_node(previous_name: String, new_name: String) -> void:
 
 
 func empty() -> bool:
-	return _names.empty()
+	return _names.is_empty()
 
 
-func update_nodes(node_names: PoolStringArray, data: Dictionary):
+func update_nodes(node_names: PackedStringArray, data: Dictionary):
 	var i = 0
 	var removed_any = false
 	while i < _names.size():
 		var current = _names[i]
 		if not current in node_names or data.has(current):
-			_names.remove(i)
+			_names.remove_at(i)
 			removed_any = true
 		else:
 			data[current] = self

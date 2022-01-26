@@ -6,9 +6,9 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
+config_version=5
 
-_global_script_classes=[  ]
+_global_script_classes=[]
 _global_script_class_icons={
 }
 
@@ -24,10 +24,11 @@ Layout information is stored in Resource objects, so they can be saved/loaded fr
 This plugin also offers a replica of the Container layout to be edited directly in the inspector."
 run/main_scene="res://addons/dockable_container/samples/TestScene.tscn"
 config/icon="res://icon.png"
+config/features=PackedStringArray("4.0")
 
 [editor_plugins]
 
-enabled=PoolStringArray( "dockable_container" )
+enabled=PackedStringArray("res://addons/dockable_container/plugin.cfg")
 
 [physics]
 
@@ -38,3 +39,4 @@ common/enable_pause_aware_picking=true
 quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
+environment/default_environment="res://default_env.tres"

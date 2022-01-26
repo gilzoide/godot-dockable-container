@@ -1,4 +1,4 @@
-tool
+@tool
 extends Resource
 # Base class for Layout tree nodes
 
@@ -12,19 +12,23 @@ func emit_tree_changed() -> void:
 		node = node.parent
 
 
-# Returns a deep copy of the layout.
-#
-# Use this instead of `Resource.duplicate(true)` to ensure objects have the
-# right script and parenting is correctly set for each node.
 func clone():
-	assert(false, "FIXME: implement on child")
+	
+	# Returns a deep copy of the layout.
+	# 
+	# Use this instead of `Resource.duplicate(true)` to ensure objects have the
+	# right script and parenting is correctly set for each node.
+	
+	assert("FIXME: implement on child")
 
 
-# Returns whether there are any nodes
 func empty() -> bool:
+	# Returns whether there are any nodes
+	assert("FIXME: implement on child")
 	return true
 
 
-# Returns all tab names in this node
-func get_names() -> PoolStringArray:
-	return PoolStringArray()
+func get_names() -> PackedStringArray:
+	# Returns all tab names in this node
+	assert("FIXME: implement on child")
+	return PackedStringArray()
