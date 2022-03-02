@@ -16,7 +16,7 @@ func _ready() -> void:
 	for i in tabs.size():
 		var checkbox = CheckBox.new()
 		checkbox.text = str(i)
-		checkbox.pressed = not _container.is_control_hidden(tabs[i])
+		checkbox.button_pressed = not _container.is_control_hidden(tabs[i])
 		checkbox.connect(&"toggled", self._on_CheckButton_toggled, [tabs[i]])
 		_checkbox_container.add_child(checkbox)
 

@@ -15,8 +15,7 @@ current_tab = 0
 resource_name = "Layout"
 script = ExtResource( "2" )
 root = SubResource( "Resource_5gojc" )
-hidden_tabs = {
-}
+hidden_tabs = {}
 
 [node name="SampleScene" type="VBoxContainer"]
 anchor_right = 1.0
@@ -28,30 +27,30 @@ __meta__ = {
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 offset_right = 1024.0
-offset_bottom = 29.0
+offset_bottom = 31.0
 theme_override_constants/separation = 16
 alignment = 1
 
 [node name="AddControlButton" type="Button" parent="HBoxContainer"]
-offset_left = 314.0
-offset_right = 465.0
-offset_bottom = 29.0
+offset_left = 320.0
+offset_right = 467.0
+offset_bottom = 31.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "(+) ADD CONTROL"
 
 [node name="SaveLayoutButton" type="Button" parent="HBoxContainer"]
-offset_left = 481.0
-offset_right = 586.0
-offset_bottom = 29.0
+offset_left = 483.0
+offset_right = 584.0
+offset_bottom = 31.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Save Layout"
 
 [node name="LoadLayoutButton" type="Button" parent="HBoxContainer"]
-offset_left = 602.0
-offset_right = 709.0
-offset_bottom = 29.0
+offset_left = 600.0
+offset_right = 703.0
+offset_bottom = 31.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Load Layout"
@@ -95,7 +94,7 @@ __meta__ = {
 }
 
 [node name="DockableContainer" type="Container" parent="."]
-offset_top = 33.0
+offset_top = 35.0
 offset_right = 1024.0
 offset_bottom = 600.0
 size_flags_horizontal = 3
@@ -109,49 +108,42 @@ use_hidden_tabs_for_min_size = false
 layout = SubResource( "12" )
 
 [node name="Control0" type="ColorRect" parent="DockableContainer"]
-offset_left = 4.0
-offset_top = 41.0
-offset_right = 1020.0
-offset_bottom = 563.0
+offset_top = 31.0
+offset_right = 1024.0
+offset_bottom = 565.0
 rect_min_size = Vector2(64, 64)
 
 [node name="Control1" type="ColorRect" parent="DockableContainer"]
-visible = false
 offset_right = 128.0
 offset_bottom = 128.0
 rect_min_size = Vector2(128, 128)
 color = Color(0.141176, 0.0745098, 0.603922, 1)
 
 [node name="Control2" type="ColorRect" parent="DockableContainer"]
-visible = false
 offset_right = 64.0
 offset_bottom = 64.0
 rect_min_size = Vector2(64, 64)
 color = Color(0.533333, 0.380392, 0.380392, 1)
 
 [node name="Control3" type="ColorRect" parent="DockableContainer"]
-visible = false
 offset_right = 64.0
 offset_bottom = 64.0
 rect_min_size = Vector2(64, 64)
 color = Color(0.741176, 0.188235, 0.188235, 1)
 
 [node name="Control4" type="ColorRect" parent="DockableContainer"]
-visible = false
 offset_right = 128.0
 offset_bottom = 128.0
 rect_min_size = Vector2(128, 128)
 color = Color(0.129412, 0.121569, 0.121569, 1)
 
 [node name="Control5" type="ColorRect" parent="DockableContainer"]
-visible = false
 offset_right = 64.0
 offset_bottom = 64.0
 rect_min_size = Vector2(64, 64)
 color = Color(0.333333, 0.862745, 0.8, 1)
 
 [node name="Control6" type="ColorRect" parent="DockableContainer"]
-visible = false
 offset_right = 64.0
 offset_bottom = 64.0
 rect_min_size = Vector2(64, 64)

@@ -110,11 +110,11 @@ func remove_child(node: Node) -> void:
 	_untrack_node(node)
 
 
-func can_drop_data_fw(position: Vector2, data, from_control) -> bool:
+func _can_drop_data_fw(position: Vector2, data, from_control) -> bool:
 	return from_control == _drag_n_drop_panel and data is Dictionary and data.get("type") == "tabc_element"
 
 
-func drop_data_fw(position: Vector2, data, from_control) -> void:
+func _drop_data_fw(position: Vector2, data, from_control) -> void:
 	assert(from_control == _drag_n_drop_panel, "FIXME")
 	
 	var from_node: DockablePanel = get_node(data.from_path)
@@ -353,9 +353,9 @@ func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2)
 		_panel_container.fit_child_in_rect(control, rect)
 	elif control is SplitHandle:
 		var split_rects = control.get_split_rects(rect)
-		_split_container.fit_child_in_rect(control, split_rects) # REMOVETHIS original: _split_container.fit_child_in_rect(control, split_rects.self)
-		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects.first)
-		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects.second)
+		_split_container.fit_child_in_rect(control, split_rects['self']) # REMOVETHIS original: _split_container.fit_child_in_rect(control, split_rects.self)
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects['first'])
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects['second'])
 
 
 func _get_panel(idx: int) -> DockablePanel:
