@@ -22,7 +22,7 @@ func clone():
 	assert("FIXME: implement on child")
 
 
-func empty() -> bool:
+func is_empty() -> bool:
 	# Returns whether there are any nodes
 	assert("FIXME: implement on child")
 	return true

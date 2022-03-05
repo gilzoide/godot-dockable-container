@@ -111,7 +111,7 @@ func move_node_to_leaf(node: Node, leaf: LayoutPanel, relative_position: int) ->
 	if not previous_leaf:
 		return
 	previous_leaf.remove_node(node)
-	if previous_leaf.empty():
+	if previous_leaf.is_empty():
 		_remove_leaf(previous_leaf)
 	
 	leaf.insert_node(relative_position, node)
@@ -212,7 +212,7 @@ func _on_root_changed() -> void:
 func _ensure_names_in_node(node: LayoutNode, names: PackedStringArray, empty_leaves: Array) -> void:
 	if node is LayoutPanel:
 		node.update_nodes(names, _leaf_by_node_name)
-		if node.empty():
+		if node.is_empty():
 			empty_leaves.append(node)
 		if not _first_leaf:
 			_first_leaf = node

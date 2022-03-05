@@ -16,7 +16,7 @@ func _ready() -> void:
 	add_child(_hidden_menu_button)
 	_hidden_menu_popup = _hidden_menu_button.get_popup()
 	_hidden_menu_popup.hide_on_checkable_item_selection = false
-	_hidden_menu_popup.connect(&"about_to_show", self._on_hidden_menu_popup_about_to_show)
+	_hidden_menu_popup.connect(&"about_to_popup", self._on_hidden_menu_popup_about_to_show)
 	_hidden_menu_popup.connect(&"id_pressed", self._on_hidden_menu_popup_id_pressed)
 	
 	_container.clone_layout_on_ready = false
@@ -45,8 +45,8 @@ func _get_layout() -> Layout:
 func _create_child_control(named: String) -> Control:
 	var new_control = Label.new()
 	new_control.name = named
-	new_control.align = Label.ALIGN_CENTER
-	new_control.valign = Label.VALIGN_CENTER
+	new_control.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	new_control.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	new_control.clip_text = true
 	new_control.text = named
 	return new_control

@@ -90,7 +90,7 @@ func rename_node(previous_name: String, new_name: String) -> void:
 		push_warning("Rename failed, name '%s' was not found" % previous_name)
 
 
-func empty() -> bool:
+func is_empty() -> bool:
 	return _names.is_empty()
 
 
