@@ -61,10 +61,10 @@ func _notification(what: int) -> void:
 		what == NOTIFICATION_DRAG_BEGIN
 		and _can_handle_drag_data(get_viewport().gui_get_drag_data())
 	):
-		_drag_n_drop_panel.visible = true
+		_drag_n_drop_panel.set_enabled(true, not _layout.root.empty())
 		set_process_input(true)
 	elif what == NOTIFICATION_DRAG_END:
-		_drag_n_drop_panel.visible = false
+		_drag_n_drop_panel.set_enabled(false)
 		set_process_input(false)
 
 
@@ -109,7 +109,7 @@ func drop_data_fw(_position: Vector2, data, from_control) -> void:
 	assert(from_control == _drag_n_drop_panel, "FIXME")
 
 	var from_node: TabContainer = get_node(data.from_path)
-	if _drag_panel == null or (from_node == _drag_panel and _drag_panel.get_child_count() == 1):
+	if from_node == _drag_panel and _drag_panel.get_child_count() == 1:
 		return
 
 	var moved_tab = from_node.get_tab_control(data.tabc_element)
@@ -119,10 +119,11 @@ func drop_data_fw(_position: Vector2, data, from_control) -> void:
 		moved_tab.get_parent().remove_child(moved_tab)
 		add_child(moved_tab)
 
-	var margin = _drag_n_drop_panel.get_hover_margin()
-	_layout.split_leaf_with_node(_drag_panel.leaf, moved_tab, margin)
-	_layout_dirty = true
+	if _drag_panel != null:
+		var margin = _drag_n_drop_panel.get_hover_margin()
+		_layout.split_leaf_with_node(_drag_panel.leaf, moved_tab, margin)
 
+	_layout_dirty = true
 	queue_sort()
 
 
