@@ -3,6 +3,7 @@
 
 # Ignore some files when exporting to a ZIP.
 /.editorconfig      export-ignore
+/.gdlintrc          export-ignore
 /.git*              export-ignore
 /.github/**         export-ignore
 /LICENSE            export-ignore
