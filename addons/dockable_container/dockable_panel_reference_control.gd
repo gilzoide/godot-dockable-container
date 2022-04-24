@@ -2,8 +2,6 @@ tool
 extends Container
 # Control that mimics its own visibility and rect into another Control.
 
-signal moved_in_parent(control)
-
 var reference_to: Control setget set_reference_to, get_reference_to
 
 var _reference_to: Control = null
