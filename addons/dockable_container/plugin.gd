@@ -3,13 +3,14 @@ extends EditorPlugin
 
 const DockableContainer = preload("dockable_container.gd")
 const LayoutInspectorPlugin = preload("inspector_plugin/editor_inspector_plugin.gd")
+const Icon = preload("res://addons/dockable_container/icon.svg")
 
 var _layout_inspector_plugin
 
 
 func _enter_tree() -> void:
 	_layout_inspector_plugin = LayoutInspectorPlugin.new()
-	add_custom_type("DockableContainer", "Container", DockableContainer, null)
+	add_custom_type("DockableContainer", "Container", DockableContainer, Icon)
 	add_inspector_plugin(_layout_inspector_plugin)
 
 
