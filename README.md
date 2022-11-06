@@ -36,4 +36,4 @@ Tabs alignment and rearrange group are exported in DockableContainer.
 
 
 ## Credits
-Node icon made by [Nif-kun](https://github.com/Nif-kun) under [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/).
+Node icon made by [Nif-kun](https://github.com/Nif-kun). Licensed under [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/).
