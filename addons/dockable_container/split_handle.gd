@@ -96,7 +96,6 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 	var size = rect.size
 	var percent = layout_split.percent
 	if layout_split.is_horizontal():
-		var first_width = max((size.x - separation) * percent, first_minimum_size.x)
 		var split_offset = clamp(
 			size.x * percent - separation * 0.5,
 			first_minimum_size.x,
@@ -110,7 +109,6 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 			"second": Rect2(origin.x + split_offset + separation, origin.y, second_width, size.y),
 		}
 	else:
-		var first_height = max((size.y - separation) * percent, first_minimum_size.y)
 		var split_offset = clamp(
 			size.y * percent - separation * 0.5,
 			first_minimum_size.y,
@@ -123,9 +121,3 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 			"self": Rect2(origin.x, origin.y + split_offset, size.x, separation),
 			"second": Rect2(origin.x, origin.y + split_offset + separation, size.x, second_height),
 		}
-
-
-static func get_separation_with_control(control: Control) -> Vector2:
-	var hseparation = control.get_constant("separation", "HSplitContainer")
-	var vseparation = control.get_constant("separation", "VSplitContainer")
-	return Vector2(hseparation, vseparation)
