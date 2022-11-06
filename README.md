@@ -36,4 +36,4 @@ Tabs alignment and rearrange group are exported in DockableContainer.
 
 
 ## Credits
-**Dashboard** icon by The Icon Z from the Noun Project: https://thenounproject.com/term/dashboard/3846734
+Node icon made by [Nif-kun](https://github.com/Nif-kun) under [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/).

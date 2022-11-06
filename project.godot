@@ -27,7 +27,7 @@ config/icon="res://icon.png"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "dockable_container" )
+enabled=PoolStringArray( "res://addons/dockable_container/plugin.cfg" )
 
 [physics]
 
