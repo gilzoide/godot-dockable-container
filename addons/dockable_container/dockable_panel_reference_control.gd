@@ -9,12 +9,13 @@ var _reference_to: Control = null
 
 func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
+	set_notify_transform(true)
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_VISIBILITY_CHANGED and _reference_to:
 		_reference_to.visible = visible
-	elif what == NOTIFICATION_SORT_CHILDREN and _reference_to:
+	elif what == NOTIFICATION_TRANSFORM_CHANGED and _reference_to:
 		_reposition_reference()
 
 
