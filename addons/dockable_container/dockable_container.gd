@@ -85,6 +85,12 @@ func _input(event: InputEvent) -> void:
 
 
 func convert_to_window(node: Node):
+	var leaf = _layout.get_leaf_for_node(node)
+	if not leaf:
+		return
+	var position_in_leaf = leaf.find_node(node)
+	if position_in_leaf < 0:
+		return
 	var old_layout = get_layout().clone()
 	remove_child(node)
 	node.rect_global_position = Vector2.ZERO
