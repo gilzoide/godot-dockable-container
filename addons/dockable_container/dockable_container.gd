@@ -19,8 +19,6 @@ export(Resource) var layout = Layout.new() setget set_layout, get_layout
 # restore layout to its default later.
 export(bool) var clone_layout_on_ready = true
 
-var windows: Control
-
 var _layout = Layout.new()
 var _panel_container = Container.new()
 var _split_container = Container.new()
@@ -97,14 +95,15 @@ func convert_to_window(node: Node):
 	window.popup_exclusive = true
 	window.resizable = true
 	window.add_child(node)
-	windows.add_child(window)
+	add_child(window)
 	window.show()
 	window.connect("visibility_changed", self, "_convert_to_pannel", [node, old_layout])
 	window.connect("item_rect_changed", self, "_change_content_rect", [node])
 
 
 func _change_content_rect(content):
-	content.rect_size = content.get_parent().rect_size
+	var window = content.get_parent()
+	content.rect_size = window.rect_size
 	content.rect_position = Vector2.ZERO
 
 
@@ -112,12 +111,11 @@ func _convert_to_pannel(content, old_layout):
 	var window = content.get_parent()
 	if window.visible:
 		return
-	content.get_parent().remove_child(content)
+	window.remove_child(content)
 	add_child(content)
 	window.queue_free()
-	yield(get_tree(), "idle_frame")
-	Global.top_menu_container.ui.layout = old_layout
-	
+	self.layout = old_layout
+
 
 func add_child(node: Node, legible_unique_name: bool = false) -> void:
 	.add_child(node, legible_unique_name)
@@ -219,7 +217,11 @@ func set_tabs_visible(value: bool) -> void:
 	_tabs_visible = value
 	for i in range(1, _panel_container.get_child_count()):
 		var panel = _panel_container.get_child(i)
-		panel.tabs_visible = value
+		if panel.get_tab_count() >= 2:
+			panel.tabs_visible = true
+		else:
+			panel.tabs_visible = value
+	queue_sort()
 
 
 func get_tabs_visible() -> bool:
