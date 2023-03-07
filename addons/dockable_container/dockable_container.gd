@@ -84,6 +84,45 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
 
 
+func convert_to_window(node: Node):
+	var leaf = _layout.get_leaf_for_node(node)
+	if not leaf:
+		return
+	var position_in_leaf = leaf.find_node(node)
+	if position_in_leaf < 0:
+		return
+	var old_layout = get_layout().clone()
+	remove_child(node)
+	node.rect_global_position = Vector2.ZERO
+	var window = WindowDialog.new()
+	window.rect_min_size = node.rect_min_size
+	window.rect_size = node.rect_size
+	window.rect_position = OS.get_screen_size() / 2 - window.rect_size / 2
+	window.popup_exclusive = true
+	window.resizable = true
+	window.add_child(node)
+	add_child(window)
+	window.show()
+	window.connect("visibility_changed", self, "_convert_to_pannel", [node, old_layout])
+	window.connect("item_rect_changed", self, "_change_content_rect", [node])
+
+
+func _change_content_rect(content):
+	var window = content.get_parent()
+	content.rect_size = window.rect_size
+	content.rect_position = Vector2.ZERO
+
+
+func _convert_to_pannel(content, old_layout):
+	var window = content.get_parent()
+	if window.visible:
+		return
+	window.remove_child(content)
+	add_child(content)
+	window.queue_free()
+	self.layout = old_layout
+
+
 func add_child(node: Node, legible_unique_name: bool = false) -> void:
 	.add_child(node, legible_unique_name)
 	_drag_n_drop_panel.raise()
@@ -184,7 +223,11 @@ func set_tabs_visible(value: bool) -> void:
 	_tabs_visible = value
 	for i in range(1, _panel_container.get_child_count()):
 		var panel = _panel_container.get_child(i)
-		panel.tabs_visible = value
+		if panel.get_tab_count() >= 2:
+			panel.tabs_visible = true
+		else:
+			panel.tabs_visible = value
+	queue_sort()
 
 
 func get_tabs_visible() -> bool:
