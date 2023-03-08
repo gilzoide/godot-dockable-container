@@ -9,33 +9,21 @@ enum Direction {
 
 const LayoutPanel = preload("layout_panel.gd")
 
-@export var direction: Direction = Direction.HORIZONTAL:
+@export var direction: Direction = Direction.HORIZONTAL : 
 	get:
-		# TODO: Manually copy the code from this method.
 		return get_direction()
 	set(value):
-		# TODO: Manually copy the code from this method.
 		set_direction(value)
-@export_range(0,1) var percent: float = 0.5:
+@export var percent = 0.5 : get = get_percent, set = set_percent # (float, 0, 1)
+@export var first: Resource = LayoutPanel.new() : 
 	get:
-		# TODO: Manually copy the code from this method.
-		return get_percent()
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_percent(value)
-@export var first: Resource = LayoutPanel.new():
-	get:
-		# TODO: Manually copy the code from this method.
 		return get_first()
 	set(value):
-		# TODO: Manually copy the code from this method.
 		set_first(value)
-@export var second: Resource = LayoutPanel.new():
+@export var second: Resource = LayoutPanel.new() : 
 	get:
-		# TODO: Manually copy the code from this method.
 		return get_second()
 	set(value):
-		# TODO: Manually copy the code from this method.
 		set_second(value)
 
 var _direction = Direction.HORIZONTAL
@@ -44,7 +32,7 @@ var _first
 var _second
 
 
-func _init() -> void:
+func _init():
 	resource_name = "Split"
 
 

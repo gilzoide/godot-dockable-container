@@ -1,35 +1,32 @@
 @tool
 extends Resource
-
 # Layout Resource definition, holding the root LayoutNode and hidden tabs.
-# 
+#
 # LayoutSplit are binary trees with nested LayoutSplit subtrees and LayoutPanel
 # leaves. Both of them inherit from LayoutNode to help with type annotation and
 # define common funcionality.
-# 
+#
 # Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
-
 
 const LayoutNode = preload("layout_node.gd")
 const LayoutPanel = preload("layout_panel.gd")
 const LayoutSplit = preload("layout_split.gd")
 
-enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM}
+enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER}
 
-@export var root: Resource = LayoutPanel.new():
+@export var root: Resource = LayoutPanel.new() :
 	get:
-		# TODO: Manually copy the code from this method.
-		return get_root()
+		return _root
 	set(value):
-		# TODO: Manually copy the code from this method.
 		set_root(value)
-@export var hidden_tabs: Dictionary = {}:
+@export var hidden_tabs: Dictionary = {} :
 	get:
-		# TODO: Manually copy the code from this method.
-		return get_hidden_tabs()
+		return _hidden_tabs
 	set(value):
-		# TODO: Manually copy the code from this method.
-		set_hidden_tabs(value)
+		if value != _hidden_tabs:
+			_hidden_tabs = value
+			emit_signal("changed")
+
 
 var _changed_signal_queued = false
 var _first_leaf: LayoutPanel
@@ -38,36 +35,26 @@ var _leaf_by_node_name: Dictionary
 var _root: LayoutNode = LayoutPanel.new()
 
 
-func _init() -> void:
+func _init():
 	resource_name = "Layout"
 
 
-func set_root(value, should_emit_changed = true) -> void:
+func set_root(value: LayoutNode, should_emit_changed = true) -> void:
 	if not value:
 		value = LayoutPanel.new()
 	if _root == value:
 		return
-	if _root and _root.is_connected("changed", Callable(self, "_on_root_changed")):
-		_root.disconnect("changed", Callable(self, "_on_root_changed"))
+	if _root and _root.is_connected("changed",Callable(self,"_on_root_changed")):
+		_root.disconnect("changed",Callable(self,"_on_root_changed"))
 	_root = value
 	_root.parent = null
-	_root.connect("changed", Callable(self, "_on_root_changed"))
+	_root.connect("changed",Callable(self,"_on_root_changed"))
 	if should_emit_changed:
 		_on_root_changed()
 
 
 func get_root() -> LayoutNode:
 	return _root
-
-
-func set_hidden_tabs(value: Dictionary) -> void:
-	if value != _hidden_tabs:
-		_hidden_tabs = value
-		emit_signal("changed")
-
-
-func get_hidden_tabs() -> Dictionary:
-	return _hidden_tabs
 
 
 func clone():
@@ -81,14 +68,12 @@ func get_names() -> PackedStringArray:
 	return _root.get_names()
 
 
+# Add missing nodes checked first leaf and remove_at nodes outside indices from leaves.
+#
+# _leaf_by_node_name = {
+#     (string keys) = respective Leaf that holds the node name,
+# }
 func update_nodes(names: PackedStringArray) -> void:
-	
-	# Add missing nodes on first leaf and remove nodes outside indices from leaves.
-	# 
-	# _leaf_by_node_name = {
-	# 	(string keys) = respective Leaf that holds the node name,
-	# }
-	
 	_leaf_by_node_name.clear()
 	_first_leaf = null
 	var empty_leaves = []
@@ -108,12 +93,11 @@ func update_nodes(names: PackedStringArray) -> void:
 func move_node_to_leaf(node: Node, leaf: LayoutPanel, relative_position: int) -> void:
 	var node_name = node.name
 	var previous_leaf = _leaf_by_node_name.get(node_name)
-	if not previous_leaf:
-		return
-	previous_leaf.remove_node(node)
-	if previous_leaf.is_empty():
-		_remove_leaf(previous_leaf)
-	
+	if previous_leaf:
+		previous_leaf.remove_node(node)
+		if previous_leaf.is_empty():
+			_remove_leaf(previous_leaf)
+
 	leaf.insert_node(relative_position, node)
 	_leaf_by_node_name[node_name] = leaf
 	_on_root_changed()
@@ -132,19 +116,19 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	else:
 		new_branch.direction = LayoutSplit.Direction.VERTICAL
 	if margin == MARGIN_LEFT or margin == MARGIN_TOP:
-		new_branch.first = new_leaf
-		new_branch.second = leaf
+		new_branch['first'] = new_leaf
+		new_branch['second'] = leaf
 	else:
-		new_branch.first = leaf
-		new_branch.second = new_leaf
+		new_branch['first'] = leaf
+		new_branch['second'] = new_leaf
 	if _root == leaf:
 		set_root(new_branch, false)
 	elif root_branch:
 		if leaf == root_branch.first:
-			root_branch.first = new_branch
+			root_branch['first'] = new_branch
 		else:
-			root_branch.second = new_branch
-	
+			root_branch['second'] = new_branch
+
 	move_node_to_leaf(node, new_leaf, 0)
 
 
@@ -217,28 +201,31 @@ func _ensure_names_in_node(node: LayoutNode, names: PackedStringArray, empty_lea
 		if not _first_leaf:
 			_first_leaf = node
 	elif node is LayoutSplit:
-		_ensure_names_in_node(node.first, names, empty_leaves)
-		_ensure_names_in_node(node.second, names, empty_leaves)
+		_ensure_names_in_node(node['first'], names, empty_leaves)
+		_ensure_names_in_node(node['second'], names, empty_leaves)
 	else:
-		pass # REMOVETHIS assert isnt working correctly
-		#assert(false, "Invalid Resource, should be branch or leaf, found %s" % node)
+		assert(false) #,"Invalid Resource, should be branch or leaf, found %s" % node)
 
 
 func _remove_leaf(leaf: LayoutPanel) -> void:
-	assert(leaf.is_empty(), "FIXME: trying to remove a leaf with nodes")
+	assert(leaf.is_empty()) #,"FIXME: trying to remove_at a leaf with nodes")
 	if _root == leaf:
 		return
 	var collapsed_branch = leaf.parent
-	assert(collapsed_branch is LayoutSplit, "FIXME: leaf is not a child of branch")
-	var kept_branch = collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
-	var root_branch = collapsed_branch.parent
+	assert(collapsed_branch is LayoutSplit) #,"FIXME: leaf is not a child of branch")
+	var kept_branch = (
+		collapsed_branch['first']
+		if leaf == collapsed_branch['second']
+		else collapsed_branch['second']
+	)
+	var root_branch = collapsed_branch.parent #HERE
 	if collapsed_branch == _root:
 		set_root(kept_branch, true)
 	elif root_branch:
-		if collapsed_branch == root_branch.first:
-			root_branch.first = kept_branch
+		if collapsed_branch == root_branch['first']:
+			root_branch['first'] = kept_branch
 		else:
-			root_branch.second = kept_branch
+			root_branch['second'] = kept_branch
 
 
 func _print_tree() -> void:
@@ -251,6 +238,12 @@ func _print_tree_step(tree_or_leaf, level, idx) -> void:
 	if tree_or_leaf is LayoutPanel:
 		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.names)
 	else:
-		print(" |".repeat(level), "-+ (%d) = " % idx, tree_or_leaf.direction, " ", tree_or_leaf.percent)
-		_print_tree_step(tree_or_leaf.first, level + 1, 1)
-		_print_tree_step(tree_or_leaf.second, level + 1, 2)
+		print(
+			" |".repeat(level),
+			"-+ (%d) = " % idx,
+			tree_or_leaf.direction,
+			" ",
+			tree_or_leaf.percent
+		)
+		_print_tree_step(tree_or_leaf['first'], level + 1, 1)
+		_print_tree_step(tree_or_leaf['second'], level + 1, 2)

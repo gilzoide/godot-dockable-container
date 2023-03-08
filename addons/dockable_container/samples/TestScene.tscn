@@ -1,162 +1,135 @@
-[gd_scene load_steps=10 format=3 uid="uid://domy3xmg3yft4"]
+[gd_scene load_steps=9 format=3 uid="uid://drlvhuchtk6if"]
 
 [ext_resource type="Script" path="res://addons/dockable_container/dockable_container.gd" id="1"]
 [ext_resource type="Script" path="res://addons/dockable_container/layout.gd" id="2"]
 [ext_resource type="Script" path="res://addons/dockable_container/samples/TestScene.gd" id="4"]
-[ext_resource type="Script" path="res://addons/dockable_container/layout_split.gd" id="4_8hny4"]
 [ext_resource type="Script" path="res://addons/dockable_container/layout_panel.gd" id="5"]
 
-[sub_resource type="Resource" id="Resource_5e7r8"]
+[sub_resource type="Resource" id="Resource_h07tl"]
 resource_name = "Tabs"
-script = ExtResource( "5" )
-names = PackedStringArray("Control4", "Control0", "Control6", "Control1", "Control3", "Control2")
-current_tab = 1
+script = ExtResource("5")
+names = PackedStringArray()
+current_tab = -1
 
-[sub_resource type="Resource" id="Resource_i64q3"]
-resource_name = "Tabs"
-script = ExtResource( "5" )
-names = PackedStringArray("Control5")
-current_tab = 0
-
-[sub_resource type="Resource" id="Resource_hqxlm"]
-resource_name = "Split"
-script = ExtResource( "4_8hny4" )
-direction = 0
-percent = 0.5
-first = SubResource( "Resource_5e7r8" )
-second = SubResource( "Resource_i64q3" )
-
-[sub_resource type="Resource" id="12"]
+[sub_resource type="Resource" id="Resource_1u2va"]
 resource_name = "Layout"
-script = ExtResource( "2" )
-root = SubResource( "Resource_hqxlm" )
+script = ExtResource("2")
+root = SubResource("Resource_h07tl")
+hidden_tabs = {}
+
+[sub_resource type="Resource" id="9"]
+resource_name = "Tabs"
+script = ExtResource("5")
+names = PackedStringArray()
+current_tab = -1
+
+[sub_resource type="Resource" id="4"]
+resource_name = "Layout"
+script = ExtResource("2")
+root = SubResource("9")
 hidden_tabs = {}
 
 [node name="SampleScene" type="VBoxContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( "4" )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("4")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-offset_right = 1024.0
-offset_bottom = 31.0
-theme_override_constants/separation = 16
+layout_mode = 2
 alignment = 1
 
 [node name="AddControlButton" type="Button" parent="HBoxContainer"]
-offset_left = 320.0
-offset_right = 467.0
-offset_bottom = 31.0
+layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "(+) ADD CONTROL"
 
 [node name="SaveLayoutButton" type="Button" parent="HBoxContainer"]
-offset_left = 483.0
-offset_right = 584.0
-offset_bottom = 31.0
+layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Save Layout"
 
 [node name="LoadLayoutButton" type="Button" parent="HBoxContainer"]
-offset_left = 600.0
-offset_right = 703.0
-offset_bottom = 31.0
+layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Load Layout"
 
 [node name="ControlPrefab" type="ColorRect" parent="HBoxContainer"]
 visible = false
-rect_min_size = Vector2(20, 20)
+layout_mode = 2
 color = Color(0.129412, 0.121569, 0.121569, 1)
 
 [node name="Buttons" type="VBoxContainer" parent="HBoxContainer/ControlPrefab"]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_left = -65.5
+offset_top = -22.0
+offset_right = 65.5
+offset_bottom = 22.0
 
 [node name="Rename" type="Button" parent="HBoxContainer/ControlPrefab/Buttons"]
+layout_mode = 2
 text = "Rename"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Remove" type="Button" parent="HBoxContainer/ControlPrefab/Buttons"]
+layout_mode = 2
 text = "REMOVE"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="DockableContainer" type="Container" parent="."]
-offset_top = 35.0
-offset_right = 1024.0
-offset_bottom = 600.0
+[node name="DockableContainers" type="HBoxContainer" parent="."]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( "1" )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-use_hidden_tabs_for_min_size = false
-layout = SubResource( "12" )
 
-[node name="Control0" type="ColorRect" parent="DockableContainer"]
-offset_top = 31.0
-offset_right = 506.0
-offset_bottom = 565.0
-rect_min_size = Vector2(64, 64)
+[node name="DockableContainer" type="Container" parent="DockableContainers"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1")
+layout = SubResource("Resource_1u2va")
 
-[node name="Control1" type="ColorRect" parent="DockableContainer"]
+[node name="Control0" type="ColorRect" parent="DockableContainers/DockableContainer"]
+layout_mode = 2
+
+[node name="Control1" type="ColorRect" parent="DockableContainers/DockableContainer"]
 visible = false
-offset_right = 128.0
-offset_bottom = 128.0
-rect_min_size = Vector2(128, 128)
+layout_mode = 2
 color = Color(0.141176, 0.0745098, 0.603922, 1)
 
-[node name="Control2" type="ColorRect" parent="DockableContainer"]
+[node name="Control2" type="ColorRect" parent="DockableContainers/DockableContainer"]
 visible = false
-offset_right = 64.0
-offset_bottom = 64.0
-rect_min_size = Vector2(64, 64)
+layout_mode = 2
 color = Color(0.533333, 0.380392, 0.380392, 1)
 
-[node name="Control3" type="ColorRect" parent="DockableContainer"]
-visible = false
-offset_right = 64.0
-offset_bottom = 64.0
-rect_min_size = Vector2(64, 64)
-color = Color(0.741176, 0.188235, 0.188235, 1)
+[node name="Separator" type="ColorRect" parent="DockableContainers"]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
 
-[node name="Control4" type="ColorRect" parent="DockableContainer"]
-visible = false
-offset_right = 128.0
-offset_bottom = 128.0
-rect_min_size = Vector2(128, 128)
-color = Color(0.129412, 0.121569, 0.121569, 1)
+[node name="DockableContainer2" type="Container" parent="DockableContainers"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1")
+layout = SubResource("4")
 
-[node name="Control5" type="ColorRect" parent="DockableContainer"]
-offset_left = 518.0
-offset_top = 31.0
-offset_right = 1024.0
-offset_bottom = 565.0
-rect_min_size = Vector2(64, 64)
-color = Color(0.333333, 0.862745, 0.8, 1)
+[node name="Control3" type="ColorRect" parent="DockableContainers/DockableContainer2"]
+layout_mode = 2
+color = Color(0, 1, 0.905882, 1)
 
-[node name="Control6" type="ColorRect" parent="DockableContainer"]
+[node name="Control4" type="ColorRect" parent="DockableContainers/DockableContainer2"]
 visible = false
-offset_right = 64.0
-offset_bottom = 64.0
-rect_min_size = Vector2(64, 64)
-color = Color(0.898039, 0.921569, 0.188235, 1)
+layout_mode = 2
+color = Color(0, 0.698039, 0.0588235, 1)
+
+[node name="Control5" type="ColorRect" parent="DockableContainers/DockableContainer2"]
+visible = false
+layout_mode = 2
+color = Color(1, 0.937255, 0, 1)
 
 [connection signal="pressed" from="HBoxContainer/AddControlButton" to="." method="_on_add_pressed"]
 [connection signal="pressed" from="HBoxContainer/SaveLayoutButton" to="." method="_on_save_pressed"]

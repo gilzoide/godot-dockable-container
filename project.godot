@@ -10,11 +10,28 @@ config_version=5
 
 [application]
 
-config/name="Godot-dockable-container-main"
+config/name="Dockable Container"
+config/description="Container script that manages docking/tiling UI panels.
+
+Panels are composed of tabs that can be dragged around and dropped to split another panel or compose its tabs.
+
+Layout information is stored in Resource objects, so they can be saved/loaded from disk easily.
+
+This plugin also offers a replica of the Container layout to be edited directly in the inspector."
 run/main_scene="res://addons/dockable_container/samples/TestScene.tscn"
-config/icon="res://icon.png"
-config/features=PackedStringArray("4.0", "Vulkan Clustered")
+config/features=PackedStringArray("4.0")
+config/icon="res://icon.svg"
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dockable_container/plugin.cfg")
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+vram_compression/import_etc=true
+vram_compression/import_etc2=false

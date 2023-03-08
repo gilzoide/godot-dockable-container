@@ -8,10 +8,8 @@ const Layout = preload("layout.gd")
 
 var leaf: Layout.LayoutPanel:
 	get:
-		# TODO: Manually copy the code from this method.
 		return get_leaf()
 	set(value):
-		# TODO: Manually copy the code from this method.
 		set_leaf(value)
 
 var _leaf: Layout.LayoutPanel
@@ -22,13 +20,13 @@ func _ready() -> void:
 
 
 func _enter_tree() -> void:
-	connect("tab_selected", Callable(self, "_on_tab_selected"))
-	connect("tab_changed", Callable(self, "_on_tab_changed"))
+	connect("tab_selected",Callable(self,"_on_tab_selected"))
+	connect("tab_changed",Callable(self,"_on_tab_changed"))
 
 
 func _exit_tree() -> void:
-	disconnect("tab_selected", Callable(self, "_on_tab_selected"))
-	disconnect("tab_changed", Callable(self, "_on_tab_changed"))
+	disconnect("tab_selected",Callable(self,"_on_tab_selected"))
+	disconnect("tab_changed",Callable(self,"_on_tab_changed"))
 
 
 func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
@@ -44,7 +42,7 @@ func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
 	for i in range(min_size, nodes.size()):
 		var ref_control = ReferenceControl.new()
 		add_child(ref_control)
-	assert(nodes.size() == get_child_count(), "FIXME")
+	assert(nodes.size() == get_child_count()) #,"FIXME")
 	# setup children
 	for i in nodes.size():
 		var ref_control: ReferenceControl = get_child(i)
@@ -55,7 +53,7 @@ func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
 
 func get_child_rect() -> Rect2:
 	var control = get_current_tab_control()
-	return Rect2(rect_position + control.rect_position, control.rect_size)
+	return Rect2(position + control.position, control.size)
 
 
 func set_leaf(value: Layout.LayoutPanel) -> void:
@@ -80,7 +78,10 @@ func _on_tab_selected(tab: int) -> void:
 func _on_tab_changed(tab: int) -> void:
 	if not _leaf:
 		return
-	var tab_name = get_tab_control(tab).name
+	var control = get_tab_control(tab)
+	if not control:
+		return
+	var tab_name = control.name
 	var name_index_in_leaf = _leaf.find_name(tab_name)
 	if name_index_in_leaf != tab:  # NOTE: this handles added tabs (index == -1)
 		emit_signal("tab_layout_changed", tab)

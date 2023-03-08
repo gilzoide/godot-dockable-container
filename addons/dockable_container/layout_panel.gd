@@ -4,24 +4,23 @@ extends "layout_node.gd"
 
 @export var names: PackedStringArray:
 	get:
-		# TODO: Manually copy the code from this method.
-		return get_names()
+		return _names
 	set(value):
-		# TODO: Manually copy the code from this method.
-		set_names(value)
+		_names = value
+		emit_tree_changed()
 @export var current_tab: int:
 	get:
-		# TODO: Manually copy the code from this method.
-		return get_current_tab()
+		return int(clamp(_current_tab, 0, _names.size() - 1))
 	set(value):
-		# TODO: Manually copy the code from this method.
-		set_current_tab(value)
+		if value != _current_tab:
+			_current_tab = value
+			emit_tree_changed()
 
 var _names := PackedStringArray()
 var _current_tab := 0
 
 
-func _init() -> void:
+func _init():
 	resource_name = "Tabs"
 
 
@@ -30,25 +29,6 @@ func clone():
 	new_panel._names = _names
 	new_panel._current_tab = _current_tab
 	return new_panel
-
-
-func set_current_tab(value: int) -> void:
-	if value != _current_tab:
-		_current_tab = value
-		emit_tree_changed()
-
-
-func get_current_tab() -> int:
-	return int(clamp(_current_tab, 0, _names.size() - 1))
-
-
-func set_names(value: PackedStringArray) -> void:
-	_names = value
-	emit_tree_changed()
-
-
-func get_names() -> PackedStringArray:
-	return _names
 
 
 func push_name(name: String) -> void:
@@ -68,12 +48,12 @@ func find_name(node_name: String) -> int:
 	return -1
 
 
-func find_node(node: Node):
+func find_child(node: Node):
 	return find_name(node.name)
 
 
 func remove_node(node: Node) -> void:
-	var i = find_node(node)
+	var i = find_child(node)
 	if i >= 0:
 		_names.remove_at(i)
 		emit_tree_changed()
