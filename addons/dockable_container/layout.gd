@@ -1,4 +1,4 @@
-tool
+@tool
 extends Resource
 # Layout Resource definition, holding the root LayoutNode and hidden tabs.
 #
@@ -12,8 +12,21 @@ const LayoutNode = preload("layout_node.gd")
 const LayoutPanel = preload("layout_panel.gd")
 const LayoutSplit = preload("layout_split.gd")
 
-export(Resource) var root = LayoutPanel.new() setget set_root, get_root
-export(Dictionary) var hidden_tabs = {} setget set_hidden_tabs, get_hidden_tabs
+enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER}
+
+@export var root: Resource = LayoutPanel.new() :
+	get:
+		return _root
+	set(value):
+		set_root(value)
+@export var hidden_tabs: Dictionary = {} :
+	get:
+		return _hidden_tabs
+	set(value):
+		if value != _hidden_tabs:
+			_hidden_tabs = value
+			emit_signal("changed")
+
 
 var _changed_signal_queued = false
 var _first_leaf: LayoutPanel
@@ -22,7 +35,7 @@ var _leaf_by_node_name: Dictionary
 var _root: LayoutNode = LayoutPanel.new()
 
 
-func _init() -> void:
+func _init():
 	resource_name = "Layout"
 
 
@@ -31,27 +44,17 @@ func set_root(value: LayoutNode, should_emit_changed = true) -> void:
 		value = LayoutPanel.new()
 	if _root == value:
 		return
-	if _root and _root.is_connected("changed", self, "_on_root_changed"):
-		_root.disconnect("changed", self, "_on_root_changed")
+	if _root and _root.is_connected("changed",Callable(self,"_on_root_changed")):
+		_root.disconnect("changed",Callable(self,"_on_root_changed"))
 	_root = value
 	_root.parent = null
-	_root.connect("changed", self, "_on_root_changed")
+	_root.connect("changed",Callable(self,"_on_root_changed"))
 	if should_emit_changed:
 		_on_root_changed()
 
 
 func get_root() -> LayoutNode:
 	return _root
-
-
-func set_hidden_tabs(value: Dictionary) -> void:
-	if value != _hidden_tabs:
-		_hidden_tabs = value
-		emit_signal("changed")
-
-
-func get_hidden_tabs() -> Dictionary:
-	return _hidden_tabs
 
 
 func clone():
@@ -61,16 +64,16 @@ func clone():
 	return new_layout
 
 
-func get_names() -> PoolStringArray:
+func get_names() -> PackedStringArray:
 	return _root.get_names()
 
 
-# Add missing nodes on first leaf and remove nodes outside indices from leaves.
+# Add missing nodes checked first leaf and remove_at nodes outside indices from leaves.
 #
 # _leaf_by_node_name = {
 #     (string keys) = respective Leaf that holds the node name,
 # }
-func update_nodes(names: PoolStringArray) -> void:
+func update_nodes(names: PackedStringArray) -> void:
 	_leaf_by_node_name.clear()
 	_first_leaf = null
 	var empty_leaves = []
@@ -92,7 +95,7 @@ func move_node_to_leaf(node: Node, leaf: LayoutPanel, relative_position: int) ->
 	var previous_leaf = _leaf_by_node_name.get(node_name)
 	if previous_leaf:
 		previous_leaf.remove_node(node)
-		if previous_leaf.empty():
+		if previous_leaf.is_empty():
 			_remove_leaf(previous_leaf)
 
 	leaf.insert_node(relative_position, node)
@@ -113,18 +116,18 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	else:
 		new_branch.direction = LayoutSplit.Direction.VERTICAL
 	if margin == MARGIN_LEFT or margin == MARGIN_TOP:
-		new_branch.first = new_leaf
-		new_branch.second = leaf
+		new_branch['first'] = new_leaf
+		new_branch['second'] = leaf
 	else:
-		new_branch.first = leaf
-		new_branch.second = new_leaf
+		new_branch['first'] = leaf
+		new_branch['second'] = new_leaf
 	if _root == leaf:
 		set_root(new_branch, false)
 	elif root_branch:
 		if leaf == root_branch.first:
-			root_branch.first = new_branch
+			root_branch['first'] = new_branch
 		else:
-			root_branch.second = new_branch
+			root_branch['second'] = new_branch
 
 	move_node_to_leaf(node, new_leaf, 0)
 
@@ -145,7 +148,7 @@ func remove_node(node: Node) -> void:
 		return
 	leaf.remove_node(node)
 	_leaf_by_node_name.erase(node_name)
-	if leaf.empty():
+	if leaf.is_empty():
 		_remove_leaf(leaf)
 	_on_root_changed()
 
@@ -190,39 +193,39 @@ func _on_root_changed() -> void:
 	call_deferred("emit_signal", "changed")
 
 
-func _ensure_names_in_node(node: LayoutNode, names: PoolStringArray, empty_leaves: Array) -> void:
+func _ensure_names_in_node(node: LayoutNode, names: PackedStringArray, empty_leaves: Array) -> void:
 	if node is LayoutPanel:
 		node.update_nodes(names, _leaf_by_node_name)
-		if node.empty():
+		if node.is_empty():
 			empty_leaves.append(node)
 		if not _first_leaf:
 			_first_leaf = node
 	elif node is LayoutSplit:
-		_ensure_names_in_node(node.first, names, empty_leaves)
-		_ensure_names_in_node(node.second, names, empty_leaves)
+		_ensure_names_in_node(node['first'], names, empty_leaves)
+		_ensure_names_in_node(node['second'], names, empty_leaves)
 	else:
-		assert(false, "Invalid Resource, should be branch or leaf, found %s" % node)
+		assert(false) #,"Invalid Resource, should be branch or leaf, found %s" % node)
 
 
 func _remove_leaf(leaf: LayoutPanel) -> void:
-	assert(leaf.empty(), "FIXME: trying to remove a leaf with nodes")
+	assert(leaf.is_empty()) #,"FIXME: trying to remove_at a leaf with nodes")
 	if _root == leaf:
 		return
 	var collapsed_branch = leaf.parent
-	assert(collapsed_branch is LayoutSplit, "FIXME: leaf is not a child of branch")
+	assert(collapsed_branch is LayoutSplit) #,"FIXME: leaf is not a child of branch")
 	var kept_branch = (
-		collapsed_branch.first
-		if leaf == collapsed_branch.second
-		else collapsed_branch.second
+		collapsed_branch['first']
+		if leaf == collapsed_branch['second']
+		else collapsed_branch['second']
 	)
-	var root_branch = collapsed_branch.parent
+	var root_branch = collapsed_branch.parent #HERE
 	if collapsed_branch == _root:
 		set_root(kept_branch, true)
 	elif root_branch:
-		if collapsed_branch == root_branch.first:
-			root_branch.first = kept_branch
+		if collapsed_branch == root_branch['first']:
+			root_branch['first'] = kept_branch
 		else:
-			root_branch.second = kept_branch
+			root_branch['second'] = kept_branch
 
 
 func _print_tree() -> void:
@@ -242,5 +245,5 @@ func _print_tree_step(tree_or_leaf, level, idx) -> void:
 			" ",
 			tree_or_leaf.percent
 		)
-		_print_tree_step(tree_or_leaf.first, level + 1, 1)
-		_print_tree_step(tree_or_leaf.second, level + 1, 2)
+		_print_tree_step(tree_or_leaf['first'], level + 1, 1)
+		_print_tree_step(tree_or_leaf['second'], level + 1, 2)

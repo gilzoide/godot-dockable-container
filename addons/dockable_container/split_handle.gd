@@ -1,4 +1,4 @@
-tool
+@tool
 extends Control
 
 const Layout = preload("layout.gd")
@@ -24,18 +24,18 @@ var _dragging = false
 
 func _draw() -> void:
 	var theme_class = SPLIT_THEME_CLASS[layout_split.direction]
-	var icon = get_icon("grabber", theme_class)
-	var autohide = bool(get_constant("autohide", theme_class))
+	var icon = get_theme_icon("grabber", theme_class)
+	var autohide = bool(get_theme_constant("autohide", theme_class))
 	if not icon or (autohide and not _mouse_hovering):
 		return
 
-	draw_texture(icon, (rect_size - icon.get_size()) * 0.5)
+	draw_texture(icon, (size - icon.get_size()) * 0.5)
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		_dragging = event.is_pressed()
-		if event.doubleclick:
+		if event.double_click:
 			layout_split.percent = 0.5
 	elif _dragging and event is InputEventMouseMotion:
 		var mouse_in_parent = get_parent_control().get_local_mouse_position()
@@ -55,13 +55,13 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_ENTER:
 		_mouse_hovering = true
 		set_split_cursor(true)
-		if bool(get_constant("autohide", SPLIT_THEME_CLASS[layout_split.direction])):
-			update()
+		if bool(get_theme_constant("autohide", SPLIT_THEME_CLASS[layout_split.direction])):
+			queue_redraw()
 	elif what == NOTIFICATION_MOUSE_EXIT:
 		_mouse_hovering = false
 		set_split_cursor(false)
-		if bool(get_constant("autohide", SPLIT_THEME_CLASS[layout_split.direction])):
-			update()
+		if bool(get_theme_constant("autohide", SPLIT_THEME_CLASS[layout_split.direction])):
+			queue_redraw()
 	elif what == NOTIFICATION_FOCUS_EXIT:
 		_dragging = false
 
@@ -69,7 +69,7 @@ func _notification(what: int) -> void:
 func get_layout_minimum_size() -> Vector2:
 	if not layout_split:
 		return Vector2.ZERO
-	var separation = get_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
+	var separation = get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
 	if layout_split.is_horizontal():
 		return Vector2(
 			first_minimum_size.x + separation + second_minimum_size.x,
@@ -91,7 +91,7 @@ func set_split_cursor(value: bool) -> void:
 
 func get_split_rects(rect: Rect2) -> Dictionary:
 	_parent_rect = rect
-	var separation = get_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
+	var separation = get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
 	var origin = rect.position
 	var size = rect.size
 	var percent = layout_split.percent

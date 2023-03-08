@@ -1,4 +1,4 @@
-tool
+@tool
 extends "layout_node.gd"
 # Layout binary tree nodes, defining subtrees and leaf panels
 
@@ -9,10 +9,22 @@ enum Direction {
 
 const LayoutPanel = preload("layout_panel.gd")
 
-export(Direction) var direction = Direction.HORIZONTAL setget set_direction, get_direction
-export(float, 0, 1) var percent = 0.5 setget set_percent, get_percent
-export(Resource) var first = LayoutPanel.new() setget set_first, get_first
-export(Resource) var second = LayoutPanel.new() setget set_second, get_second
+@export var direction: Direction = Direction.HORIZONTAL : 
+	get:
+		return get_direction()
+	set(value):
+		set_direction(value)
+@export var percent = 0.5 : get = get_percent, set = set_percent # (float, 0, 1)
+@export var first: Resource = LayoutPanel.new() : 
+	get:
+		return get_first()
+	set(value):
+		set_first(value)
+@export var second: Resource = LayoutPanel.new() : 
+	get:
+		return get_second()
+	set(value):
+		set_second(value)
 
 var _direction = Direction.HORIZONTAL
 var _percent = 0.5
@@ -20,7 +32,7 @@ var _first
 var _second
 
 
-func _init() -> void:
+func _init():
 	resource_name = "Split"
 
 
@@ -80,14 +92,14 @@ func get_percent() -> float:
 	return _percent
 
 
-func get_names() -> PoolStringArray:
+func get_names() -> PackedStringArray:
 	var names = _first.get_names()
 	names.append_array(_second.get_names())
 	return names
 
 
-func empty() -> bool:
-	return _first.empty() and _second.empty()
+func is_empty() -> bool:
+	return _first.is_empty() and _second.is_empty()
 
 
 func is_horizontal() -> bool:
