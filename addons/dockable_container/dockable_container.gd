@@ -2,7 +2,7 @@
 class_name DockableContainer
 extends Container
 
-@export_enum("Left", "Center", "Right") var tab_alignment := 1:
+@export var tab_alignment := TabBar.ALIGNMENT_CENTER:
 	get:
 		return _tab_align
 	set(value):
@@ -42,7 +42,7 @@ var _panel_container := Container.new()
 var _split_container := Container.new()
 var _drag_n_drop_panel := DockableDragNDropPanel.new()
 var _drag_panel: DockablePanel
-var _tab_align := 1
+var _tab_align := TabBar.ALIGNMENT_CENTER
 var _tabs_visible := true
 var _use_hidden_tabs_for_min_size := false
 var _current_panel_index := 0
@@ -102,7 +102,7 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
 
 
-func add_child_o(node: Node, legible_unique_name := false, internal: Node.InternalMode = 0) -> void:
+func add_child_o(node: Node, legible_unique_name := false, internal := Node.INTERNAL_MODE_DISABLED) -> void:
 	add_child(node, legible_unique_name, internal)
 	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(node)
@@ -183,7 +183,7 @@ func set_layout(value: DockableLayout) -> void:
 	queue_sort()
 
 
-func set_tab_alignment(value: int) -> void:
+func set_tab_alignment(value: TabBar.AlignmentMode) -> void:
 	_tab_align = value
 	for i in range(1, _panel_container.get_child_count()):
 		var panel = _panel_container.get_child(i)
@@ -205,8 +205,8 @@ func get_use_hidden_tabs_for_min_size() -> bool:
 	return _use_hidden_tabs_for_min_size
 
 
-func set_control_hidden(child: Control, hidden: bool) -> void:
-	_layout.set_node_hidden(child, hidden)
+func set_control_hidden(child: Control, is_hidden: bool) -> void:
+	_layout.set_node_hidden(child, is_hidden)
 
 
 func is_control_hidden(child: Control) -> bool:

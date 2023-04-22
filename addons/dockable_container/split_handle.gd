@@ -90,31 +90,34 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 	_parent_rect = rect
 	var separation := get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
 	var origin := rect.position
-	var size := rect.size
 	var percent := layout_split.percent
 	if layout_split.is_horizontal():
 		var split_offset := clampf(
-			size.x * percent - separation * 0.5,
+			rect.size.x * percent - separation * 0.5,
 			first_minimum_size.x,
-			size.x - second_minimum_size.x - separation
+			rect.size.x - second_minimum_size.x - separation
 		)
-		var second_width := size.x - split_offset - separation
+		var second_width := rect.size.x - split_offset - separation
 
 		return {
-			"first": Rect2(origin.x, origin.y, split_offset, size.y),
-			"self": Rect2(origin.x + split_offset, origin.y, separation, size.y),
-			"second": Rect2(origin.x + split_offset + separation, origin.y, second_width, size.y),
+			"first": Rect2(origin.x, origin.y, split_offset, rect.size.y),
+			"self": Rect2(origin.x + split_offset, origin.y, separation, rect.size.y),
+			"second": Rect2(
+				origin.x + split_offset + separation, origin.y, second_width, rect.size.y
+			),
 		}
 	else:
 		var split_offset := clampf(
-			size.y * percent - separation * 0.5,
+			rect.size.y * percent - separation * 0.5,
 			first_minimum_size.y,
-			size.y - second_minimum_size.y - separation
+			rect.size.y - second_minimum_size.y - separation
 		)
-		var second_height := size.y - split_offset - separation
+		var second_height := rect.size.y - split_offset - separation
 
 		return {
-			"first": Rect2(origin.x, origin.y, size.x, split_offset),
-			"self": Rect2(origin.x, origin.y + split_offset, size.x, separation),
-			"second": Rect2(origin.x, origin.y + split_offset + separation, size.x, second_height),
+			"first": Rect2(origin.x, origin.y, rect.size.x, split_offset),
+			"self": Rect2(origin.x, origin.y + split_offset, rect.size.x, separation),
+			"second": Rect2(
+				origin.x, origin.y + split_offset + separation, rect.size.x, second_height
+			),
 		}

@@ -72,13 +72,13 @@ func get_second() -> DockableLayoutNode:
 	return _second
 
 
-func set_direction(value: int) -> void:
+func set_direction(value: Direction) -> void:
 	if value != _direction:
 		_direction = value
 		emit_tree_changed()
 
 
-func get_direction() -> int:
+func get_direction() -> Direction:
 	return _direction
 
 

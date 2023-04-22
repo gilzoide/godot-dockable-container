@@ -17,6 +17,7 @@ func emit_tree_changed() -> void:
 ## Use this instead of `Resource.duplicate(true)` to ensure objects have the
 ## right script and parenting is correctly set for each node.
 func clone():
+	@warning_ignore("assert_always_false")
 	assert(false, "FIXME: implement checked child")
 
 

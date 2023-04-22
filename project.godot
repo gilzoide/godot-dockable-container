@@ -22,6 +22,10 @@ run/main_scene="res://addons/dockable_container/samples/TestScene.tscn"
 config/features=PackedStringArray("4.0")
 config/icon="res://icon.svg"
 
+[debug]
+
+gdscript/warnings/exclude_addons=false
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dockable_container/plugin.cfg")
