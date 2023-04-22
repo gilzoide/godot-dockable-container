@@ -6,7 +6,7 @@ extends Resource
 ## DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees
 ## and DockableLayoutPanel leaves. Both of them inherit from DockableLayoutNode to help with
 ## type annotation and define common funcionality.
-#
+##
 ## Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 
 enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }
@@ -212,9 +212,7 @@ func _remove_leaf(leaf: DockableLayoutPanel) -> void:
 	var collapsed_branch := leaf.parent
 	assert(collapsed_branch is DockableLayoutSplit, "FIXME: leaf is not a child of branch")
 	var kept_branch: DockableLayoutNode = (
-		collapsed_branch.first
-		if leaf == collapsed_branch.second
-		else collapsed_branch.second
+		collapsed_branch.first if leaf == collapsed_branch.second else collapsed_branch.second
 	)
 	var root_branch := collapsed_branch.parent  #HERE
 	if collapsed_branch == _root:

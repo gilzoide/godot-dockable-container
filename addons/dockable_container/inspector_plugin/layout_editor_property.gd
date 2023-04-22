@@ -25,7 +25,7 @@ func _ready() -> void:
 	_container.set(get_edited_property(), value)
 	for n in value.get_names():
 		var child := _create_child_control(n)
-		_container.add_child(child)
+		_container.add_child_o(child)
 	add_child(_container)
 	set_bottom_editor(_container)
 

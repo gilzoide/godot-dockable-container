@@ -9,7 +9,7 @@ var parent: DockableLayoutSplit = null
 func emit_tree_changed() -> void:
 	var node := self
 	while node:
-		node.emit_signal("changed")
+		node.emit_changed()
 		node = node.parent
 
 
