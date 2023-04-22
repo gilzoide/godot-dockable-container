@@ -1,4 +1,4 @@
-tool
+@tool
 extends Container
 
 const SplitHandle = preload("split_handle.gd")
@@ -8,23 +8,47 @@ const DragNDropPanel = preload("drag_n_drop_panel.gd")
 const Layout = preload("layout.gd")
 
 # gdlint: ignore=max-line-length
-export(int, "Left", "Center", "Right") var tab_align = TabContainer.ALIGN_CENTER setget set_tab_align, get_tab_align
-export(bool) var tabs_visible := true setget set_tabs_visible, get_tabs_visible
-# gdlint: ignore=max-line-length
-export(bool) var use_hidden_tabs_for_min_size: bool setget set_use_hidden_tabs_for_min_size, get_use_hidden_tabs_for_min_size
-export(int) var rearrange_group = 0
-export(Resource) var layout = Layout.new() setget set_layout, get_layout
-# If `clone_layout_on_ready` is true, `layout` will be cloned on `_ready`.
+@export_enum("Left", "Center", "Right") var tab_alignment = 1 :
+	get:
+		return _tab_align
+	set(value):
+		_tab_align = value
+		for i in range(1, _panel_container.get_child_count()):
+			var panel = _panel_container.get_child(i)
+			panel.tab_alignment = value
+@export var use_hidden_tabs_for_min_size: bool:
+	get:
+		return use_hidden_tabs_for_min_size
+	set(value):
+		_use_hidden_tabs_for_min_size = value
+		for i in range(1, _panel_container.get_child_count()):
+			var panel = _panel_container.get_child(i)
+			panel.use_hidden_tabs_for_min_size = value
+@export var tabs_visible: bool = true:
+	get:
+		return _tabs_visible
+	set(value):
+		_tabs_visible = value
+		for i in range(1, _panel_container.get_child_count()):
+			var panel = _panel_container.get_child(i)
+			panel.tabs_visible = value
+@export var rearrange_group: int = 0
+@export var layout: Resource = Layout.new() : 
+	get:
+		return _layout
+	set(value):
+		set_layout(value)
+# If `clone_layout_on_ready` is true, `layout` will be cloned checked `_ready`.
 # This is useful for leaving layout Resources untouched in case you want to
 # restore layout to its default later.
-export(bool) var clone_layout_on_ready = true
+@export var clone_layout_on_ready: bool = true
 
 var _layout = Layout.new()
 var _panel_container = Container.new()
 var _split_container = Container.new()
 var _drag_n_drop_panel = DragNDropPanel.new()
 var _drag_panel: DockablePanel
-var _tab_align = TabContainer.ALIGN_CENTER
+var _tab_align = 1
 var _tabs_visible = true
 var _use_hidden_tabs_for_min_size = false
 var _current_panel_index = 0
@@ -36,7 +60,7 @@ var _layout_dirty = false
 func _ready() -> void:
 	set_process_input(false)
 	_panel_container.name = "_panel_container"
-	.add_child(_panel_container)
+	super.add_child(_panel_container)
 	move_child(_panel_container, 0)
 	_split_container.name = "_split_container"
 	_split_container.mouse_filter = MOUSE_FILTER_PASS
@@ -44,13 +68,13 @@ func _ready() -> void:
 
 	_drag_n_drop_panel.name = "_drag_n_drop_panel"
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
-	_drag_n_drop_panel.set_drag_forwarding(self)
+	_drag_n_drop_panel.set_drag_forwarding(Callable(self,"_can_handle_drag_data"),Callable(self,"_can_drop_data"),Callable(self,"_drop_data"))
 	_drag_n_drop_panel.visible = false
-	.add_child(_drag_n_drop_panel)
+	super.add_child(_drag_n_drop_panel)
 
 	if not _layout:
 		set_layout(null)
-	elif clone_layout_on_ready and not Engine.editor_hint:
+	elif clone_layout_on_ready and not Engine.is_editor_hint():
 		set_layout(_layout.clone())
 
 
@@ -61,7 +85,7 @@ func _notification(what: int) -> void:
 		what == NOTIFICATION_DRAG_BEGIN
 		and _can_handle_drag_data(get_viewport().gui_get_drag_data())
 	):
-		_drag_n_drop_panel.set_enabled(true, not _layout.root.empty())
+		_drag_n_drop_panel.set_enabled(true, not _layout.root.is_empty())
 		set_process_input(true)
 	elif what == NOTIFICATION_DRAG_END:
 		_drag_n_drop_panel.set_enabled(false)
@@ -69,7 +93,7 @@ func _notification(what: int) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	assert(get_viewport().gui_is_dragging(), "FIXME: should only be called when dragging")
+	assert(get_viewport().gui_is_dragging()) #,"FIXME: should only be called when dragging")
 	if event is InputEventMouseMotion:
 		var local_position = get_local_mouse_position()
 		var panel
@@ -84,29 +108,29 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
 
 
-func add_child(node: Node, legible_unique_name: bool = false) -> void:
-	.add_child(node, legible_unique_name)
-	_drag_n_drop_panel.raise()
+func add_child(node: Node, legible_unique_name: bool = false, internal:Node.InternalMode = 0) -> void:
+	super.add_child(node, legible_unique_name)
+	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(node)
 
 
-func add_child_below_node(node: Node, child_node: Node, legible_unique_name: bool = false) -> void:
-	.add_child_below_node(node, child_node, legible_unique_name)
-	_drag_n_drop_panel.raise()
-	_track_and_add_node(child_node)
+func add_sibling(sibling: Node, legible_unique_name: bool = false) -> void:
+	super.add_sibling(sibling, legible_unique_name)
+	_drag_n_drop_panel.move_to_front()
+	_track_and_add_node(sibling)
 
 
 func remove_child(node: Node) -> void:
-	.remove_child(node)
+	super.remove_child(node)
 	_untrack_node(node)
 
 
-func can_drop_data_fw(_position: Vector2, data, from_control) -> bool:
-	return from_control == _drag_n_drop_panel and _can_handle_drag_data(data)
+func _can_drop_data(_position: Vector2, data) -> bool:
+	return _can_handle_drag_data(data)
 
 
-func drop_data_fw(_position: Vector2, data, from_control) -> void:
-	assert(from_control == _drag_n_drop_panel, "FIXME")
+func _drop_data(_position: Vector2, data) -> void:
+	#assert(from_control == _drag_n_drop_panel) #,"FIXME")
 
 	var from_node: TabContainer = get_node(data.from_path)
 	if from_node == _drag_panel and _drag_panel.get_child_count() == 1:
@@ -138,7 +162,7 @@ func set_control_as_current_tab(control: Control) -> void:
 	var leaf = _layout.get_leaf_for_node(control)
 	if not leaf:
 		return
-	var position_in_leaf = leaf.find_node(control)
+	var position_in_leaf = leaf.find_child(control)
 	if position_in_leaf < 0:
 		return
 	var panel
@@ -157,38 +181,23 @@ func set_layout(value: Layout) -> void:
 		value = Layout.new()
 	if value == _layout:
 		return
-	if _layout and _layout.is_connected("changed", self, "queue_sort"):
-		_layout.disconnect("changed", self, "queue_sort")
+	if _layout and _layout.is_connected("changed",Callable(self,"queue_sort")):
+		_layout.disconnect("changed",Callable(self,"queue_sort"))
 	_layout = value
-	_layout.connect("changed", self, "queue_sort")
+	_layout.connect("changed",Callable(self,"queue_sort"))
 	_layout_dirty = true
 	queue_sort()
 
 
-func get_layout() -> Layout:
-	return _layout
-
-
-func set_tab_align(value: int) -> void:
+func set_tab_alignment(value: int) -> void:
 	_tab_align = value
 	for i in range(1, _panel_container.get_child_count()):
 		var panel = _panel_container.get_child(i)
-		panel.tab_align = value
+		panel.tab_alignment = value
 
 
 func get_tab_align() -> int:
 	return _tab_align
-
-
-func set_tabs_visible(value: bool) -> void:
-	_tabs_visible = value
-	for i in range(1, _panel_container.get_child_count()):
-		var panel = _panel_container.get_child(i)
-		panel.tabs_visible = value
-
-
-func get_tabs_visible() -> bool:
-	return _tabs_visible
 
 
 func set_use_hidden_tabs_for_min_size(value: bool) -> void:
@@ -245,12 +254,12 @@ func _is_managed_node(node: Node) -> bool:
 		and node != _panel_container
 		and node != _drag_n_drop_panel
 		and node is Control
-		and not node.is_set_as_toplevel()
+		and not node.top_level
 	)
 
 
 func _update_layout_with_children() -> void:
-	var names = PoolStringArray()
+	var names = PackedStringArray()
 	_children_names.clear()
 	for i in range(1, get_child_count() - 1):
 		var c = get_child(i)
@@ -265,10 +274,10 @@ func _track_node(node: Node) -> bool:
 		return false
 	_children_names[node] = node.name
 	_children_names[node.name] = node
-	if not node.is_connected("renamed", self, "_on_child_renamed"):
-		node.connect("renamed", self, "_on_child_renamed", [node])
-	if not node.is_connected("tree_exiting", self, "_untrack_node"):
-		node.connect("tree_exiting", self, "_untrack_node", [node])
+	if not node.is_connected("renamed",Callable(self,"_on_child_renamed")):
+		node.connect("renamed",Callable(self,"_on_child_renamed").bind(node))
+	if not node.is_connected("tree_exiting",Callable(self,"_untrack_node")):
+		node.connect("tree_exiting",Callable(self,"_untrack_node").bind(node))
 	return true
 
 
@@ -284,24 +293,24 @@ func _track_and_add_node(node: Node) -> void:
 func _untrack_node(node: Node) -> void:
 	_children_names.erase(node)
 	_children_names.erase(node.name)
-	if node.is_connected("renamed", self, "_on_child_renamed"):
-		node.disconnect("renamed", self, "_on_child_renamed")
-	if node.is_connected("tree_exiting", self, "_untrack_node"):
-		node.disconnect("tree_exiting", self, "_untrack_node")
+	if node.is_connected("renamed",Callable(self,"_on_child_renamed")):
+		node.disconnect("renamed",Callable(self,"_on_child_renamed"))
+	if node.is_connected("tree_exiting",Callable(self,"_untrack_node")):
+		node.disconnect("tree_exiting",Callable(self,"_untrack_node"))
 	_layout_dirty = true
 
 
 func _resort() -> void:
-	assert(_panel_container, "FIXME: resorting without _panel_container")
-	if _panel_container.get_position_in_parent() != 0:
+	assert(_panel_container) #,"FIXME: resorting without _panel_container")
+	if _panel_container.get_index() != 0:
 		move_child(_panel_container, 0)
-	if _drag_n_drop_panel.get_position_in_parent() < get_child_count() - 1:
-		_drag_n_drop_panel.raise()
+	if _drag_n_drop_panel.get_index() < get_child_count() - 1:
+		_drag_n_drop_panel.move_to_front()
 
 	if _layout_dirty:
 		_update_layout_with_children()
 
-	var rect = Rect2(Vector2.ZERO, rect_size)
+	var rect = Rect2(Vector2.ZERO, size)
 	fit_child_in_rect(_panel_container, rect)
 	_panel_container.fit_child_in_rect(_split_container, rect)
 
@@ -319,7 +328,7 @@ func _resort() -> void:
 # Calculate DockablePanel and SplitHandle minimum sizes, skipping empty
 # branches.
 #
-# Returns a DockablePanel on non-empty leaves, a SplitHandle on non-empty
+# Returns a DockablePanel checked non-empty leaves, a SplitHandle checked non-empty
 # splits, `null` if the whole branch is empty and no space should be used.
 #
 # `result` will be filled with the non-empty nodes in this post-order tree
@@ -330,7 +339,7 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 		for n in layout_node.names:
 			var node: Control = _children_names.get(n)
 			if node:
-				assert(node is Control, "FIXME: node is not a control %s" % node)
+				assert(node is Control) #,"FIXME: node is not a control %s" % node)
 				assert(
 					node.get_parent_control() == self,
 					"FIXME: node is not child of container %s" % node
@@ -339,7 +348,7 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 					node.visible = false
 				else:
 					nodes.append(node)
-		if nodes.empty():
+		if nodes.is_empty():
 			return null
 		else:
 			var panel = _get_panel(_current_panel_index)
@@ -350,8 +359,8 @@ func _calculate_panel_and_split_list(result: Array, layout_node: Layout.LayoutNo
 	elif layout_node is Layout.LayoutSplit:
 		# by processing `second` before `first`, traversing `result` from back
 		# to front yields a nice pre-order tree traversal
-		var second_result = _calculate_panel_and_split_list(result, layout_node.second)
-		var first_result = _calculate_panel_and_split_list(result, layout_node.first)
+		var second_result = _calculate_panel_and_split_list(result, layout_node['second'])
+		var first_result = _calculate_panel_and_split_list(result, layout_node['first'])
 		if first_result and second_result:
 			var split = _get_split(_current_split_index)
 			_current_split_index += 1
@@ -377,29 +386,29 @@ func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2)
 		_panel_container.fit_child_in_rect(control, rect)
 	elif control is SplitHandle:
 		var split_rects = control.get_split_rects(rect)
-		_split_container.fit_child_in_rect(control, split_rects.self)
-		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects.first)
-		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects.second)
+		_split_container.fit_child_in_rect(control, split_rects['self'])
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects['first'])
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects['second'])
 
 
 func _get_panel(idx: int) -> DockablePanel:
 	"""Get the idx'th DockablePanel, reusing an instanced one if possible"""
-	assert(_panel_container, "FIXME: creating panel without _panel_container")
+	assert(_panel_container) #,"FIXME: creating panel without _panel_container")
 	if idx < _panel_container.get_child_count():
 		return _panel_container.get_child(idx)
 	var panel = DockablePanel.new()
-	panel.tab_align = _tab_align
+	panel.tab_alignment = _tab_align
 	panel.tabs_visible = _tabs_visible
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
-	panel.connect("tab_layout_changed", self, "_on_panel_tab_layout_changed", [panel])
+	panel.connect("tab_layout_changed",Callable(self,"_on_panel_tab_layout_changed").bind(panel))
 	return panel
 
 
 func _get_split(idx: int) -> SplitHandle:
 	"""Get the idx'th SplitHandle, reusing an instanced one if possible"""
-	assert(_split_container, "FIXME: creating split without _split_container")
+	assert(_split_container) #,"FIXME: creating split without _split_container")
 	if idx < _split_container.get_child_count():
 		return _split_container.get_child(idx)
 	var split = SplitHandle.new()
@@ -431,7 +440,7 @@ func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
 func _on_child_renamed(child: Node) -> void:
 	"""Handler for `Node.renamed` signal, updates tracked name for node"""
 	var old_name = _children_names.get(child)
-	if not old_name:
+	if old_name == str(child.name):
 		return
 	_children_names.erase(old_name)
 	_children_names[child] = child.name

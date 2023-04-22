@@ -1,4 +1,4 @@
-tool
+@tool
 extends TabContainer
 
 signal tab_layout_changed(tab)
@@ -6,7 +6,11 @@ signal tab_layout_changed(tab)
 const ReferenceControl = preload("dockable_panel_reference_control.gd")
 const Layout = preload("layout.gd")
 
-var leaf: Layout.LayoutPanel setget set_leaf, get_leaf
+var leaf: Layout.LayoutPanel:
+	get:
+		return get_leaf()
+	set(value):
+		set_leaf(value)
 
 var _leaf: Layout.LayoutPanel
 
@@ -16,13 +20,13 @@ func _ready() -> void:
 
 
 func _enter_tree() -> void:
-	connect("tab_selected", self, "_on_tab_selected")
-	connect("tab_changed", self, "_on_tab_changed")
+	connect("tab_selected",Callable(self,"_on_tab_selected"))
+	connect("tab_changed",Callable(self,"_on_tab_changed"))
 
 
 func _exit_tree() -> void:
-	disconnect("tab_selected", self, "_on_tab_selected")
-	disconnect("tab_changed", self, "_on_tab_changed")
+	disconnect("tab_selected",Callable(self,"_on_tab_selected"))
+	disconnect("tab_changed",Callable(self,"_on_tab_changed"))
 
 
 func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
@@ -38,7 +42,7 @@ func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
 	for i in range(min_size, nodes.size()):
 		var ref_control = ReferenceControl.new()
 		add_child(ref_control)
-	assert(nodes.size() == get_child_count(), "FIXME")
+	assert(nodes.size() == get_child_count()) #,"FIXME")
 	# setup children
 	for i in nodes.size():
 		var ref_control: ReferenceControl = get_child(i)
@@ -49,7 +53,7 @@ func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
 
 func get_child_rect() -> Rect2:
 	var control = get_current_tab_control()
-	return Rect2(rect_position + control.rect_position, control.rect_size)
+	return Rect2(position + control.position, control.size)
 
 
 func set_leaf(value: Layout.LayoutPanel) -> void:
