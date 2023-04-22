@@ -17,15 +17,18 @@ func _ready() -> void:
 		var checkbox := CheckBox.new()
 		checkbox.text = str(i)
 		checkbox.button_pressed = not _container.is_control_hidden(tabs[i])
-		checkbox.connect("toggled",Callable(self,"_on_CheckButton_toggled").bind(tabs[i]))
+		checkbox.toggled.connect(_on_CheckButton_toggled.bind(tabs[i]))
 		_checkbox_container.add_child(checkbox)
 
 
 func _on_add_pressed() -> void:
-	var control = _clone_control.duplicate()
-	control.get_node("Buttons/Rename").connect("pressed",Callable(self, "_on_control_rename_button_pressed").bind(control))
-	
-	control.get_node("Buttons/Remove").connect("pressed",Callable(self, "_on_control_remove_button_pressed").bind(control))
+	var control := _clone_control.duplicate()
+	control.get_node("Buttons/Rename").pressed.connect(
+		_on_control_rename_button_pressed.bind(control)
+	)
+	control.get_node("Buttons/Remove").pressed.connect(
+		_on_control_remove_button_pressed.bind(control)
+	)
 	control.color = Color(randf(), randf(), randf())
 	control.name = "Control0"
 

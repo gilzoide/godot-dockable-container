@@ -12,7 +12,7 @@ var reference_to: Control :
 				_reference_to.disconnect("renamed",Callable(self,"_on_reference_to_renamed"))
 				_reference_to.disconnect("minimum_size_changed",Callable(self,"minimum_size_changed"))
 			_reference_to = control
-			
+
 			emit_signal("minimum_size_changed")
 			if not _reference_to:
 				return

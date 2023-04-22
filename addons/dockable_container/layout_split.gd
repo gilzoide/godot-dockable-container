@@ -3,25 +3,20 @@ class_name DockableLayoutSplit
 extends DockableLayoutNode
 # DockableLayout binary tree nodes, defining subtrees and leaf panels
 
-enum Direction {
-	HORIZONTAL,
-	VERTICAL,
-}
+enum Direction { HORIZONTAL, VERTICAL }
 
-const DockableLayoutPanel = preload("layout_panel.gd")
-
-@export var direction: Direction = Direction.HORIZONTAL : 
+@export var direction: Direction = Direction.HORIZONTAL :
 	get:
 		return get_direction()
 	set(value):
 		set_direction(value)
 @export var percent = 0.5 : get = get_percent, set = set_percent # (float, 0, 1)
-@export var first: Resource = DockableLayoutPanel.new() : 
+@export var first: Resource = DockableLayoutPanel.new() :
 	get:
 		return get_first()
 	set(value):
 		set_first(value)
-@export var second: Resource = DockableLayoutPanel.new() : 
+@export var second: Resource = DockableLayoutPanel.new() :
 	get:
 		return get_second()
 	set(value):

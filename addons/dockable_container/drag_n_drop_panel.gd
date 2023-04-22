@@ -2,14 +2,15 @@
 class_name DockableDragNDropPanel
 extends Control
 
-const DRAW_NOTHING = -1
-const DRAW_CENTERED = -2
-
-var _draw_margin = DRAW_NOTHING
-var _should_split = false
-
-const MARGIN_NONE = -1
 enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER}
+
+const DRAW_NOTHING := -1
+const DRAW_CENTERED := -2
+const MARGIN_NONE := -1
+
+var _draw_margin := DRAW_NOTHING
+var _should_split := false
+
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_EXIT:
@@ -27,7 +28,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
-	var rect
+	var rect: Rect2
 	if _draw_margin == DRAW_NOTHING:
 		return
 	elif _draw_margin == DRAW_CENTERED:
@@ -42,7 +43,7 @@ func _draw() -> void:
 	elif _draw_margin == MARGIN_BOTTOM:
 		var half_height = size.y * 0.5
 		rect = Rect2(0, half_height, size.x, half_height)
-	var stylebox = get_theme_stylebox("panel", "TooltipPanel")
+	var stylebox := get_theme_stylebox("panel", "TooltipPanel")
 	draw_style_box(stylebox, rect)
 
 
@@ -59,23 +60,23 @@ func get_hover_margin() -> int:
 
 
 func _find_hover_margin(point: Vector2) -> int:
-	var half_size = size * 0.5
+	var half_size := size * 0.5
 
-	var left = point.distance_squared_to(Vector2(0, half_size.y))
-	var lesser = left
-	var lesser_margin = MARGIN_LEFT
+	var left := point.distance_squared_to(Vector2(0, half_size.y))
+	var lesser := left
+	var lesser_margin := MARGIN_LEFT
 
-	var top = point.distance_squared_to(Vector2(half_size.x, 0))
+	var top := point.distance_squared_to(Vector2(half_size.x, 0))
 	if lesser > top:
 		lesser = top
 		lesser_margin = MARGIN_TOP
 
-	var right = point.distance_squared_to(Vector2(size.x, half_size.y))
+	var right := point.distance_squared_to(Vector2(size.x, half_size.y))
 	if lesser > right:
 		lesser = right
 		lesser_margin = MARGIN_RIGHT
 
-	var bottom = point.distance_squared_to(Vector2(half_size.x, size.y))
+	var bottom := point.distance_squared_to(Vector2(half_size.x, size.y))
 	if lesser > bottom:
 		#lesser = bottom  # unused result
 		lesser_margin = MARGIN_BOTTOM

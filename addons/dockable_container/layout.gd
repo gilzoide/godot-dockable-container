@@ -3,9 +3,9 @@ class_name DockableLayout
 extends Resource
 # DockableLayout Resource definition, holding the root DockableLayoutNode and hidden tabs.
 #
-# DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees and DockableLayoutPanel
-# leaves. Both of them inherit from DockableLayoutNode to help with type annotation and
-# define common funcionality.
+# DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees
+# and DockableLayoutPanel leaves. Both of them inherit from DockableLayoutNode to help with
+# type annotation and define common funcionality.
 #
 # Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 
@@ -190,7 +190,9 @@ func _on_root_changed() -> void:
 	call_deferred("emit_signal", "changed")
 
 
-func _ensure_names_in_node(node: DockableLayoutNode, names: PackedStringArray, empty_leaves: Array) -> void:
+func _ensure_names_in_node(
+	node: DockableLayoutNode, names: PackedStringArray, empty_leaves: Array
+) -> void:
 	if node is DockableLayoutPanel:
 		node.update_nodes(names, _leaf_by_node_name)
 		if node.is_empty():

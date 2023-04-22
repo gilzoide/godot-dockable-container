@@ -27,7 +27,7 @@ extends Container
 			var panel = _panel_container.get_child(i)
 			panel.tabs_visible = value
 @export var rearrange_group: int = 0
-@export var layout: Resource = DockableLayout.new(): 
+@export var layout: Resource = DockableLayout.new():
 	get:
 		return _layout
 	set(value):
@@ -62,7 +62,7 @@ func _ready() -> void:
 
 	_drag_n_drop_panel.name = "_drag_n_drop_panel"
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
-	_drag_n_drop_panel.set_drag_forwarding(Callable(self,"_can_handle_drag_data"),Callable(self,"_can_drop_data"),Callable(self,"_drop_data"))
+	_drag_n_drop_panel.set_drag_forwarding(_can_handle_drag_data, _can_drop_data, _drop_data)
 	_drag_n_drop_panel.visible = false
 	super.add_child(_drag_n_drop_panel)
 
@@ -102,13 +102,13 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
 
 
-func add_child(node: Node, legible_unique_name: bool = false, internal:Node.InternalMode = 0) -> void:
+func add_child(node: Node, legible_unique_name := false, _internal: Node.InternalMode = 0) -> void:
 	super.add_child(node, legible_unique_name)
 	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(node)
 
 
-func add_sibling(sibling: Node, legible_unique_name: bool = false) -> void:
+func add_sibling(sibling: Node, legible_unique_name := false) -> void:
 	super.add_sibling(sibling, legible_unique_name)
 	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(sibling)
