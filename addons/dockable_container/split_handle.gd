@@ -16,9 +16,9 @@ var layout_split: DockableLayoutSplit
 var first_minimum_size: Vector2
 var second_minimum_size: Vector2
 
-var _parent_rect
-var _mouse_hovering = false
-var _dragging = false
+var _parent_rect: Rect2
+var _mouse_hovering := false
+var _dragging := false
 
 
 func _draw() -> void:
@@ -37,16 +37,14 @@ func _gui_input(event: InputEvent) -> void:
 		if event.double_click:
 			layout_split.percent = 0.5
 	elif _dragging and event is InputEventMouseMotion:
-		var mouse_in_parent = get_parent_control().get_local_mouse_position()
+		var mouse_in_parent := get_parent_control().get_local_mouse_position()
 		if layout_split.is_horizontal():
 			layout_split.percent = (
-				(mouse_in_parent.x - _parent_rect.position.x)
-				/ _parent_rect.size.x
+				(mouse_in_parent.x - _parent_rect.position.x) / _parent_rect.size.x
 			)
 		else:
 			layout_split.percent = (
-				(mouse_in_parent.y - _parent_rect.position.y)
-				/ _parent_rect.size.y
+				(mouse_in_parent.y - _parent_rect.position.y) / _parent_rect.size.y
 			)
 
 

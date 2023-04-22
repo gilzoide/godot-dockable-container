@@ -87,7 +87,7 @@ func _notification(what: int) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	assert(get_viewport().gui_is_dragging()) #,"FIXME: should only be called when dragging")
+	assert(get_viewport().gui_is_dragging(), "FIXME: should only be called when dragging")
 	if event is InputEventMouseMotion:
 		var local_position = get_local_mouse_position()
 		var panel
@@ -295,7 +295,7 @@ func _untrack_node(node: Node) -> void:
 
 
 func _resort() -> void:
-	assert(_panel_container) #,"FIXME: resorting without _panel_container")
+	assert(_panel_container, "FIXME: resorting without _panel_container")
 	if _panel_container.get_index() != 0:
 		move_child(_panel_container, 0)
 	if _drag_n_drop_panel.get_index() < get_child_count() - 1:
@@ -304,14 +304,14 @@ func _resort() -> void:
 	if _layout_dirty:
 		_update_layout_with_children()
 
-	var rect = Rect2(Vector2.ZERO, size)
+	var rect := Rect2(Vector2.ZERO, size)
 	fit_child_in_rect(_panel_container, rect)
 	_panel_container.fit_child_in_rect(_split_container, rect)
 
 	_current_panel_index = 1
 	_current_split_index = 0
 
-	var children_list = []
+	var children_list := []
 	_calculate_panel_and_split_list(children_list, _layout.root)
 	_fit_panel_and_split_list_to_rect(children_list, rect)
 
@@ -333,7 +333,7 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 		for n in layout_node.names:
 			var node: Control = _children_names.get(n)
 			if node:
-				assert(node is Control) #,"FIXME: node is not a control %s" % node)
+				assert(node is Control, "FIXME: node is not a control %s" % node)
 				assert(
 					node.get_parent_control() == self,
 					"FIXME: node is not child of container %s" % node
@@ -353,8 +353,8 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 	elif layout_node is DockableLayoutSplit:
 		# by processing `second` before `first`, traversing `result` from back
 		# to front yields a nice pre-order tree traversal
-		var second_result = _calculate_panel_and_split_list(result, layout_node['second'])
-		var first_result = _calculate_panel_and_split_list(result, layout_node['first'])
+		var second_result = _calculate_panel_and_split_list(result, layout_node["second"])
+		var first_result = _calculate_panel_and_split_list(result, layout_node["first"])
 		if first_result and second_result:
 			var split := _get_split(_current_split_index)
 			_current_split_index += 1
@@ -380,14 +380,14 @@ func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2)
 		_panel_container.fit_child_in_rect(control, rect)
 	elif control is DockableSplitHandle:
 		var split_rects = control.get_split_rects(rect)
-		_split_container.fit_child_in_rect(control, split_rects['self'])
-		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects['first'])
-		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects['second'])
+		_split_container.fit_child_in_rect(control, split_rects["self"])
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects["first"])
+		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects["second"])
 
 
 func _get_panel(idx: int) -> DockablePanel:
 	# Get the idx'th DockablePanel, reusing an instanced one if possible
-	assert(_panel_container) #,"FIXME: creating panel without _panel_container")
+	assert(_panel_container, "FIXME: creating panel without _panel_container")
 	if idx < _panel_container.get_child_count():
 		return _panel_container.get_child(idx)
 	var panel := DockablePanel.new()
@@ -402,7 +402,7 @@ func _get_panel(idx: int) -> DockablePanel:
 
 func _get_split(idx: int) -> DockableSplitHandle:
 	# Get the idx'th DockableSplitHandle, reusing an instanced one if possible
-	assert(_split_container) #,"FIXME: creating split without _split_container")
+	assert(_split_container, "FIXME: creating split without _split_container")
 	if idx < _split_container.get_child_count():
 		return _split_container.get_child(idx)
 	var split := DockableSplitHandle.new()

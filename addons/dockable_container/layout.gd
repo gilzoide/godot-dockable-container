@@ -9,34 +9,33 @@ extends Resource
 #
 # Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 
-enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER}
+enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }
 
-@export var root: Resource = DockableLayoutPanel.new():
+@export var root := DockableLayoutPanel.new():
 	get:
 		return _root
 	set(value):
 		set_root(value)
-@export var hidden_tabs: Dictionary = {} :
+@export var hidden_tabs := {}:
 	get:
 		return _hidden_tabs
 	set(value):
 		if value != _hidden_tabs:
 			_hidden_tabs = value
-			emit_signal("changed")
+			changed.emit()
 
-
-var _changed_signal_queued = false
+var _changed_signal_queued := false
 var _first_leaf: DockableLayoutPanel
 var _hidden_tabs: Dictionary
 var _leaf_by_node_name: Dictionary
-var _root: DockableLayoutNode = DockableLayoutPanel.new()
+var _root := DockableLayoutPanel.new()
 
 
-func _init():
+func _init() -> void:
 	resource_name = "DockableLayout"
 
 
-func set_root(value: DockableLayoutNode, should_emit_changed = true) -> void:
+func set_root(value: DockableLayoutPanel, should_emit_changed := true) -> void:
 	if not value:
 		value = DockableLayoutPanel.new()
 	if _root == value:
@@ -54,8 +53,8 @@ func get_root() -> DockableLayoutNode:
 	return _root
 
 
-func clone():
-	var new_layout = get_script().new()
+func clone() -> DockableLayout:
+	var new_layout := DockableLayout.new()
 	new_layout.root = _root.clone()
 	new_layout._hidden_tabs = _hidden_tabs.duplicate()
 	return new_layout
@@ -73,7 +72,7 @@ func get_names() -> PackedStringArray:
 func update_nodes(names: PackedStringArray) -> void:
 	_leaf_by_node_name.clear()
 	_first_leaf = null
-	var empty_leaves = []
+	var empty_leaves: Array[DockableLayoutPanel] = []
 	_ensure_names_in_node(_root, names, empty_leaves)
 	for l in empty_leaves:
 		_remove_leaf(l)
@@ -113,24 +112,24 @@ func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	else:
 		new_branch.direction = DockableLayoutSplit.Direction.VERTICAL
 	if margin == MARGIN_LEFT or margin == MARGIN_TOP:
-		new_branch['first'] = new_leaf
-		new_branch['second'] = leaf
+		new_branch["first"] = new_leaf
+		new_branch["second"] = leaf
 	else:
-		new_branch['first'] = leaf
-		new_branch['second'] = new_leaf
+		new_branch["first"] = leaf
+		new_branch["second"] = new_leaf
 	if _root == leaf:
 		set_root(new_branch, false)
 	elif root_branch:
 		if leaf == root_branch.first:
-			root_branch['first'] = new_branch
+			root_branch["first"] = new_branch
 		else:
-			root_branch['second'] = new_branch
+			root_branch["second"] = new_branch
 
 	move_node_to_leaf(node, new_leaf, 0)
 
 
 func add_node(node: Node) -> void:
-	var node_name = node.name
+	var node_name := node.name
 	if _leaf_by_node_name.has(node_name):
 		return
 	_first_leaf.push_name(node_name)
@@ -139,7 +138,7 @@ func add_node(node: Node) -> void:
 
 
 func remove_node(node: Node) -> void:
-	var node_name = node.name
+	var node_name := node.name
 	var leaf: DockableLayoutPanel = _leaf_by_node_name.get(node_name)
 	if not leaf:
 		return
@@ -151,7 +150,7 @@ func remove_node(node: Node) -> void:
 
 
 func rename_node(previous_name: String, new_name: String) -> void:
-	var leaf = _leaf_by_node_name.get(previous_name)
+	var leaf: DockableLayoutPanel = _leaf_by_node_name.get(previous_name)
 	if not leaf:
 		return
 	leaf.rename_node(previous_name, new_name)
@@ -191,7 +190,7 @@ func _on_root_changed() -> void:
 
 
 func _ensure_names_in_node(
-	node: DockableLayoutNode, names: PackedStringArray, empty_leaves: Array
+	node: DockableLayoutNode, names: PackedStringArray, empty_leaves: Array[DockableLayoutPanel]
 ) -> void:
 	if node is DockableLayoutPanel:
 		node.update_nodes(names, _leaf_by_node_name)
@@ -200,31 +199,31 @@ func _ensure_names_in_node(
 		if not _first_leaf:
 			_first_leaf = node
 	elif node is DockableLayoutSplit:
-		_ensure_names_in_node(node['first'], names, empty_leaves)
-		_ensure_names_in_node(node['second'], names, empty_leaves)
+		_ensure_names_in_node(node["first"], names, empty_leaves)
+		_ensure_names_in_node(node["second"], names, empty_leaves)
 	else:
-		assert(false) #,"Invalid Resource, should be branch or leaf, found %s" % node)
+		assert(false, "Invalid Resource, should be branch or leaf, found %s" % node)
 
 
 func _remove_leaf(leaf: DockableLayoutPanel) -> void:
-	assert(leaf.is_empty()) #,"FIXME: trying to remove_at a leaf with nodes")
+	assert(leaf.is_empty(), "FIXME: trying to remove_at a leaf with nodes")
 	if _root == leaf:
 		return
-	var collapsed_branch = leaf.parent
-	assert(collapsed_branch is DockableLayoutSplit) #,"FIXME: leaf is not a child of branch")
+	var collapsed_branch := leaf.parent
+	assert(collapsed_branch is DockableLayoutSplit, "FIXME: leaf is not a child of branch")
 	var kept_branch = (
-		collapsed_branch['first']
-		if leaf == collapsed_branch['second']
-		else collapsed_branch['second']
+		collapsed_branch["first"]
+		if leaf == collapsed_branch["second"]
+		else collapsed_branch["second"]
 	)
-	var root_branch = collapsed_branch.parent #HERE
+	var root_branch := collapsed_branch.parent  #HERE
 	if collapsed_branch == _root:
 		set_root(kept_branch, true)
 	elif root_branch:
-		if collapsed_branch == root_branch['first']:
-			root_branch['first'] = kept_branch
+		if collapsed_branch == root_branch["first"]:
+			root_branch["first"] = kept_branch
 		else:
-			root_branch['second'] = kept_branch
+			root_branch["second"] = kept_branch
 
 
 func _print_tree() -> void:
@@ -244,5 +243,5 @@ func _print_tree_step(tree_or_leaf, level, idx) -> void:
 			" ",
 			tree_or_leaf.percent
 		)
-		_print_tree_step(tree_or_leaf['first'], level + 1, 1)
-		_print_tree_step(tree_or_leaf['second'], level + 1, 2)
+		_print_tree_step(tree_or_leaf["first"], level + 1, 1)
+		_print_tree_step(tree_or_leaf["second"], level + 1, 2)

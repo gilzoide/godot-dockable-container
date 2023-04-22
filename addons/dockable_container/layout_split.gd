@@ -5,35 +5,37 @@ extends DockableLayoutNode
 
 enum Direction { HORIZONTAL, VERTICAL }
 
-@export var direction: Direction = Direction.HORIZONTAL :
+@export var direction := Direction.HORIZONTAL:
 	get:
 		return get_direction()
 	set(value):
 		set_direction(value)
-@export var percent = 0.5 : get = get_percent, set = set_percent # (float, 0, 1)
-@export var first: Resource = DockableLayoutPanel.new() :
+@export_range(0, 1) var percent := 0.5:
+	get = get_percent,
+	set = set_percent
+@export var first := DockableLayoutPanel.new():
 	get:
 		return get_first()
 	set(value):
 		set_first(value)
-@export var second: Resource = DockableLayoutPanel.new() :
+@export var second := DockableLayoutPanel.new():
 	get:
 		return get_second()
 	set(value):
 		set_second(value)
 
-var _direction = Direction.HORIZONTAL
-var _percent = 0.5
-var _first
-var _second
+var _direction := Direction.HORIZONTAL
+var _percent := 0.5
+var _first: DockableLayoutPanel
+var _second: DockableLayoutPanel
 
 
-func _init():
+func _init() -> void:
 	resource_name = "Split"
 
 
-func clone():
-	var new_split = get_script().new()
+func clone() -> DockableLayoutSplit:
+	var new_split := DockableLayoutSplit.new()
 	new_split._direction = _direction
 	new_split._percent = _percent
 	new_split.first = _first.clone()
@@ -41,7 +43,7 @@ func clone():
 	return new_split
 
 
-func set_first(value) -> void:
+func set_first(value: DockableLayoutPanel) -> void:
 	if value == null:
 		_first = DockableLayoutPanel.new()
 	else:
@@ -50,11 +52,11 @@ func set_first(value) -> void:
 	emit_tree_changed()
 
 
-func get_first():
+func get_first() -> DockableLayoutPanel:
 	return _first
 
 
-func set_second(value) -> void:
+func set_second(value: DockableLayoutPanel) -> void:
 	if value == null:
 		_second = DockableLayoutPanel.new()
 	else:
@@ -63,7 +65,7 @@ func set_second(value) -> void:
 	emit_tree_changed()
 
 
-func get_second():
+func get_second() -> DockableLayoutPanel:
 	return _second
 
 

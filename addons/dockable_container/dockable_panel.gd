@@ -40,7 +40,7 @@ func track_nodes(nodes: Array, new_leaf: DockableLayoutPanel) -> void:
 	for i in range(min_size, nodes.size()):
 		var ref_control = DockableReferenceControl.new()
 		add_child(ref_control)
-	assert(nodes.size() == get_child_count()) #,"FIXME")
+	assert(nodes.size() == get_child_count(), "FIXME")
 	# setup children
 	for i in nodes.size():
 		var ref_control: DockableReferenceControl = get_child(i)
@@ -50,7 +50,7 @@ func track_nodes(nodes: Array, new_leaf: DockableLayoutPanel) -> void:
 
 
 func get_child_rect() -> Rect2:
-	var control = get_current_tab_control()
+	var control := get_current_tab_control()
 	return Rect2(position + control.position, control.size)
 
 

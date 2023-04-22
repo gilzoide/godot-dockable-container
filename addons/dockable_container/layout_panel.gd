@@ -21,12 +21,12 @@ var _names := PackedStringArray()
 var _current_tab := 0
 
 
-func _init():
+func _init() -> void:
 	resource_name = "Tabs"
 
 
-func clone():
-	var new_panel = get_script().new()
+func clone() -> DockableLayoutPanel:
+	var new_panel := DockableLayoutPanel.new()
 	new_panel._names = _names
 	new_panel._current_tab = _current_tab
 	return new_panel

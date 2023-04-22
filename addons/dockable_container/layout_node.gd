@@ -3,7 +3,7 @@ class_name DockableLayoutNode
 extends Resource
 # Base class for DockableLayout tree nodes
 
-var parent = null
+var parent: DockableLayoutSplit = null
 
 
 func emit_tree_changed() -> void:
@@ -18,7 +18,7 @@ func emit_tree_changed() -> void:
 # Use this instead of `Resource.duplicate(true)` to ensure objects have the
 # right script and parenting is correctly set for each node.
 func clone():
-	assert(false) #,"FIXME: implement checked child")
+	assert(false, "FIXME: implement checked child")
 
 
 # Returns whether there are any nodes
