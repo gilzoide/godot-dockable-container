@@ -12,7 +12,7 @@ extends Container
 			panel.tab_alignment = value
 @export var use_hidden_tabs_for_min_size := false:
 	get:
-		return use_hidden_tabs_for_min_size
+		return _use_hidden_tabs_for_min_size
 	set(value):
 		_use_hidden_tabs_for_min_size = value
 		for i in range(1, _panel_container.get_child_count()):
@@ -32,9 +32,9 @@ extends Container
 		return _layout
 	set(value):
 		set_layout(value)
-# If `clone_layout_on_ready` is true, `layout` will be cloned checked `_ready`.
-# This is useful for leaving layout Resources untouched in case you want to
-# restore layout to its default later.
+## If `clone_layout_on_ready` is true, `layout` will be cloned checked `_ready`.
+## This is useful for leaving layout Resources untouched in case you want to
+## restore layout to its default later.
 @export var clone_layout_on_ready: bool = true
 
 var _layout := DockableLayout.new()
@@ -319,14 +319,14 @@ func _resort() -> void:
 	_untrack_children_after(_split_container, _current_split_index)
 
 
-# Calculate DockablePanel and DockableSplitHandle minimum sizes, skipping empty
-# branches.
-#
-# Returns a DockablePanel checked non-empty leaves, a DockableSplitHandle checked non-empty
-# splits, `null` if the whole branch is empty and no space should be used.
-#
-# `result` will be filled with the non-empty nodes in this post-order tree
-# traversal.
+## Calculate DockablePanel and DockableSplitHandle minimum sizes, skipping empty
+## branches.
+##
+## Returns a DockablePanel checked non-empty leaves, a DockableSplitHandle checked non-empty
+## splits, `null` if the whole branch is empty and no space should be used.
+##
+## `result` will be filled with the non-empty nodes in this post-order tree
+## traversal.
 func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutNode):
 	if layout_node is DockableLayoutPanel:
 		var nodes := []
@@ -353,8 +353,8 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 	elif layout_node is DockableLayoutSplit:
 		# by processing `second` before `first`, traversing `result` from back
 		# to front yields a nice pre-order tree traversal
-		var second_result = _calculate_panel_and_split_list(result, layout_node["second"])
-		var first_result = _calculate_panel_and_split_list(result, layout_node["first"])
+		var second_result = _calculate_panel_and_split_list(result, layout_node.second)
+		var first_result = _calculate_panel_and_split_list(result, layout_node.first)
 		if first_result and second_result:
 			var split := _get_split(_current_split_index)
 			_current_split_index += 1
@@ -371,9 +371,9 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 		push_warning("FIXME: invalid Resource, should be branch or leaf, found %s" % layout_node)
 
 
-# Traverse list from back to front fitting controls where they belong.
-#
-# Be sure to call this with the result from `_calculate_split_minimum_sizes`.
+## Traverse list from back to front fitting controls where they belong.
+##
+## Be sure to call this with the result from `_calculate_split_minimum_sizes`.
 func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2) -> void:
 	var control = panel_and_split_list.pop_back()
 	if control is DockablePanel:
@@ -385,8 +385,8 @@ func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2)
 		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects["second"])
 
 
+## Get the idx'th DockablePanel, reusing an instanced one if possible
 func _get_panel(idx: int) -> DockablePanel:
-	# Get the idx'th DockablePanel, reusing an instanced one if possible
 	assert(_panel_container, "FIXME: creating panel without _panel_container")
 	if idx < _panel_container.get_child_count():
 		return _panel_container.get_child(idx)
@@ -394,14 +394,14 @@ func _get_panel(idx: int) -> DockablePanel:
 	panel.tab_alignment = _tab_align
 	panel.tabs_visible = _tabs_visible
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
-	panel.set_tabs_rearrange_group(max(0, rearrange_group))
+	panel.set_tabs_rearrange_group(maxi(0, rearrange_group))
 	_panel_container.add_child(panel)
 	panel.tab_layout_changed.connect(_on_panel_tab_layout_changed.bind(panel))
 	return panel
 
 
+## Get the idx'th DockableSplitHandle, reusing an instanced one if possible
 func _get_split(idx: int) -> DockableSplitHandle:
-	# Get the idx'th DockableSplitHandle, reusing an instanced one if possible
 	assert(_split_container, "FIXME: creating split without _split_container")
 	if idx < _split_container.get_child_count():
 		return _split_container.get_child(idx)
@@ -410,18 +410,18 @@ func _get_split(idx: int) -> DockableSplitHandle:
 	return split
 
 
+## Helper for removing and freeing all remaining children from node
 static func _untrack_children_after(node, idx: int) -> void:
-	# Helper for removing and freeing all remaining children from node
 	for i in range(idx, node.get_child_count()):
 		var child = node.get_child(idx)
 		node.remove_child(child)
 		child.queue_free()
 
 
+## Handler for `DockablePanel.tab_layout_changed`, update its DockableLayoutPanel
 func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
-	# Handler for `DockablePanel.tab_layout_changed`, update its DockableLayoutPanel
 	_layout_dirty = true
-	var control = panel.get_tab_control(tab)
+	var control := panel.get_tab_control(tab)
 	if control is DockableReferenceControl:
 		control = control.reference_to
 	if not _is_managed_node(control):
@@ -431,9 +431,9 @@ func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
 	queue_sort()
 
 
+## Handler for `Node.renamed` signal, updates tracked name for node
 func _on_child_renamed(child: Node) -> void:
-	# Handler for `Node.renamed` signal, updates tracked name for node
-	var old_name = _children_names.get(child)
+	var old_name: String = _children_names.get(child)
 	if old_name == str(child.name):
 		return
 	_children_names.erase(old_name)
