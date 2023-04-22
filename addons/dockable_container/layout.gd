@@ -11,7 +11,7 @@ extends Resource
 
 enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }
 
-@export var root := DockableLayoutPanel.new():
+@export var root: DockableLayoutNode = DockableLayoutPanel.new():
 	get:
 		return _root
 	set(value):
@@ -28,14 +28,14 @@ var _changed_signal_queued := false
 var _first_leaf: DockableLayoutPanel
 var _hidden_tabs: Dictionary
 var _leaf_by_node_name: Dictionary
-var _root := DockableLayoutPanel.new()
+var _root: DockableLayoutNode = DockableLayoutPanel.new()
 
 
 func _init() -> void:
-	resource_name = "DockableLayout"
+	resource_name = "Layout"
 
 
-func set_root(value: DockableLayoutPanel, should_emit_changed := true) -> void:
+func set_root(value: DockableLayoutNode, should_emit_changed := true) -> void:
 	if not value:
 		value = DockableLayoutPanel.new()
 	if _root == value:
@@ -87,8 +87,8 @@ func update_nodes(names: PackedStringArray) -> void:
 
 
 func move_node_to_leaf(node: Node, leaf: DockableLayoutPanel, relative_position: int) -> void:
-	var node_name = node.name
-	var previous_leaf = _leaf_by_node_name.get(node_name)
+	var node_name := node.name
+	var previous_leaf: DockableLayoutPanel = _leaf_by_node_name.get(node_name)
 	if previous_leaf:
 		previous_leaf.remove_node(node)
 		if previous_leaf.is_empty():
@@ -103,10 +103,10 @@ func get_leaf_for_node(node: Node) -> DockableLayoutPanel:
 	return _leaf_by_node_name.get(node.name)
 
 
-func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
-	var root_branch = leaf.parent
-	var new_leaf = DockableLayoutPanel.new()
-	var new_branch = DockableLayoutSplit.new()
+func split_leaf_with_node(leaf: DockableLayoutPanel, node: Node, margin: int) -> void:
+	var root_branch := leaf.parent
+	var new_leaf := DockableLayoutPanel.new()
+	var new_branch := DockableLayoutSplit.new()
 	if margin == MARGIN_LEFT or margin == MARGIN_RIGHT:
 		new_branch.direction = DockableLayoutSplit.Direction.HORIZONTAL
 	else:

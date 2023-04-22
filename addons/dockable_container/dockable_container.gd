@@ -2,7 +2,7 @@
 class_name DockableContainer
 extends Container
 
-@export_enum("Left", "Center", "Right") var tab_alignment = 1:
+@export_enum("Left", "Center", "Right") var tab_alignment := 1:
 	get:
 		return _tab_align
 	set(value):
@@ -10,7 +10,7 @@ extends Container
 		for i in range(1, _panel_container.get_child_count()):
 			var panel = _panel_container.get_child(i)
 			panel.tab_alignment = value
-@export var use_hidden_tabs_for_min_size: bool:
+@export var use_hidden_tabs_for_min_size := false:
 	get:
 		return use_hidden_tabs_for_min_size
 	set(value):
@@ -18,7 +18,7 @@ extends Container
 		for i in range(1, _panel_container.get_child_count()):
 			var panel = _panel_container.get_child(i)
 			panel.use_hidden_tabs_for_min_size = value
-@export var tabs_visible: bool = true:
+@export var tabs_visible := true:
 	get:
 		return _tabs_visible
 	set(value):
@@ -26,8 +26,8 @@ extends Container
 		for i in range(1, _panel_container.get_child_count()):
 			var panel = _panel_container.get_child(i)
 			panel.tabs_visible = value
-@export var rearrange_group: int = 0
-@export var layout: Resource = DockableLayout.new():
+@export var rearrange_group := 0
+@export var layout := DockableLayout.new():
 	get:
 		return _layout
 	set(value):
@@ -153,7 +153,7 @@ func set_control_as_current_tab(control: Control) -> void:
 	if is_control_hidden(control):
 		push_warning("Trying to focus a hidden control")
 		return
-	var leaf = _layout.get_leaf_for_node(control)
+	var leaf := _layout.get_leaf_for_node(control)
 	if not leaf:
 		return
 	var position_in_leaf = leaf.find_child(control)
@@ -253,10 +253,10 @@ func _is_managed_node(node: Node) -> bool:
 
 
 func _update_layout_with_children() -> void:
-	var names = PackedStringArray()
+	var names := PackedStringArray()
 	_children_names.clear()
 	for i in range(1, get_child_count() - 1):
-		var c = get_child(i)
+		var c := get_child(i)
 		if _track_node(c):
 			names.append(c.name)
 	_layout.update_nodes(names)

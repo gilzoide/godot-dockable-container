@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func _update_property() -> void:
-	var value = _get_layout()
+	var value := _get_layout()
 	_container.set(get_edited_property(), value)
 
 
@@ -41,7 +41,7 @@ func _get_layout() -> DockableLayout:
 
 
 func _create_child_control(named: String) -> Control:
-	var new_control = Label.new()
+	var new_control := Label.new()
 	new_control.name = named
 	new_control.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	new_control.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -51,19 +51,19 @@ func _create_child_control(named: String) -> Control:
 
 
 func _on_hidden_menu_popup_about_to_show() -> void:
-	var layout = _get_layout()
+	var layout := _get_layout()
 	_hidden_menu_popup.clear()
 	_hidden_menu_list = layout.get_names()
 	for i in _hidden_menu_list.size():
-		var tab_name = _hidden_menu_list[i]
+		var tab_name := _hidden_menu_list[i]
 		_hidden_menu_popup.add_check_item(tab_name, i)
 		_hidden_menu_popup.set_item_checked(i, not layout.is_tab_hidden(tab_name))
 
 
 func _on_hidden_menu_popup_id_pressed(id: int) -> void:
-	var layout = _get_layout()
-	var tab_name = _hidden_menu_list[id]
-	var new_hidden = not layout.is_tab_hidden(tab_name)
+	var layout := _get_layout()
+	var tab_name := _hidden_menu_list[id]
+	var new_hidden := not layout.is_tab_hidden(tab_name)
 	layout.set_tab_hidden(tab_name, new_hidden)
 	_hidden_menu_popup.set_item_checked(id, not new_hidden)
 	emit_changed(get_edited_property(), layout)
