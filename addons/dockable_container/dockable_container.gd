@@ -175,10 +175,10 @@ func set_layout(value: DockableLayout) -> void:
 		value = DockableLayout.new()
 	if value == _layout:
 		return
-	if _layout and _layout.is_connected("changed",Callable(self,"queue_sort")):
-		_layout.disconnect("changed",Callable(self,"queue_sort"))
+	if _layout and _layout.changed.is_connected(queue_sort):
+		_layout.changed.disconnect(queue_sort)
 	_layout = value
-	_layout.connect("changed",Callable(self,"queue_sort"))
+	_layout.changed.connect(queue_sort)
 	_layout_dirty = true
 	queue_sort()
 
@@ -268,10 +268,10 @@ func _track_node(node: Node) -> bool:
 		return false
 	_children_names[node] = node.name
 	_children_names[node.name] = node
-	if not node.is_connected("renamed",Callable(self,"_on_child_renamed")):
-		node.connect("renamed",Callable(self,"_on_child_renamed").bind(node))
-	if not node.is_connected("tree_exiting",Callable(self,"_untrack_node")):
-		node.connect("tree_exiting",Callable(self,"_untrack_node").bind(node))
+	if not node.renamed.is_connected(_on_child_renamed):
+		node.renamed.connect(_on_child_renamed.bind(node))
+	if not node.tree_exiting.is_connected(_untrack_node):
+		node.tree_exiting.connect(_untrack_node.bind(node))
 	return true
 
 
@@ -287,10 +287,10 @@ func _track_and_add_node(node: Node) -> void:
 func _untrack_node(node: Node) -> void:
 	_children_names.erase(node)
 	_children_names.erase(node.name)
-	if node.is_connected("renamed",Callable(self,"_on_child_renamed")):
-		node.disconnect("renamed",Callable(self,"_on_child_renamed"))
-	if node.is_connected("tree_exiting",Callable(self,"_untrack_node")):
-		node.disconnect("tree_exiting",Callable(self,"_untrack_node"))
+	if node.renamed.is_connected(_on_child_renamed):
+		node.renamed.disconnect(_on_child_renamed)
+	if node.tree_exiting.is_connected(_untrack_node):
+		node.tree_exiting.disconnect(_untrack_node)
 	_layout_dirty = true
 
 
@@ -396,7 +396,7 @@ func _get_panel(idx: int) -> DockablePanel:
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(max(0, rearrange_group))
 	_panel_container.add_child(panel)
-	panel.connect("tab_layout_changed",Callable(self,"_on_panel_tab_layout_changed").bind(panel))
+	panel.tab_layout_changed.connect(_on_panel_tab_layout_changed.bind(panel))
 	return panel
 
 

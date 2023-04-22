@@ -41,11 +41,11 @@ func set_root(value: DockableLayoutNode, should_emit_changed = true) -> void:
 		value = DockableLayoutPanel.new()
 	if _root == value:
 		return
-	if _root and _root.is_connected("changed",Callable(self,"_on_root_changed")):
-		_root.disconnect("changed",Callable(self,"_on_root_changed"))
+	if _root and _root.changed.is_connected(_on_root_changed):
+		_root.changed.disconnect(_on_root_changed)
 	_root = value
 	_root.parent = null
-	_root.connect("changed",Callable(self,"_on_root_changed"))
+	_root.changed.connect(_on_root_changed)
 	if should_emit_changed:
 		_on_root_changed()
 

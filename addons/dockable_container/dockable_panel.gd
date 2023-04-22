@@ -18,13 +18,13 @@ func _ready() -> void:
 
 
 func _enter_tree() -> void:
-	connect("tab_selected",Callable(self,"_on_tab_selected"))
-	connect("tab_changed",Callable(self,"_on_tab_changed"))
+	tab_selected.connect(_on_tab_selected)
+	tab_changed.connect(_on_tab_changed)
 
 
 func _exit_tree() -> void:
-	disconnect("tab_selected",Callable(self,"_on_tab_selected"))
-	disconnect("tab_changed",Callable(self,"_on_tab_changed"))
+	tab_selected.disconnect(_on_tab_selected)
+	tab_changed.disconnect(_on_tab_changed)
 
 
 func track_nodes(nodes: Array, new_leaf: DockableLayoutPanel) -> void:

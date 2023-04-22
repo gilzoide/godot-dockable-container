@@ -14,8 +14,8 @@ func _ready() -> void:
 	add_child(_hidden_menu_button)
 	_hidden_menu_popup = _hidden_menu_button.get_popup()
 	_hidden_menu_popup.hide_on_checkable_item_selection = false
-	_hidden_menu_popup.connect("about_to_popup",Callable(self,"_on_hidden_menu_popup_about_to_show"))
-	_hidden_menu_popup.connect("id_pressed",Callable(self,"_on_hidden_menu_popup_id_pressed"))
+	_hidden_menu_popup.about_to_popup.connect(_on_hidden_menu_popup_about_to_show)
+	_hidden_menu_popup.id_pressed.connect(_on_hidden_menu_popup_id_pressed)
 
 	_container.clone_layout_on_ready = false
 	_container.custom_minimum_size = custom_minimum_size
