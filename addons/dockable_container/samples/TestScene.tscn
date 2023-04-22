@@ -12,7 +12,7 @@ names = PackedStringArray("Control0", "Control1", "Control2")
 current_tab = 0
 
 [sub_resource type="Resource" id="Resource_1u2va"]
-resource_name = "DockableLayout"
+resource_name = "Layout"
 script = ExtResource("2")
 root = SubResource("Resource_h07tl")
 hidden_tabs = {}
@@ -24,7 +24,7 @@ names = PackedStringArray("Control3", "Control4", "Control5")
 current_tab = 0
 
 [sub_resource type="Resource" id="4"]
-resource_name = "DockableLayout"
+resource_name = "Layout"
 script = ExtResource("2")
 root = SubResource("9")
 hidden_tabs = {}
