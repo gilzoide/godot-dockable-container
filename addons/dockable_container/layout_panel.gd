@@ -4,8 +4,8 @@ extends DockableLayoutNode
 # DockableLayout leaf nodes, defining tabs
 
 @export var names: PackedStringArray:
-	get:
-		return _names
+	get: 
+		return get_names()
 	set(value):
 		_names = value
 		emit_tree_changed()
@@ -30,6 +30,11 @@ func clone() -> DockableLayoutPanel:
 	new_panel._names = _names
 	new_panel._current_tab = _current_tab
 	return new_panel
+
+
+# Returns all tab names in this node
+func get_names() -> PackedStringArray:
+	return _names
 
 
 func push_name(name: String) -> void:

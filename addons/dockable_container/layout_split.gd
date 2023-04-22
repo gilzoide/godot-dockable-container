@@ -91,7 +91,7 @@ func get_percent() -> float:
 
 
 func get_names() -> PackedStringArray:
-	var names = _first.get_names()
+	var names := _first.get_names()
 	names.append_array(_second.get_names())
 	return names
 

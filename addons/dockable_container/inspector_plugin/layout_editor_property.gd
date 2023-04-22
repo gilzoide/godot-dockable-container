@@ -21,10 +21,10 @@ func _ready() -> void:
 	_container.custom_minimum_size = custom_minimum_size
 
 	var original_container: DockableContainer = get_edited_object()
-	var value = original_container.get(get_edited_property())
+	var value: DockableLayout = original_container.get(get_edited_property())
 	_container.set(get_edited_property(), value)
 	for n in value.get_names():
-		var child = _create_child_control(n)
+		var child := _create_child_control(n)
 		_container.add_child(child)
 	add_child(_container)
 	set_bottom_editor(_container)
@@ -40,7 +40,7 @@ func _get_layout() -> DockableLayout:
 	return original_container.get(get_edited_property())
 
 
-func _create_child_control(named: String) -> Control:
+func _create_child_control(named: String) -> Label:
 	var new_control := Label.new()
 	new_control.name = named
 	new_control.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

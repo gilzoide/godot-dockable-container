@@ -8,13 +8,13 @@ func _can_handle(object: Object) -> bool:
 func _parse_property(
 	_object: Object,
 	_type: Variant.Type,
-	path: String,
+	name: String,
 	_hint: PropertyHint,
 	_hint_text: String,
 	_usage: PropertyUsageFlags,
 	_wide: bool
 ) -> bool:
-	if path == "layout":
+	if name == "layout":
 		var editor_property := DockableLayoutEditorProperty.new()
 		add_property_editor("layout", editor_property)
 	return false
