@@ -8,7 +8,7 @@ extends Container
 	set(value):
 		_tab_align = value
 		for i in range(1, _panel_container.get_child_count()):
-			var panel = _panel_container.get_child(i)
+			var panel := _panel_container.get_child(i) as DockablePanel
 			panel.tab_alignment = value
 @export var use_hidden_tabs_for_min_size := false:
 	get:
@@ -16,7 +16,7 @@ extends Container
 	set(value):
 		_use_hidden_tabs_for_min_size = value
 		for i in range(1, _panel_container.get_child_count()):
-			var panel = _panel_container.get_child(i)
+			var panel := _panel_container.get_child(i) as DockablePanel
 			panel.use_hidden_tabs_for_min_size = value
 @export var tabs_visible := true:
 	get:
@@ -24,7 +24,7 @@ extends Container
 	set(value):
 		_tabs_visible = value
 		for i in range(1, _panel_container.get_child_count()):
-			var panel = _panel_container.get_child(i)
+			var panel := _panel_container.get_child(i) as DockablePanel
 			panel.tabs_visible = value
 @export var rearrange_group := 0
 @export var layout := DockableLayout.new():
@@ -35,7 +35,7 @@ extends Container
 ## If `clone_layout_on_ready` is true, `layout` will be cloned checked `_ready`.
 ## This is useful for leaving layout Resources untouched in case you want to
 ## restore layout to its default later.
-@export var clone_layout_on_ready: bool = true
+@export var clone_layout_on_ready := true
 
 var _layout := DockableLayout.new()
 var _panel_container := Container.new()
@@ -89,10 +89,10 @@ func _notification(what: int) -> void:
 func _input(event: InputEvent) -> void:
 	assert(get_viewport().gui_is_dragging(), "FIXME: should only be called when dragging")
 	if event is InputEventMouseMotion:
-		var local_position = get_local_mouse_position()
-		var panel
+		var local_position := get_local_mouse_position()
+		var panel: DockablePanel
 		for i in range(1, _panel_container.get_child_count()):
-			var p = _panel_container.get_child(i)
+			var p := _panel_container.get_child(i) as DockablePanel
 			if p.get_rect().has_point(local_position):
 				panel = p
 				break
@@ -126,7 +126,7 @@ func _can_drop_data(_position: Vector2, data) -> bool:
 func _drop_data(_position: Vector2, data) -> void:
 	#assert(from_control == _drag_n_drop_panel) #,"FIXME")
 
-	var from_node: TabContainer = get_node(data.from_path)
+	var from_node := get_node(data.from_path) as DockablePanel
 	if from_node == _drag_panel and _drag_panel.get_child_count() == 1:
 		return
 
@@ -161,7 +161,7 @@ func set_control_as_current_tab(control: Control) -> void:
 		return
 	var panel: DockablePanel
 	for i in range(1, _panel_container.get_child_count()):
-		var p: DockablePanel = _panel_container.get_child(i)
+		var p := _panel_container.get_child(i) as DockablePanel
 		if p.leaf == leaf:
 			panel = p
 			break
@@ -231,7 +231,7 @@ func get_tab_count() -> int:
 	return count
 
 
-func _can_handle_drag_data(data):
+func _can_handle_drag_data(data) -> bool:
 	if data is Dictionary and data.get("type") == "tabc_element":
 		var tabc := get_node_or_null(data.get("from_path"))
 		return (
@@ -329,7 +329,7 @@ func _resort() -> void:
 ## traversal.
 func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutNode):
 	if layout_node is DockableLayoutPanel:
-		var nodes := []
+		var nodes: Array[Control] = []
 		for n in layout_node.names:
 			var node: Control = _children_names.get(n)
 			if node:
@@ -411,9 +411,9 @@ func _get_split(idx: int) -> DockableSplitHandle:
 
 
 ## Helper for removing and freeing all remaining children from node
-static func _untrack_children_after(node, idx: int) -> void:
+func _untrack_children_after(node: Control, idx: int) -> void:
 	for i in range(idx, node.get_child_count()):
-		var child = node.get_child(idx)
+		var child := node.get_child(idx)
 		node.remove_child(child)
 		child.queue_free()
 

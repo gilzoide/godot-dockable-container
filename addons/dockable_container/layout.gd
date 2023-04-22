@@ -202,7 +202,6 @@ func _ensure_names_in_node(
 		_ensure_names_in_node(node.first, names, empty_leaves)
 		_ensure_names_in_node(node.second, names, empty_leaves)
 	else:
-		@warning_ignore("assert_always_false")
 		assert(false, "Invalid Resource, should be branch or leaf, found %s" % node)
 
 

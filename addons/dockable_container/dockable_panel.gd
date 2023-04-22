@@ -27,23 +27,23 @@ func _exit_tree() -> void:
 	tab_changed.disconnect(_on_tab_changed)
 
 
-func track_nodes(nodes: Array, new_leaf: DockableLayoutPanel) -> void:
+func track_nodes(nodes: Array[Control], new_leaf: DockableLayoutPanel) -> void:
 	_leaf = null  # avoid using previous leaf in tab_changed signals
-	var min_size = min(nodes.size(), get_child_count())
+	var min_size := mini(nodes.size(), get_child_count())
 	# remove spare children
 	for i in range(min_size, get_child_count()):
-		var child = get_child(min_size)
+		var child := get_child(min_size) as DockableReferenceControl
 		child.reference_to = null
 		remove_child(child)
 		child.queue_free()
 	# add missing children
 	for i in range(min_size, nodes.size()):
-		var ref_control = DockableReferenceControl.new()
+		var ref_control := DockableReferenceControl.new()
 		add_child(ref_control)
 	assert(nodes.size() == get_child_count(), "FIXME")
 	# setup children
 	for i in nodes.size():
-		var ref_control: DockableReferenceControl = get_child(i)
+		var ref_control := get_child(i) as DockableReferenceControl
 		ref_control.reference_to = nodes[i]
 		set_tab_title(i, nodes[i].name)
 	set_leaf(new_leaf)
@@ -56,7 +56,7 @@ func get_child_rect() -> Rect2:
 
 func set_leaf(value: DockableLayoutPanel) -> void:
 	if get_tab_count() > 0 and value:
-		current_tab = clamp(value.current_tab, 0, get_tab_count() - 1)
+		current_tab = clampi(value.current_tab, 0, get_tab_count() - 1)
 	_leaf = value
 
 
@@ -71,6 +71,8 @@ func get_layout_minimum_size() -> Vector2:
 func _on_tab_selected(tab: int) -> void:
 	if _leaf:
 		_leaf.current_tab = tab
+#		_on_tab_changed(tab)
+#		tab_layout_changed.emit(tab)
 
 
 func _on_tab_changed(tab: int) -> void:
