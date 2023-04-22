@@ -1,4 +1,5 @@
 @tool
+class_name DockableDragNDropPanel
 extends Control
 
 const DRAW_NOTHING = -1

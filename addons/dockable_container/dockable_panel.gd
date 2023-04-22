@@ -1,18 +1,16 @@
 @tool
+class_name DockablePanel
 extends TabContainer
 
 signal tab_layout_changed(tab)
 
-const ReferenceControl = preload("dockable_panel_reference_control.gd")
-const Layout = preload("layout.gd")
-
-var leaf: Layout.LayoutPanel:
+var leaf: DockableLayoutPanel:
 	get:
 		return get_leaf()
 	set(value):
 		set_leaf(value)
 
-var _leaf: Layout.LayoutPanel
+var _leaf: DockableLayoutPanel
 
 
 func _ready() -> void:
@@ -29,7 +27,7 @@ func _exit_tree() -> void:
 	disconnect("tab_changed",Callable(self,"_on_tab_changed"))
 
 
-func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
+func track_nodes(nodes: Array, new_leaf: DockableLayoutPanel) -> void:
 	_leaf = null  # avoid using previous leaf in tab_changed signals
 	var min_size = min(nodes.size(), get_child_count())
 	# remove spare children
@@ -40,12 +38,12 @@ func track_nodes(nodes: Array, new_leaf: Layout.LayoutPanel) -> void:
 		child.queue_free()
 	# add missing children
 	for i in range(min_size, nodes.size()):
-		var ref_control = ReferenceControl.new()
+		var ref_control = DockableReferenceControl.new()
 		add_child(ref_control)
 	assert(nodes.size() == get_child_count()) #,"FIXME")
 	# setup children
 	for i in nodes.size():
-		var ref_control: ReferenceControl = get_child(i)
+		var ref_control: DockableReferenceControl = get_child(i)
 		ref_control.reference_to = nodes[i]
 		set_tab_title(i, nodes[i].name)
 	set_leaf(new_leaf)
@@ -56,13 +54,13 @@ func get_child_rect() -> Rect2:
 	return Rect2(position + control.position, control.size)
 
 
-func set_leaf(value: Layout.LayoutPanel) -> void:
+func set_leaf(value: DockableLayoutPanel) -> void:
 	if get_tab_count() > 0 and value:
 		current_tab = clamp(value.current_tab, 0, get_tab_count() - 1)
 	_leaf = value
 
 
-func get_leaf() -> Layout.LayoutPanel:
+func get_leaf() -> DockableLayoutPanel:
 	return _leaf
 
 

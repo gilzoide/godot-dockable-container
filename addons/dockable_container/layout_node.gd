@@ -1,6 +1,7 @@
 @tool
+class_name DockableLayoutNode
 extends Resource
-# Base class for Layout tree nodes
+# Base class for DockableLayout tree nodes
 
 var parent = null
 

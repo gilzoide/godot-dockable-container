@@ -1,20 +1,17 @@
 @tool
+class_name DockableLayout
 extends Resource
-# Layout Resource definition, holding the root LayoutNode and hidden tabs.
+# DockableLayout Resource definition, holding the root DockableLayoutNode and hidden tabs.
 #
-# LayoutSplit are binary trees with nested LayoutSplit subtrees and LayoutPanel
-# leaves. Both of them inherit from LayoutNode to help with type annotation and
+# DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees and DockableLayoutPanel
+# leaves. Both of them inherit from DockableLayoutNode to help with type annotation and
 # define common funcionality.
 #
 # Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 
-const LayoutNode = preload("layout_node.gd")
-const LayoutPanel = preload("layout_panel.gd")
-const LayoutSplit = preload("layout_split.gd")
-
 enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER}
 
-@export var root: Resource = LayoutPanel.new() :
+@export var root: Resource = DockableLayoutPanel.new():
 	get:
 		return _root
 	set(value):
@@ -29,19 +26,19 @@ enum {MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER}
 
 
 var _changed_signal_queued = false
-var _first_leaf: LayoutPanel
+var _first_leaf: DockableLayoutPanel
 var _hidden_tabs: Dictionary
 var _leaf_by_node_name: Dictionary
-var _root: LayoutNode = LayoutPanel.new()
+var _root: DockableLayoutNode = DockableLayoutPanel.new()
 
 
 func _init():
-	resource_name = "Layout"
+	resource_name = "DockableLayout"
 
 
-func set_root(value: LayoutNode, should_emit_changed = true) -> void:
+func set_root(value: DockableLayoutNode, should_emit_changed = true) -> void:
 	if not value:
-		value = LayoutPanel.new()
+		value = DockableLayoutPanel.new()
 	if _root == value:
 		return
 	if _root and _root.is_connected("changed",Callable(self,"_on_root_changed")):
@@ -53,7 +50,7 @@ func set_root(value: LayoutNode, should_emit_changed = true) -> void:
 		_on_root_changed()
 
 
-func get_root() -> LayoutNode:
+func get_root() -> DockableLayoutNode:
 	return _root
 
 
@@ -81,7 +78,7 @@ func update_nodes(names: PackedStringArray) -> void:
 	for l in empty_leaves:
 		_remove_leaf(l)
 	if not _first_leaf:
-		_first_leaf = LayoutPanel.new()
+		_first_leaf = DockableLayoutPanel.new()
 		set_root(_first_leaf)
 	for n in names:
 		if not _leaf_by_node_name.has(n):
@@ -90,7 +87,7 @@ func update_nodes(names: PackedStringArray) -> void:
 	_on_root_changed()
 
 
-func move_node_to_leaf(node: Node, leaf: LayoutPanel, relative_position: int) -> void:
+func move_node_to_leaf(node: Node, leaf: DockableLayoutPanel, relative_position: int) -> void:
 	var node_name = node.name
 	var previous_leaf = _leaf_by_node_name.get(node_name)
 	if previous_leaf:
@@ -103,18 +100,18 @@ func move_node_to_leaf(node: Node, leaf: LayoutPanel, relative_position: int) ->
 	_on_root_changed()
 
 
-func get_leaf_for_node(node: Node) -> LayoutPanel:
+func get_leaf_for_node(node: Node) -> DockableLayoutPanel:
 	return _leaf_by_node_name.get(node.name)
 
 
 func split_leaf_with_node(leaf, node: Node, margin: int) -> void:
 	var root_branch = leaf.parent
-	var new_leaf = LayoutPanel.new()
-	var new_branch = LayoutSplit.new()
+	var new_leaf = DockableLayoutPanel.new()
+	var new_branch = DockableLayoutSplit.new()
 	if margin == MARGIN_LEFT or margin == MARGIN_RIGHT:
-		new_branch.direction = LayoutSplit.Direction.HORIZONTAL
+		new_branch.direction = DockableLayoutSplit.Direction.HORIZONTAL
 	else:
-		new_branch.direction = LayoutSplit.Direction.VERTICAL
+		new_branch.direction = DockableLayoutSplit.Direction.VERTICAL
 	if margin == MARGIN_LEFT or margin == MARGIN_TOP:
 		new_branch['first'] = new_leaf
 		new_branch['second'] = leaf
@@ -143,7 +140,7 @@ func add_node(node: Node) -> void:
 
 func remove_node(node: Node) -> void:
 	var node_name = node.name
-	var leaf: LayoutPanel = _leaf_by_node_name.get(node_name)
+	var leaf: DockableLayoutPanel = _leaf_by_node_name.get(node_name)
 	if not leaf:
 		return
 	leaf.remove_node(node)
@@ -193,26 +190,26 @@ func _on_root_changed() -> void:
 	call_deferred("emit_signal", "changed")
 
 
-func _ensure_names_in_node(node: LayoutNode, names: PackedStringArray, empty_leaves: Array) -> void:
-	if node is LayoutPanel:
+func _ensure_names_in_node(node: DockableLayoutNode, names: PackedStringArray, empty_leaves: Array) -> void:
+	if node is DockableLayoutPanel:
 		node.update_nodes(names, _leaf_by_node_name)
 		if node.is_empty():
 			empty_leaves.append(node)
 		if not _first_leaf:
 			_first_leaf = node
-	elif node is LayoutSplit:
+	elif node is DockableLayoutSplit:
 		_ensure_names_in_node(node['first'], names, empty_leaves)
 		_ensure_names_in_node(node['second'], names, empty_leaves)
 	else:
 		assert(false) #,"Invalid Resource, should be branch or leaf, found %s" % node)
 
 
-func _remove_leaf(leaf: LayoutPanel) -> void:
+func _remove_leaf(leaf: DockableLayoutPanel) -> void:
 	assert(leaf.is_empty()) #,"FIXME: trying to remove_at a leaf with nodes")
 	if _root == leaf:
 		return
 	var collapsed_branch = leaf.parent
-	assert(collapsed_branch is LayoutSplit) #,"FIXME: leaf is not a child of branch")
+	assert(collapsed_branch is DockableLayoutSplit) #,"FIXME: leaf is not a child of branch")
 	var kept_branch = (
 		collapsed_branch['first']
 		if leaf == collapsed_branch['second']
@@ -235,7 +232,7 @@ func _print_tree() -> void:
 
 
 func _print_tree_step(tree_or_leaf, level, idx) -> void:
-	if tree_or_leaf is LayoutPanel:
+	if tree_or_leaf is DockableLayoutPanel:
 		print(" |".repeat(level), "- (%d) = " % idx, tree_or_leaf.names)
 	else:
 		print(

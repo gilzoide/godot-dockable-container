@@ -1,19 +1,18 @@
 @tool
+class_name DockableSplitHandle
 extends Control
 
-const Layout = preload("layout.gd")
-
 const SPLIT_THEME_CLASS = [
-	"HSplitContainer",  # SPLIT_THEME_CLASS[LayoutSplit.Direction.HORIZONTAL]
-	"VSplitContainer",  # SPLIT_THEME_CLASS[LayoutSplit.Direction.VERTICAL]
+	"HSplitContainer",  # SPLIT_THEME_CLASS[DockableLayoutSplit.Direction.HORIZONTAL]
+	"VSplitContainer",  # SPLIT_THEME_CLASS[DockableLayoutSplit.Direction.VERTICAL]
 ]
 
 const SPLIT_MOUSE_CURSOR_SHAPE = [
-	Control.CURSOR_HSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[LayoutSplit.Direction.HORIZONTAL]
-	Control.CURSOR_VSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[LayoutSplit.Direction.VERTICAL]
+	Control.CURSOR_HSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[DockableLayoutSplit.Direction.HORIZONTAL]
+	Control.CURSOR_VSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[DockableLayoutSplit.Direction.VERTICAL]
 ]
 
-var layout_split: Layout.LayoutSplit
+var layout_split: DockableLayoutSplit
 var first_minimum_size: Vector2
 var second_minimum_size: Vector2
 

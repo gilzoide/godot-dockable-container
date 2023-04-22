@@ -1,10 +1,10 @@
 extends VBoxContainer
 
-const SAVED_LAYOUT_PATH = "user://layout.tres"
+const SAVED_LAYOUT_PATH := "user://layout.tres"
 
-@onready var _container = $DockableContainers/DockableContainer
-@onready var _clone_control = $HBoxContainer/ControlPrefab
-@onready var _checkbox_container = $HBoxContainer
+@onready var _container := $DockableContainers/DockableContainer as DockableContainer
+@onready var _clone_control := $HBoxContainer/ControlPrefab as ColorRect
+@onready var _checkbox_container := $HBoxContainer as HBoxContainer
 
 
 func _ready() -> void:
@@ -14,7 +14,7 @@ func _ready() -> void:
 
 	var tabs = _container.get_tabs()
 	for i in tabs.size():
-		var checkbox = CheckBox.new()
+		var checkbox := CheckBox.new()
 		checkbox.text = str(i)
 		checkbox.button_pressed = not _container.is_control_hidden(tabs[i])
 		checkbox.connect("toggled",Callable(self,"_on_CheckButton_toggled").bind(tabs[i]))
@@ -35,7 +35,7 @@ func _on_add_pressed() -> void:
 
 
 func _on_save_pressed() -> void:
-	if ResourceSaver.save(_container.get_layout(),SAVED_LAYOUT_PATH) != OK:
+	if ResourceSaver.save(_container.layout, SAVED_LAYOUT_PATH) != OK:
 		print("ERROR")
 
 

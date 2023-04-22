@@ -1,10 +1,8 @@
+class_name DockableLayoutEditorProperty
 extends EditorProperty
 
-const DockableContainer = preload("../dockable_container.gd")
-const Layout = preload("../layout.gd")
-
-var _container = DockableContainer.new()
-var _hidden_menu_button = MenuButton.new()
+var _container := DockableContainer.new()
+var _hidden_menu_button := MenuButton.new()
 var _hidden_menu_popup: PopupMenu
 var _hidden_menu_list: PackedStringArray
 
@@ -37,7 +35,7 @@ func _update_property() -> void:
 	_container.set(get_edited_property(), value)
 
 
-func _get_layout() -> Layout:
+func _get_layout() -> DockableLayout:
 	var original_container: DockableContainer = get_edited_object()
 	return original_container.get(get_edited_property())
 

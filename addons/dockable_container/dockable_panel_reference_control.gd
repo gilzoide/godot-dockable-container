@@ -1,4 +1,5 @@
 @tool
+class_name DockableReferenceControl
 extends Container
 # Control that mimics its own visibility and rect into another Control.
 

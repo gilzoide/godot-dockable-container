@@ -1,13 +1,14 @@
 @tool
-extends "layout_node.gd"
-# Layout binary tree nodes, defining subtrees and leaf panels
+class_name DockableLayoutSplit
+extends DockableLayoutNode
+# DockableLayout binary tree nodes, defining subtrees and leaf panels
 
 enum Direction {
 	HORIZONTAL,
 	VERTICAL,
 }
 
-const LayoutPanel = preload("layout_panel.gd")
+const DockableLayoutPanel = preload("layout_panel.gd")
 
 @export var direction: Direction = Direction.HORIZONTAL : 
 	get:
@@ -15,12 +16,12 @@ const LayoutPanel = preload("layout_panel.gd")
 	set(value):
 		set_direction(value)
 @export var percent = 0.5 : get = get_percent, set = set_percent # (float, 0, 1)
-@export var first: Resource = LayoutPanel.new() : 
+@export var first: Resource = DockableLayoutPanel.new() : 
 	get:
 		return get_first()
 	set(value):
 		set_first(value)
-@export var second: Resource = LayoutPanel.new() : 
+@export var second: Resource = DockableLayoutPanel.new() : 
 	get:
 		return get_second()
 	set(value):
@@ -47,7 +48,7 @@ func clone():
 
 func set_first(value) -> void:
 	if value == null:
-		_first = LayoutPanel.new()
+		_first = DockableLayoutPanel.new()
 	else:
 		_first = value
 	_first.parent = self
@@ -60,7 +61,7 @@ func get_first():
 
 func set_second(value) -> void:
 	if value == null:
-		_second = LayoutPanel.new()
+		_second = DockableLayoutPanel.new()
 	else:
 		_second = value
 	_second.parent = self

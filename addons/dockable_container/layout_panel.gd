@@ -1,6 +1,7 @@
 @tool
-extends "layout_node.gd"
-# Layout leaf nodes, defining tabs
+class_name DockableLayoutPanel
+extends DockableLayoutNode
+# DockableLayout leaf nodes, defining tabs
 
 @export var names: PackedStringArray:
 	get:
