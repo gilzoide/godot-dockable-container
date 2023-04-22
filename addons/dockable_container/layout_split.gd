@@ -1,7 +1,7 @@
 @tool
 class_name DockableLayoutSplit
 extends DockableLayoutNode
-# DockableLayout binary tree nodes, defining subtrees and leaf panels
+## DockableLayout binary tree nodes, defining subtrees and leaf panels
 
 enum Direction { HORIZONTAL, VERTICAL }
 
@@ -34,6 +34,9 @@ func _init() -> void:
 	resource_name = "Split"
 
 
+## Returns a deep copy of the layout.
+## Use this instead of `Resource.duplicate(true)` to ensure objects have the
+## right script and parenting is correctly set for each node.
 func clone() -> DockableLayoutSplit:
 	var new_split := DockableLayoutSplit.new()
 	new_split._direction = _direction
@@ -96,6 +99,7 @@ func get_names() -> PackedStringArray:
 	return names
 
 
+## Returns whether there are any nodes
 func is_empty() -> bool:
 	return _first.is_empty() and _second.is_empty()
 

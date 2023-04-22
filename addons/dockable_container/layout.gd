@@ -1,13 +1,13 @@
 @tool
 class_name DockableLayout
 extends Resource
-# DockableLayout Resource definition, holding the root DockableLayoutNode and hidden tabs.
+## DockableLayout Resource definition, holding the root DockableLayoutNode and hidden tabs.
+##
+## DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees
+## and DockableLayoutPanel leaves. Both of them inherit from DockableLayoutNode to help with
+## type annotation and define common funcionality.
 #
-# DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees
-# and DockableLayoutPanel leaves. Both of them inherit from DockableLayoutNode to help with
-# type annotation and define common funcionality.
-#
-# Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
+## Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 
 enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }
 
@@ -64,11 +64,11 @@ func get_names() -> PackedStringArray:
 	return _root.get_names()
 
 
-# Add missing nodes checked first leaf and remove_at nodes outside indices from leaves.
-#
-# _leaf_by_node_name = {
-#     (string keys) = respective Leaf that holds the node name,
-# }
+## Add missing nodes checked first leaf and remove_at nodes outside indices from leaves.
+##
+## _leaf_by_node_name = {
+##     (string keys) = respective Leaf that holds the node name,
+## }
 func update_nodes(names: PackedStringArray) -> void:
 	_leaf_by_node_name.clear()
 	_first_leaf = null
@@ -211,7 +211,7 @@ func _remove_leaf(leaf: DockableLayoutPanel) -> void:
 		return
 	var collapsed_branch := leaf.parent
 	assert(collapsed_branch is DockableLayoutSplit, "FIXME: leaf is not a child of branch")
-	var kept_branch = (
+	var kept_branch: DockableLayoutPanel = (
 		collapsed_branch["first"]
 		if leaf == collapsed_branch["second"]
 		else collapsed_branch["second"]

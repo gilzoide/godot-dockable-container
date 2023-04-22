@@ -2,12 +2,12 @@
 class_name DockableSplitHandle
 extends Control
 
-const SPLIT_THEME_CLASS = [
+const SPLIT_THEME_CLASS: PackedStringArray = [
 	"HSplitContainer",  # SPLIT_THEME_CLASS[DockableLayoutSplit.Direction.HORIZONTAL]
 	"VSplitContainer",  # SPLIT_THEME_CLASS[DockableLayoutSplit.Direction.VERTICAL]
 ]
 
-const SPLIT_MOUSE_CURSOR_SHAPE = [
+const SPLIT_MOUSE_CURSOR_SHAPE: Array[Control.CursorShape] = [
 	Control.CURSOR_HSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[DockableLayoutSplit.Direction.HORIZONTAL]
 	Control.CURSOR_VSPLIT,  # SPLIT_MOUSE_CURSOR_SHAPE[DockableLayoutSplit.Direction.VERTICAL]
 ]
@@ -22,9 +22,9 @@ var _dragging := false
 
 
 func _draw() -> void:
-	var theme_class = SPLIT_THEME_CLASS[layout_split.direction]
-	var icon = get_theme_icon("grabber", theme_class)
-	var autohide = bool(get_theme_constant("autohide", theme_class))
+	var theme_class := SPLIT_THEME_CLASS[layout_split.direction]
+	var icon := get_theme_icon("grabber", theme_class)
+	var autohide := bool(get_theme_constant("autohide", theme_class))
 	if not icon or (autohide and not _mouse_hovering):
 		return
 
@@ -88,17 +88,17 @@ func set_split_cursor(value: bool) -> void:
 
 func get_split_rects(rect: Rect2) -> Dictionary:
 	_parent_rect = rect
-	var separation = get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
-	var origin = rect.position
-	var size = rect.size
-	var percent = layout_split.percent
+	var separation := get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
+	var origin := rect.position
+	var size := rect.size
+	var percent := layout_split.percent
 	if layout_split.is_horizontal():
-		var split_offset = clamp(
+		var split_offset := clampf(
 			size.x * percent - separation * 0.5,
 			first_minimum_size.x,
 			size.x - second_minimum_size.x - separation
 		)
-		var second_width = size.x - split_offset - separation
+		var second_width := size.x - split_offset - separation
 
 		return {
 			"first": Rect2(origin.x, origin.y, split_offset, size.y),
@@ -106,12 +106,12 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 			"second": Rect2(origin.x + split_offset + separation, origin.y, second_width, size.y),
 		}
 	else:
-		var split_offset = clamp(
+		var split_offset := clampf(
 			size.y * percent - separation * 0.5,
 			first_minimum_size.y,
 			size.y - second_minimum_size.y - separation
 		)
-		var second_height = size.y - split_offset - separation
+		var second_height := size.y - split_offset - separation
 
 		return {
 			"first": Rect2(origin.x, origin.y, size.x, split_offset),

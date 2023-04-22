@@ -1,10 +1,10 @@
 @tool
 class_name DockableLayoutPanel
 extends DockableLayoutNode
-# DockableLayout leaf nodes, defining tabs
+## DockableLayout leaf nodes, defining tabs
 
 @export var names: PackedStringArray:
-	get: 
+	get:
 		return get_names()
 	set(value):
 		_names = value
@@ -25,6 +25,9 @@ func _init() -> void:
 	resource_name = "Tabs"
 
 
+## Returns a deep copy of the layout.
+## Use this instead of `Resource.duplicate(true)` to ensure objects have the
+## right script and parenting is correctly set for each node.
 func clone() -> DockableLayoutPanel:
 	var new_panel := DockableLayoutPanel.new()
 	new_panel._names = _names
@@ -32,7 +35,7 @@ func clone() -> DockableLayoutPanel:
 	return new_panel
 
 
-# Returns all tab names in this node
+## Returns all tab names in this node
 func get_names() -> PackedStringArray:
 	return _names
 
@@ -54,12 +57,12 @@ func find_name(node_name: String) -> int:
 	return -1
 
 
-func find_child(node: Node):
+func find_child(node: Node) -> int:
 	return find_name(node.name)
 
 
 func remove_node(node: Node) -> void:
-	var i = find_child(node)
+	var i := find_child(node)
 	if i >= 0:
 		_names.remove_at(i)
 		emit_tree_changed()
@@ -68,7 +71,7 @@ func remove_node(node: Node) -> void:
 
 
 func rename_node(previous_name: String, new_name: String) -> void:
-	var i = find_name(previous_name)
+	var i := find_name(previous_name)
 	if i >= 0:
 		_names.set(i, new_name)
 		emit_tree_changed()
@@ -76,15 +79,16 @@ func rename_node(previous_name: String, new_name: String) -> void:
 		push_warning("Rename failed, name '%s' was not found" % previous_name)
 
 
+## Returns whether there are any nodes
 func is_empty() -> bool:
 	return _names.is_empty()
 
 
-func update_nodes(node_names: PackedStringArray, data: Dictionary):
-	var i = 0
-	var removed_any = false
+func update_nodes(node_names: PackedStringArray, data: Dictionary) -> void:
+	var i := 0
+	var removed_any := false
 	while i < _names.size():
-		var current = _names[i]
+		var current := _names[i]
 		if not current in node_names or data.has(current):
 			_names.remove_at(i)
 			removed_any = true
