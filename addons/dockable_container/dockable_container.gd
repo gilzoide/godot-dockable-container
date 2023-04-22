@@ -62,7 +62,6 @@ func _ready() -> void:
 
 	_drag_n_drop_panel.name = "_drag_n_drop_panel"
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
-	_drag_n_drop_panel.set_drag_forwarding(_can_handle_drag_data, _can_drop_data, _drop_data)
 	_drag_n_drop_panel.visible = false
 	add_child(_drag_n_drop_panel)
 
@@ -102,7 +101,9 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
 
 
-func add_child_o(node: Node, legible_unique_name := false, internal := Node.INTERNAL_MODE_DISABLED) -> void:
+func add_child_o(
+	node: Node, legible_unique_name := false, internal := Node.INTERNAL_MODE_DISABLED
+) -> void:
 	add_child(node, legible_unique_name, internal)
 	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(node)

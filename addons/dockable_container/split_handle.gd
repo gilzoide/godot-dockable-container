@@ -102,9 +102,8 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 		return {
 			"first": Rect2(origin.x, origin.y, split_offset, rect.size.y),
 			"self": Rect2(origin.x + split_offset, origin.y, separation, rect.size.y),
-			"second": Rect2(
-				origin.x + split_offset + separation, origin.y, second_width, rect.size.y
-			),
+			"second":
+			Rect2(origin.x + split_offset + separation, origin.y, second_width, rect.size.y),
 		}
 	else:
 		var split_offset := clampf(
@@ -117,7 +116,6 @@ func get_split_rects(rect: Rect2) -> Dictionary:
 		return {
 			"first": Rect2(origin.x, origin.y, rect.size.x, split_offset),
 			"self": Rect2(origin.x, origin.y + split_offset, rect.size.x, separation),
-			"second": Rect2(
-				origin.x, origin.y + split_offset + separation, rect.size.x, second_height
-			),
+			"second":
+			Rect2(origin.x, origin.y + split_offset + separation, rect.size.x, second_height),
 		}

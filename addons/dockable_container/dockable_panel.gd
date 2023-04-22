@@ -71,8 +71,6 @@ func get_layout_minimum_size() -> Vector2:
 func _on_tab_selected(tab: int) -> void:
 	if _leaf:
 		_leaf.current_tab = tab
-#		_on_tab_changed(tab)
-#		tab_layout_changed.emit(tab)
 
 
 func _on_tab_changed(tab: int) -> void:
