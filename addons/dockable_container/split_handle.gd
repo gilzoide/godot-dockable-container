@@ -66,15 +66,15 @@ func _notification(what: int) -> void:
 func get_layout_minimum_size() -> Vector2:
 	if not layout_split:
 		return Vector2.ZERO
-	var separation = get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
+	var separation := get_theme_constant("separation", SPLIT_THEME_CLASS[layout_split.direction])
 	if layout_split.is_horizontal():
 		return Vector2(
 			first_minimum_size.x + separation + second_minimum_size.x,
-			max(first_minimum_size.y, second_minimum_size.y)
+			maxf(first_minimum_size.y, second_minimum_size.y)
 		)
 	else:
 		return Vector2(
-			max(first_minimum_size.x, second_minimum_size.x),
+			maxf(first_minimum_size.x, second_minimum_size.x),
 			first_minimum_size.y + separation + second_minimum_size.y
 		)
 

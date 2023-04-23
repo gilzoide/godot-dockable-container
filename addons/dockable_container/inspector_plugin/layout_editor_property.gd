@@ -20,12 +20,11 @@ func _ready() -> void:
 	_container.clone_layout_on_ready = false
 	_container.custom_minimum_size = custom_minimum_size
 
-	var original_container: DockableContainer = get_edited_object()
-	var value: DockableLayout = original_container.get(get_edited_property())
+	var value := _get_layout()
 	_container.set(get_edited_property(), value)
 	for n in value.get_names():
 		var child := _create_child_control(n)
-		_container.add_child_o(child)
+		_container.add_child(child)
 	add_child(_container)
 	set_bottom_editor(_container)
 
@@ -36,7 +35,7 @@ func _update_property() -> void:
 
 
 func _get_layout() -> DockableLayout:
-	var original_container: DockableContainer = get_edited_object()
+	var original_container := get_edited_object() as DockableContainer
 	return original_container.get(get_edited_property())
 
 

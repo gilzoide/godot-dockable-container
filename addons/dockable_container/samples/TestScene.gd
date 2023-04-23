@@ -32,7 +32,7 @@ func _on_add_pressed() -> void:
 	control.color = Color(randf(), randf(), randf())
 	control.name = "Control0"
 
-	_container.add_child_o(control, true)
+	_container.add_child(control, true)
 	await _container.sort_children
 	_container.set_control_as_current_tab(control)
 
@@ -55,7 +55,7 @@ func _on_control_rename_button_pressed(control: Control) -> void:
 
 
 func _on_control_remove_button_pressed(control: Control) -> void:
-	_container.remove_child_o(control)
+	_container.remove_child(control)
 	control.queue_free()
 
 

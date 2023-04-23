@@ -64,6 +64,8 @@ func _ready() -> void:
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
 	_drag_n_drop_panel.visible = false
 	add_child(_drag_n_drop_panel)
+	child_entered_tree.connect(_child_entered_tree)
+	child_exiting_tree.connect(_child_exiting_tree)
 
 	if not _layout:
 		set_layout(null)
@@ -101,22 +103,12 @@ func _input(event: InputEvent) -> void:
 		fit_child_in_rect(_drag_n_drop_panel, panel.get_child_rect())
 
 
-func add_child_o(
-	node: Node, legible_unique_name := false, internal := Node.INTERNAL_MODE_DISABLED
-) -> void:
-	add_child(node, legible_unique_name, internal)
+func _child_entered_tree(node: Node) -> void:
 	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(node)
 
 
-func add_sibling_o(sibling: Node, legible_unique_name := false) -> void:
-	add_sibling(sibling, legible_unique_name)
-	_drag_n_drop_panel.move_to_front()
-	_track_and_add_node(sibling)
-
-
-func remove_child_o(node: Node) -> void:
-	remove_child(node)
+func _child_exiting_tree(node: Node) -> void:
 	_untrack_node(node)
 
 
@@ -135,8 +127,8 @@ func _drop_data(_position: Vector2, data) -> void:
 	if moved_tab is DockableReferenceControl:
 		moved_tab = moved_tab.reference_to
 	if not _is_managed_node(moved_tab):
-		moved_tab.get_parent().remove_child_o(moved_tab)
-		add_child_o(moved_tab)
+		moved_tab.get_parent().remove_child(moved_tab)
+		add_child(moved_tab)
 
 	if _drag_panel != null:
 		var margin := _drag_n_drop_panel.get_hover_margin()
@@ -426,8 +418,8 @@ func _on_panel_tab_layout_changed(tab: int, panel: DockablePanel) -> void:
 	if control is DockableReferenceControl:
 		control = control.reference_to
 	if not _is_managed_node(control):
-		control.get_parent().remove_child_o(control)
-		add_child_o(control)
+		control.get_parent().remove_child(control)
+		add_child(control)
 	_layout.move_node_to_leaf(control, panel.leaf, tab)
 	queue_sort()
 
