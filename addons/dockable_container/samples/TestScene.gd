@@ -55,7 +55,7 @@ func _on_control_rename_button_pressed(control: Control) -> void:
 
 
 func _on_control_remove_button_pressed(control: Control) -> void:
-	_container.remove_child(control)
+	control.get_parent().remove_child(control)
 	control.queue_free()
 
 

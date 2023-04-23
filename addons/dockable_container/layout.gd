@@ -5,7 +5,7 @@ extends Resource
 ##
 ## DockableLayoutSplit are binary trees with nested DockableLayoutSplit subtrees
 ## and DockableLayoutPanel leaves. Both of them inherit from DockableLayoutNode to help with
-## type annotation and define common funcionality.
+## type annotation and define common functionality.
 ##
 ## Hidden tabs are marked in the `hidden_tabs` Dictionary by name.
 
@@ -186,7 +186,7 @@ func _on_root_changed() -> void:
 		return
 	_changed_signal_queued = true
 	set_deferred("_changed_signal_queued", false)
-	call_deferred("emit_signal", "changed")
+	emit_changed.call_deferred()
 
 
 func _ensure_names_in_node(

@@ -83,7 +83,7 @@ func get_direction() -> Direction:
 
 
 func set_percent(value: float) -> void:
-	var clamped_value = clamp(value, 0, 1)
+	var clamped_value := clampf(value, 0, 1)
 	if not is_equal_approx(_percent, clamped_value):
 		_percent = clamped_value
 		emit_tree_changed()
