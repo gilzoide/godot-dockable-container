@@ -19,6 +19,7 @@ var reference_to: Control:
 			_reference_to.renamed.connect(_on_reference_to_renamed)
 			_reference_to.minimum_size_changed.connect(update_minimum_size)
 			_reference_to.visible = visible
+			_reposition_reference()
 
 var _reference_to: Control = null
 
