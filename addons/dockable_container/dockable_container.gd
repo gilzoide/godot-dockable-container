@@ -211,19 +211,19 @@ func is_control_hidden(child: Control) -> bool:
 	return _layout.is_node_hidden(child)
 
 
-func get_tabs() -> Array:
-	var tabs = []
+func get_tabs() -> Array[Control]:
+	var tabs: Array[Control] = []
 	for i in get_child_count():
-		var child = get_child(i)
+		var child := get_child(i)
 		if _is_managed_node(child):
 			tabs.append(child)
 	return tabs
 
 
 func get_tab_count() -> int:
-	var count = 0
+	var count := 0
 	for i in get_child_count():
-		var child = get_child(i)
+		var child := get_child(i)
 		if _is_managed_node(child):
 			count += 1
 	return count

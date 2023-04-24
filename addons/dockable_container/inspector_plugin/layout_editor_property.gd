@@ -20,7 +20,7 @@ func _ready() -> void:
 	_container.clone_layout_on_ready = false
 	_container.custom_minimum_size = custom_minimum_size
 
-	var value := _get_layout().clone()
+	var value := _get_layout().clone()  # The layout gets reset when selecting it without clone
 	for n in value.get_names():
 		var child := _create_child_control(n)
 		_container.add_child(child)

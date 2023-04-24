@@ -12,7 +12,7 @@ func _ready() -> void:
 		$HBoxContainer/SaveLayoutButton.visible = false
 		$HBoxContainer/LoadLayoutButton.visible = false
 
-	var tabs = _container.get_tabs()
+	var tabs := _container.get_tabs()
 	for i in tabs.size():
 		var checkbox := CheckBox.new()
 		checkbox.text = str(i)
