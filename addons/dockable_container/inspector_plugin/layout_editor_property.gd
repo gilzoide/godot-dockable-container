@@ -20,13 +20,17 @@ func _ready() -> void:
 	_container.clone_layout_on_ready = false
 	_container.custom_minimum_size = custom_minimum_size
 
-	var value := _get_layout()
-	_container.set(get_edited_property(), value)
+	var value := _get_layout().clone()
 	for n in value.get_names():
 		var child := _create_child_control(n)
 		_container.add_child(child)
+	_container.set(get_edited_property(), value)
 	add_child(_container)
 	set_bottom_editor(_container)
+
+
+func _exit_tree() -> void:  # Not sure if this is needed, but just to be sure
+	queue_free()
 
 
 func _update_property() -> void:

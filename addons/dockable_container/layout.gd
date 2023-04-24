@@ -54,10 +54,7 @@ func get_root() -> DockableLayoutNode:
 
 
 func clone() -> DockableLayout:
-	var new_layout := DockableLayout.new()
-	new_layout.root = _root.clone()
-	new_layout._hidden_tabs = _hidden_tabs.duplicate()
-	return new_layout
+	return duplicate(true)
 
 
 func get_names() -> PackedStringArray:
@@ -73,7 +70,7 @@ func update_nodes(names: PackedStringArray) -> void:
 	_leaf_by_node_name.clear()
 	_first_leaf = null
 	var empty_leaves: Array[DockableLayoutPanel] = []
-	_ensure_names_in_node(_root, names, empty_leaves)
+	_ensure_names_in_node(_root, names, empty_leaves)  # Changes _leaf_by_node_name and empty_leaves
 	for l in empty_leaves:
 		_remove_leaf(l)
 	if not _first_leaf:
@@ -193,7 +190,7 @@ func _ensure_names_in_node(
 	node: DockableLayoutNode, names: PackedStringArray, empty_leaves: Array[DockableLayoutPanel]
 ) -> void:
 	if node is DockableLayoutPanel:
-		node.update_nodes(names, _leaf_by_node_name)
+		node.update_nodes(names, _leaf_by_node_name)  # This changes _leaf_by_node_name
 		if node.is_empty():
 			empty_leaves.append(node)
 		if not _first_leaf:

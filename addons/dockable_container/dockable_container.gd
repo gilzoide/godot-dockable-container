@@ -51,6 +51,11 @@ var _children_names := {}
 var _layout_dirty := false
 
 
+func _init() -> void:
+	child_entered_tree.connect(_child_entered_tree)
+	child_exiting_tree.connect(_child_exiting_tree)
+
+
 func _ready() -> void:
 	set_process_input(false)
 	_panel_container.name = "_panel_container"
@@ -64,8 +69,6 @@ func _ready() -> void:
 	_drag_n_drop_panel.mouse_filter = MOUSE_FILTER_PASS
 	_drag_n_drop_panel.visible = false
 	add_child(_drag_n_drop_panel)
-	child_entered_tree.connect(_child_entered_tree)
-	child_exiting_tree.connect(_child_exiting_tree)
 
 	if not _layout:
 		set_layout(null)
@@ -104,11 +107,15 @@ func _input(event: InputEvent) -> void:
 
 
 func _child_entered_tree(node: Node) -> void:
+	if node == _panel_container or node == _drag_n_drop_panel:
+		return
 	_drag_n_drop_panel.move_to_front()
 	_track_and_add_node(node)
 
 
 func _child_exiting_tree(node: Node) -> void:
+	if node == _panel_container or node == _drag_n_drop_panel:
+		return
 	_untrack_node(node)
 
 
@@ -117,8 +124,6 @@ func _can_drop_data(_position: Vector2, data) -> bool:
 
 
 func _drop_data(_position: Vector2, data) -> void:
-	#assert(from_control == _drag_n_drop_panel) #,"FIXME")
-
 	var from_node := get_node(data.from_path) as DockablePanel
 	if from_node == _drag_panel and _drag_panel.get_child_count() == 1:
 		return

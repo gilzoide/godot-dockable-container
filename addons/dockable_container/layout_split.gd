@@ -34,18 +34,6 @@ func _init() -> void:
 	resource_name = "Split"
 
 
-## Returns a deep copy of the layout.
-## Use this instead of `Resource.duplicate(true)` to ensure objects have the
-## right script and parenting is correctly set for each node.
-func clone() -> DockableLayoutSplit:
-	var new_split := DockableLayoutSplit.new()
-	new_split._direction = _direction
-	new_split._percent = _percent
-	new_split.first = _first.clone()
-	new_split.second = _second.clone()
-	return new_split
-
-
 func set_first(value: DockableLayoutNode) -> void:
 	if value == null:
 		_first = DockableLayoutPanel.new()

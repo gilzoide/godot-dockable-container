@@ -25,16 +25,6 @@ func _init() -> void:
 	resource_name = "Tabs"
 
 
-## Returns a deep copy of the layout.
-## Use this instead of `Resource.duplicate(true)` to ensure objects have the
-## right script and parenting is correctly set for each node.
-func clone() -> DockableLayoutPanel:
-	var new_panel := DockableLayoutPanel.new()
-	new_panel._names = _names
-	new_panel._current_tab = _current_tab
-	return new_panel
-
-
 ## Returns all tab names in this node
 func get_names() -> PackedStringArray:
 	return _names
