@@ -61,7 +61,7 @@ func get_names() -> PackedStringArray:
 	return _root.get_names()
 
 
-## Add missing nodes checked first leaf and remove_at nodes outside indices from leaves.
+## Add missing nodes on first leaf and remove nodes outside indices from leaves.
 ##
 ## _leaf_by_node_name = {
 ##     (string keys) = respective Leaf that holds the node name,
