@@ -2,6 +2,10 @@
 class_name DockableContainer
 extends Container
 
+const SplitHandle := preload("split_handle.gd")
+const DockablePanel := preload("dockable_panel.gd")
+const DragNDropPanel := preload("drag_n_drop_panel.gd")
+
 @export var tab_alignment := TabBar.ALIGNMENT_CENTER:
 	get:
 		return _tab_align
@@ -40,7 +44,7 @@ extends Container
 var _layout := DockableLayout.new()
 var _panel_container := Container.new()
 var _split_container := Container.new()
-var _drag_n_drop_panel := DockableDragNDropPanel.new()
+var _drag_n_drop_panel := DragNDropPanel.new()
 var _drag_panel: DockablePanel
 var _tab_align := TabBar.ALIGNMENT_CENTER
 var _tabs_visible := true
@@ -317,10 +321,10 @@ func _resort() -> void:
 	_untrack_children_after(_split_container, _current_split_index)
 
 
-## Calculate DockablePanel and DockableSplitHandle minimum sizes, skipping empty
+## Calculate DockablePanel and SplitHandle minimum sizes, skipping empty
 ## branches.
 ##
-## Returns a DockablePanel checked non-empty leaves, a DockableSplitHandle checked non-empty
+## Returns a DockablePanel checked non-empty leaves, a SplitHandle checked non-empty
 ## splits, `null` if the whole branch is empty and no space should be used.
 ##
 ## `result` will be filled with the non-empty nodes in this post-order tree
@@ -376,7 +380,7 @@ func _fit_panel_and_split_list_to_rect(panel_and_split_list: Array, rect: Rect2)
 	var control = panel_and_split_list.pop_back()
 	if control is DockablePanel:
 		_panel_container.fit_child_in_rect(control, rect)
-	elif control is DockableSplitHandle:
+	elif control is SplitHandle:
 		var split_rects = control.get_split_rects(rect)
 		_split_container.fit_child_in_rect(control, split_rects["self"])
 		_fit_panel_and_split_list_to_rect(panel_and_split_list, split_rects["first"])
@@ -398,12 +402,12 @@ func _get_panel(idx: int) -> DockablePanel:
 	return panel
 
 
-## Get the idx'th DockableSplitHandle, reusing an instanced one if possible
-func _get_split(idx: int) -> DockableSplitHandle:
+## Get the idx'th SplitHandle, reusing an instanced one if possible
+func _get_split(idx: int) -> SplitHandle:
 	assert(_split_container, "FIXME: creating split without _split_container")
 	if idx < _split_container.get_child_count():
 		return _split_container.get_child(idx)
-	var split := DockableSplitHandle.new()
+	var split := SplitHandle.new()
 	_split_container.add_child(split)
 	return split
 

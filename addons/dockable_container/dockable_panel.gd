@@ -1,5 +1,4 @@
 @tool
-class_name DockablePanel
 extends TabContainer
 
 signal tab_layout_changed(tab)

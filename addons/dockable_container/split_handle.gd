@@ -1,5 +1,4 @@
 @tool
-class_name DockableSplitHandle
 extends Control
 
 const SPLIT_THEME_CLASS: PackedStringArray = [

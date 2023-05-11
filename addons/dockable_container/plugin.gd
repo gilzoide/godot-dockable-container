@@ -1,10 +1,10 @@
 @tool
 extends EditorPlugin
 
-const LayoutInspectorPlugin = preload("inspector_plugin/editor_inspector_plugin.gd")
+const LayoutInspectorPlugin := preload("inspector_plugin/editor_inspector_plugin.gd")
 const Icon := preload("icon.svg")
 
-var _layout_inspector_plugin
+var _layout_inspector_plugin: LayoutInspectorPlugin
 
 
 func _enter_tree() -> void:

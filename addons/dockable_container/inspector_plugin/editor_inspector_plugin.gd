@@ -1,5 +1,7 @@
 extends EditorInspectorPlugin
 
+const LayoutEditorProperty := preload("layout_editor_property.gd")
+
 
 func _can_handle(object: Object) -> bool:
 	return object is DockableContainer
@@ -15,6 +17,6 @@ func _parse_property(
 	_wide: bool
 ) -> bool:
 	if name == "layout":
-		var editor_property := DockableLayoutEditorProperty.new()
+		var editor_property := LayoutEditorProperty.new()
 		add_property_editor("layout", editor_property)
 	return false

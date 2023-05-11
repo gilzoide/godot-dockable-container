@@ -1,5 +1,4 @@
 @tool
-class_name DockableDragNDropPanel
 extends Control
 
 enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }

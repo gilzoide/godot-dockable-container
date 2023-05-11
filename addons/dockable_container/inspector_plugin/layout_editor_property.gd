@@ -1,4 +1,3 @@
-class_name DockableLayoutEditorProperty
 extends EditorProperty
 
 var _container := DockableContainer.new()
