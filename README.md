@@ -1,4 +1,9 @@
 # Dockable Container
+
+> **Warning**
+>
+> This branch is only usable with Godot 3.X
+
 Docking/tiling UI panels Container addon for [Godot](https://godotengine.org/).
 
 ![](screenshots/video1.gif)
