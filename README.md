@@ -2,8 +2,8 @@
 
 > **Warning**
 >
-> This branch is only usable with Godot 3.X.
-> For Godot 4.X support, check out the [main](https://github.com/gilzoide/godot-dockable-container/tree/main/) branch.
+> This branch is only usable with Godot 4.X.
+> For Godot 3.X support, check out the [godot-3](https://github.com/gilzoide/godot-dockable-container/tree/godot-3) branch.
 
 Docking/tiling UI panels Container addon for [Godot](https://godotengine.org/).
 
