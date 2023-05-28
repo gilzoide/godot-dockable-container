@@ -19,7 +19,7 @@ func _ready() -> void:
 	_container.clone_layout_on_ready = false
 	_container.custom_minimum_size = custom_minimum_size
 
-	var value := _get_layout().clone()  # The layout gets reset when selecting it without clone
+	var value := _get_layout()
 	for n in value.get_names():
 		var child := _create_child_control(n)
 		_container.add_child(child)
@@ -38,8 +38,7 @@ func _update_property() -> void:
 
 
 func _get_layout() -> DockableLayout:
-	var original_container := get_edited_object() as DockableContainer
-	return original_container.get(get_edited_property())
+	return get_edited_object().get(get_edited_property())
 
 
 func _create_child_control(named: String) -> Label:
@@ -53,7 +52,7 @@ func _create_child_control(named: String) -> Label:
 
 
 func _on_hidden_menu_popup_about_to_show() -> void:
-	var layout := _get_layout().clone()
+	var layout := _get_layout()
 	_hidden_menu_popup.clear()
 	_hidden_menu_list = layout.get_names()
 	for i in _hidden_menu_list.size():
@@ -63,9 +62,9 @@ func _on_hidden_menu_popup_about_to_show() -> void:
 
 
 func _on_hidden_menu_popup_id_pressed(id: int) -> void:
-	var layout := _get_layout().clone()
+	var layout := _get_layout()
 	var tab_name := _hidden_menu_list[id]
 	var new_hidden := not layout.is_tab_hidden(tab_name)
-	_get_layout().set_tab_hidden(tab_name, new_hidden)
+	layout.set_tab_hidden(tab_name, new_hidden)
 	_hidden_menu_popup.set_item_checked(id, not new_hidden)
-	emit_changed(get_edited_property(), _get_layout())  # This line may not be needed
+	emit_changed(get_edited_property(), layout)  # This line may not be needed
