@@ -1,89 +1,103 @@
-@tool
+extends Object
 class_name DockableLayoutPanel
-extends DockableLayoutNode
 ## DockableLayout leaf nodes, defining tabs
 
-@export var names: PackedStringArray:
-	get:
-		return get_names()
-	set(value):
-		_names = value
-		emit_tree_changed()
-@export var current_tab: int:
-	get:
-		return int(clamp(_current_tab, 0, _names.size() - 1))
-	set(value):
-		if value != _current_tab:
-			_current_tab = value
-			emit_tree_changed()
+const NAMES_KEY = "names"
+const TAB_KEY = "tab"
 
-var _names := PackedStringArray()
-var _current_tab := 0
+static func create(names: PackedStringArray, tab: int) -> Dictionary:
+	return {
+		NAMES_KEY: names,
+		TAB_KEY: tab,
+	}
 
 
-func _init() -> void:
-	resource_name = "Tabs"
+static func create_empty() -> Dictionary:
+	return create(PackedStringArray(), 0)
 
 
-## Returns all tab names in this node
-func get_names() -> PackedStringArray:
-	return _names
+static func is_panel(dict: Dictionary) -> bool:
+	return dict.has_all([NAMES_KEY, TAB_KEY])
 
 
-func push_name(name: String) -> void:
-	_names.append(name)
-	emit_tree_changed()
+static func is_empty(dict: Dictionary) -> bool:
+	assert(is_panel(dict))
+	return get_names(dict).is_empty()
 
 
-func insert_node(position: int, node: Node) -> void:
-	_names.insert(position, node.name)
-	emit_tree_changed()
+# Names operations
+static func get_names(dict: Dictionary) -> PackedStringArray:
+	assert(is_panel(dict))
+	return dict[NAMES_KEY] as PackedStringArray
 
 
-func find_name(node_name: String) -> int:
-	for i in _names.size():
-		if _names[i] == node_name:
-			return i
-	return -1
+static func populate_names(dict: Dictionary, names: PackedStringArray) -> void:
+	assert(is_panel(dict))
+	names.append_array(get_names(dict))
 
 
-func find_child(node: Node) -> int:
-	return find_name(node.name)
+static func push_name(dict: Dictionary, value: String) -> void:
+	assert(is_panel(dict))
+	dict[NAMES_KEY].append(value)
 
 
-func remove_node(node: Node) -> void:
-	var i := find_child(node)
-	if i >= 0:
-		_names.remove_at(i)
-		emit_tree_changed()
+static func push_node(dict: Dictionary, value: Node) -> void:
+	assert(is_panel(dict))
+	push_name(dict, value.name)
+
+
+static func insert_node(dict: Dictionary, position: int, value: Node) -> void:
+	assert(is_panel(dict))
+	dict[NAMES_KEY].insert(position, value.name)
+
+
+static func find_name(dict: Dictionary, value: String) -> int:
+	assert(is_panel(dict))
+	return dict[NAMES_KEY].find(value)
+
+
+static func find_node(dict: Dictionary, value: Node) -> int:
+	assert(is_panel(dict))
+	return find_name(dict, value.name)
+
+
+static func remove_node(dict: Dictionary, value: Node) -> void:
+	assert(is_panel(dict))
+	var index: int = find_node(dict, value)
+	if index >= 0:
+		dict[NAMES_KEY].remove_at(index)
 	else:
-		push_warning("Remove failed, node '%s' was not found" % node)
+		push_warning("Remove failed, node '%s' was not found" % value)
 
 
-func rename_node(previous_name: String, new_name: String) -> void:
-	var i := find_name(previous_name)
-	if i >= 0:
-		_names.set(i, new_name)
-		emit_tree_changed()
+static func rename_node(dict: Dictionary, previous_name: String, new_name: String) -> void:
+	assert(is_panel(dict))
+	var index: int = find_name(dict, previous_name)
+	if index >= 0:
+		dict[NAMES_KEY][index] = new_name
 	else:
 		push_warning("Rename failed, name '%s' was not found" % previous_name)
 
 
-## Returns whether there are any nodes
-func is_empty() -> bool:
-	return _names.is_empty()
-
-
-func update_nodes(node_names: PackedStringArray, data: Dictionary) -> void:
+static func update_nodes(dict: Dictionary, out_node_names: PackedStringArray, out_dict: Dictionary) -> void:
+	assert(is_panel(dict))
+	var names := dict[NAMES_KEY] as PackedStringArray
 	var i := 0
-	var removed_any := false
-	while i < _names.size():
-		var current := _names[i]
-		if not current in node_names or data.has(current):
-			_names.remove_at(i)
-			removed_any = true
+	while i < names.size():
+		var name: String = names[i]
+		if not name in out_node_names or out_dict.has(name):
+			names.remove_at(i)
 		else:
-			data[current] = self
+			out_dict[name] = dict
 			i += 1
-	if removed_any:
-		emit_tree_changed()
+
+
+# Tab operations
+static func get_tab(dict: Dictionary) -> int:
+	assert(is_panel(dict))
+	return clampi(dict.get(TAB_KEY, 0), 0, dict[NAMES_KEY].size())
+
+
+static func set_tab(dict: Dictionary, value: int) -> void:
+	assert(is_panel(dict))
+	dict[TAB_KEY] = value

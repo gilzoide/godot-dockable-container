@@ -155,10 +155,10 @@ func set_control_as_current_tab(control: Control) -> void:
 	if is_control_hidden(control):
 		push_warning("Trying to focus a hidden control")
 		return
-	var leaf := _layout.get_leaf_for_node(control)
-	if not leaf:
+	var leaf: Dictionary = _layout.get_leaf_for_node(control)
+	if not DockableLayoutPanel.is_panel(leaf):
 		return
-	var position_in_leaf := leaf.find_child(control)
+	var position_in_leaf: int = DockableLayoutPanel.find_node(leaf, control)
 	if position_in_leaf < 0:
 		return
 	var panel: DockablePanel
@@ -329,10 +329,10 @@ func _resort() -> void:
 ##
 ## `result` will be filled with the non-empty nodes in this post-order tree
 ## traversal.
-func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutNode):
-	if layout_node is DockableLayoutPanel:
+func _calculate_panel_and_split_list(result: Array, layout_node: Dictionary) -> Variant:
+	if DockableLayoutPanel.is_panel(layout_node):
 		var nodes: Array[Control] = []
-		for n in layout_node.names:
+		for n in DockableLayoutPanel.get_names(layout_node):
 			var node: Control = _children_names.get(n)
 			if node:
 				assert(node is Control, "FIXME: node is not a control %s" % node)
@@ -352,11 +352,11 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 			panel.track_nodes(nodes, layout_node)
 			result.append(panel)
 			return panel
-	elif layout_node is DockableLayoutSplit:
+	elif DockableLayoutSplit.is_split(layout_node):
 		# by processing `second` before `first`, traversing `result` from back
 		# to front yields a nice pre-order tree traversal
-		var second_result = _calculate_panel_and_split_list(result, layout_node.second)
-		var first_result = _calculate_panel_and_split_list(result, layout_node.first)
+		var second_result = _calculate_panel_and_split_list(result, DockableLayoutSplit.get_second(layout_node))
+		var first_result = _calculate_panel_and_split_list(result, DockableLayoutSplit.get_first(layout_node))
 		if first_result and second_result:
 			var split := _get_split(_current_split_index)
 			_current_split_index += 1
@@ -371,6 +371,7 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 			return second_result
 	else:
 		push_warning("FIXME: invalid Resource, should be branch or leaf, found %s" % layout_node)
+		return null
 
 
 ## Traverse list from back to front fitting controls where they belong.
@@ -409,6 +410,7 @@ func _get_split(idx: int) -> SplitHandle:
 		return _split_container.get_child(idx)
 	var split := SplitHandle.new()
 	_split_container.add_child(split)
+	split.layout_changed.connect(queue_sort)
 	return split
 
 

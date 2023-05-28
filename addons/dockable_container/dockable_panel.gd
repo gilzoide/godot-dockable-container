@@ -3,13 +3,13 @@ extends TabContainer
 
 signal tab_layout_changed(tab)
 
-var leaf: DockableLayoutPanel:
+var leaf: Dictionary:
 	get:
 		return get_leaf()
 	set(value):
 		set_leaf(value)
 
-var _leaf: DockableLayoutPanel
+var _leaf: Dictionary
 
 
 func _ready() -> void:
@@ -26,8 +26,8 @@ func _exit_tree() -> void:
 	tab_changed.disconnect(_on_tab_changed)
 
 
-func track_nodes(nodes: Array[Control], new_leaf: DockableLayoutPanel) -> void:
-	_leaf = null  # avoid using previous leaf in tab_changed signals
+func track_nodes(nodes: Array[Control], new_leaf: Dictionary) -> void:
+	_leaf = {}  # avoid using previous leaf in tab_changed signals
 	var min_size := mini(nodes.size(), get_child_count())
 	# remove spare children
 	for i in range(min_size, get_child_count()):
@@ -53,13 +53,13 @@ func get_child_rect() -> Rect2:
 	return Rect2(position + control.position, control.size)
 
 
-func set_leaf(value: DockableLayoutPanel) -> void:
-	if get_tab_count() > 0 and value:
-		current_tab = clampi(value.current_tab, 0, get_tab_count() - 1)
+func set_leaf(value: Dictionary) -> void:
+	if get_tab_count() > 0 and DockableLayoutPanel.is_panel(value):
+		current_tab = clampi(DockableLayoutPanel.get_tab(value), 0, get_tab_count() - 1)
 	_leaf = value
 
 
-func get_leaf() -> DockableLayoutPanel:
+func get_leaf() -> Dictionary:
 	return _leaf
 
 
@@ -68,17 +68,19 @@ func get_layout_minimum_size() -> Vector2:
 
 
 func _on_tab_selected(tab: int) -> void:
-	if _leaf:
-		_leaf.current_tab = tab
+	if DockableLayoutPanel.is_panel(_leaf):
+		DockableLayoutPanel.set_tab(_leaf, tab)
 
 
 func _on_tab_changed(tab: int) -> void:
-	if not _leaf:
+	if not DockableLayoutPanel.is_panel(_leaf):
 		return
+	
 	var control := get_tab_control(tab)
 	if not control:
 		return
+	
 	var tab_name := control.name
-	var name_index_in_leaf := _leaf.find_name(tab_name)
+	var name_index_in_leaf := DockableLayoutPanel.find_name(_leaf, tab_name)
 	if name_index_in_leaf != tab:  # NOTE: this handles added tabs (index == -1)
 		tab_layout_changed.emit(tab)
