@@ -13,7 +13,7 @@ func _parse_property(
 	name: String,
 	_hint: PropertyHint,
 	_hint_text: String,
-	_usage: PropertyUsageFlags,
+	_usage: int,
 	_wide: bool
 ) -> bool:
 	if name == "layout":
