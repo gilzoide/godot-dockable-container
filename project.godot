@@ -19,7 +19,7 @@ Layout information is stored in Resource objects, so they can be saved/loaded fr
 
 This plugin also offers a replica of the Container layout to be edited directly in the inspector."
 run/main_scene="res://addons/dockable_container/samples/TestScene.tscn"
-config/features=PackedStringArray("4.1")
+config/features=PackedStringArray("4.2")
 config/icon="res://icon.svg"
 
 [debug]
