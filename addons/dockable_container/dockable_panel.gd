@@ -17,11 +17,13 @@ func _ready() -> void:
 
 
 func _enter_tree() -> void:
+	active_tab_rearranged.connect(_on_tab_changed)
 	tab_selected.connect(_on_tab_selected)
 	tab_changed.connect(_on_tab_changed)
 
 
 func _exit_tree() -> void:
+	active_tab_rearranged.disconnect(_on_tab_changed)
 	tab_selected.disconnect(_on_tab_selected)
 	tab_changed.disconnect(_on_tab_changed)
 
