@@ -1,89 +1,100 @@
-extends Object
+@tool
 class_name DockableLayoutSplit
-
+extends DockableLayoutNode
 ## DockableLayout binary tree nodes, defining subtrees and leaf panels
-const DIRECTION_KEY = "direction"
-const PERCENT_KEY = "percent"
-const FIRST_KEY = "first"
-const SECOND_KEY = "second"
 
 enum Direction { HORIZONTAL, VERTICAL }
 
-static func create(direction: Direction, percent: float, first: Dictionary, second: Dictionary) -> Dictionary:
-	return {
-		DIRECTION_KEY: direction,
-		PERCENT_KEY: percent,
-		FIRST_KEY: first,
-		SECOND_KEY: second,
-	}
+@export var direction := Direction.HORIZONTAL:
+	get:
+		return get_direction()
+	set(value):
+		set_direction(value)
+@export_range(0, 1) var percent := 0.5:
+	get = get_percent,
+	set = set_percent
+@export var first: DockableLayoutNode = DockableLayoutPanel.new():
+	get:
+		return get_first()
+	set(value):
+		set_first(value)
+@export var second: DockableLayoutNode = DockableLayoutPanel.new():
+	get:
+		return get_second()
+	set(value):
+		set_second(value)
+
+var _direction := Direction.HORIZONTAL
+var _percent := 0.5
+var _first: DockableLayoutNode
+var _second: DockableLayoutNode
 
 
-static func is_split(dict: Dictionary) -> bool:
-	return dict.has_all([DIRECTION_KEY, PERCENT_KEY, FIRST_KEY, SECOND_KEY])
+func _init() -> void:
+	resource_name = "Split"
 
 
-static func is_empty(dict: Dictionary) -> bool:
-	assert(is_split(dict))
-	return DockableLayoutNode.is_empty(get_first(dict)) and DockableLayoutNode.is_empty(get_second(dict))
+func set_first(value: DockableLayoutNode) -> void:
+	if value == null:
+		_first = DockableLayoutPanel.new()
+	else:
+		_first = value
+	_first.parent = self
+	emit_tree_changed()
 
 
-static func populate_names(dict: Dictionary, names: PackedStringArray) -> void:
-	assert(is_split(dict))
-	DockableLayoutNode.populate_names(get_first(dict), names)
-	DockableLayoutNode.populate_names(get_second(dict), names)
+func get_first() -> DockableLayoutNode:
+	return _first
 
 
-# Direction operations
-static func get_direction(dict: Dictionary) -> Direction:
-	assert(is_split(dict))
-	return dict.get(DIRECTION_KEY, Direction.HORIZONTAL) as Direction
+func set_second(value: DockableLayoutNode) -> void:
+	if value == null:
+		_second = DockableLayoutPanel.new()
+	else:
+		_second = value
+	_second.parent = self
+	emit_tree_changed()
 
 
-static func set_direction(dict: Dictionary, value: Direction) -> void:
-	assert(is_split(dict))
-	dict[DIRECTION_KEY] = value
+func get_second() -> DockableLayoutNode:
+	return _second
 
 
-static func is_horizontal(dict: Dictionary) -> bool:
-	return get_direction(dict) == Direction.HORIZONTAL
+func set_direction(value: Direction) -> void:
+	if value != _direction:
+		_direction = value
+		emit_tree_changed()
 
 
-static func is_vertical(dict: Dictionary) -> bool:
-	return get_direction(dict) == Direction.VERTICAL
+func get_direction() -> Direction:
+	return _direction
 
 
-# Percent operations
-static func get_percent(dict: Dictionary) -> float:
-	assert(is_split(dict))
-	return dict.get(PERCENT_KEY, 0.5) as float
+func set_percent(value: float) -> void:
+	var clamped_value := clampf(value, 0, 1)
+	if not is_equal_approx(_percent, clamped_value):
+		_percent = clamped_value
+		emit_tree_changed()
 
 
-static func set_percent(dict: Dictionary, value: float) -> void:
-	assert(is_split(dict))
-	dict[PERCENT_KEY] = clampf(value, 0, 1)
+func get_percent() -> float:
+	return _percent
 
 
-# First operations
-static func get_first(dict: Dictionary) -> Dictionary:
-	assert(is_split(dict))
-	return dict[FIRST_KEY] as Dictionary
+func get_names() -> PackedStringArray:
+	var names := _first.get_names()
+	names.append_array(_second.get_names())
+	return names
 
 
-static func set_first(dict: Dictionary, value: Dictionary) -> void:
-	assert(is_split(dict))
-	if not DockableLayoutNode.is_node(value):
-		value = DockableLayoutPanel.create_empty()
-	dict[FIRST_KEY] = value
+## Returns whether there are any nodes
+func is_empty() -> bool:
+	return _first.is_empty() and _second.is_empty()
 
 
-# Second operations
-static func get_second(dict: Dictionary) -> Dictionary:
-	assert(is_split(dict))
-	return dict[SECOND_KEY] as Dictionary
+func is_horizontal() -> bool:
+	return _direction == Direction.HORIZONTAL
 
 
-static func set_second(dict: Dictionary, value: Dictionary) -> void:
-	assert(is_split(dict))
-	if not DockableLayoutNode.is_node(value):
-		value = DockableLayoutPanel.create_empty()
-	dict[SECOND_KEY] = value
+func is_vertical() -> bool:
+	return _direction == Direction.VERTICAL
