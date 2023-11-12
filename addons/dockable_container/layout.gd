@@ -11,6 +11,17 @@ extends Resource
 
 enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }
 
+@export var serialized_data: Dictionary:
+	get:
+		return {
+			root = _root.to_dict(),
+			hidden_tabs = _hidden_tabs,
+		}
+	set(value):
+		_hidden_tabs = value.get("hidden_tabs", {})
+		var new_root = DockableLayoutNode.from_dict(value.get("root", {}))
+		set_root(new_root)
+
 var root: DockableLayoutNode = DockableLayoutPanel.new():
 	get:
 		return _root
@@ -23,17 +34,6 @@ var hidden_tabs := {}:
 		if value != _hidden_tabs:
 			_hidden_tabs = value
 			changed.emit()
-
-@export var serialized_data: Dictionary:
-	get:
-		return {
-			root = _root.to_dict(),
-			hidden_tabs = _hidden_tabs,
-		}
-	set(value):
-		_hidden_tabs = value.get("hidden_tabs", {})
-		var new_root = DockableLayoutNode.from_dict(value.get("root", {}))
-		set_root(new_root)
 
 var _changed_signal_queued := false
 var _first_leaf: DockableLayoutPanel
