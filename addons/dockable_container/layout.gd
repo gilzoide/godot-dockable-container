@@ -11,18 +11,29 @@ extends Resource
 
 enum { MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_CENTER }
 
-@export var root: DockableLayoutNode = DockableLayoutPanel.new():
+var root: DockableLayoutNode = DockableLayoutPanel.new():
 	get:
 		return _root
 	set(value):
 		set_root(value)
-@export var hidden_tabs := {}:
+var hidden_tabs := {}:
 	get:
 		return _hidden_tabs
 	set(value):
 		if value != _hidden_tabs:
 			_hidden_tabs = value
 			changed.emit()
+
+@export var serialized_data: Dictionary:
+	get:
+		return {
+			root = _root.to_dict(),
+			hidden_tabs = _hidden_tabs,
+		}
+	set(value):
+		_hidden_tabs = value.get("hidden_tabs", {})
+		var new_root = DockableLayoutNode.from_dict(value.get("root", {}))
+		set_root(new_root)
 
 var _changed_signal_queued := false
 var _first_leaf: DockableLayoutPanel
@@ -32,7 +43,8 @@ var _root: DockableLayoutNode = DockableLayoutPanel.new()
 
 
 func _init() -> void:
-	resource_name = "Layout"
+	if not resource_name:
+		resource_name = "Layout"
 
 
 func set_root(value: DockableLayoutNode, should_emit_changed := true) -> void:
@@ -40,11 +52,8 @@ func set_root(value: DockableLayoutNode, should_emit_changed := true) -> void:
 		value = DockableLayoutPanel.new()
 	if _root == value:
 		return
-	if _root and _root.changed.is_connected(_on_root_changed):
-		_root.changed.disconnect(_on_root_changed)
 	_root = value
 	_root.parent = null
-	_root.changed.connect(_on_root_changed)
 	if should_emit_changed:
 		_on_root_changed()
 
@@ -54,7 +63,7 @@ func get_root() -> DockableLayoutNode:
 
 
 func clone() -> DockableLayout:
-	return duplicate(true)
+	return duplicate()
 
 
 func get_names() -> PackedStringArray:
@@ -219,6 +228,8 @@ func _remove_leaf(leaf: DockableLayoutPanel) -> void:
 			root_branch.first = kept_branch
 		else:
 			root_branch.second = kept_branch
+	collapsed_branch.parent = null
+	leaf.parent = null
 
 
 func _print_tree() -> void:

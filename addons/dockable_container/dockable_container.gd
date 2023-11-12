@@ -409,6 +409,7 @@ func _get_split(idx: int) -> SplitHandle:
 		return _split_container.get_child(idx)
 	var split := SplitHandle.new()
 	_split_container.add_child(split)
+	split.layout_changed.connect(queue_sort)
 	return split
 
 

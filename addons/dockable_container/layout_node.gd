@@ -1,16 +1,9 @@
 @tool
 class_name DockableLayoutNode
-extends Resource
+extends RefCounted
 ## Base class for DockableLayout tree nodes
 
 var parent: DockableLayoutSplit = null
-
-
-func emit_tree_changed() -> void:
-	var node := self
-	while node:
-		node.emit_changed()
-		node = node.parent
 
 
 ## Returns whether there are any nodes
@@ -21,3 +14,18 @@ func is_empty() -> bool:
 ## Returns all tab names in this node
 func get_names() -> PackedStringArray:
 	return PackedStringArray()
+
+
+## Serialize layout node to Dictionary
+func to_dict() -> Dictionary:
+	return {}
+
+
+## Deserialize Dictionary to layout node
+static func from_dict(dict: Dictionary) -> DockableLayoutNode:
+	if dict.has("names"):
+		return DockableLayoutPanel.from_dict(dict)
+	elif dict.has_all(["first", "second"]):
+		return DockableLayoutSplit.from_dict(dict)
+	else:
+		return null
