@@ -10,8 +10,24 @@ script = ExtResource("2")
 serialized_data = {
 "hidden_tabs": {},
 "root": {
+"direction": 0,
+"first": {
+"direction": 1,
+"first": {
+"current_tab": 1,
+"names": PackedStringArray("Control0")
+},
+"percent": 0.5,
+"second": {
 "current_tab": 0,
-"names": PackedStringArray("Control0", "Control1", "Control2")
+"names": PackedStringArray("Control1")
+}
+},
+"percent": 0.565485,
+"second": {
+"current_tab": 0,
+"names": PackedStringArray("Control2")
+}
 }
 }
 
@@ -21,8 +37,16 @@ script = ExtResource("2")
 serialized_data = {
 "hidden_tabs": {},
 "root": {
+"direction": 1,
+"first": {
 "current_tab": 0,
-"names": PackedStringArray("Control3", "Control4", "Control5")
+"names": PackedStringArray("Control3")
+},
+"percent": 0.5,
+"second": {
+"current_tab": 0,
+"names": PackedStringArray("Control4", "Control5")
+}
 }
 }
 
@@ -95,13 +119,11 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
 [node name="Control1" type="ColorRect" parent="DockableContainers/DockableContainer"]
-visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0.141176, 0.0745098, 0.603922, 1)
 
 [node name="Control2" type="ColorRect" parent="DockableContainers/DockableContainer"]
-visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0.533333, 0.380392, 0.380392, 1)
@@ -124,7 +146,6 @@ layout_mode = 2
 color = Color(0, 1, 0.905882, 1)
 
 [node name="Control4" type="ColorRect" parent="DockableContainers/DockableContainer2"]
-visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0, 0.698039, 0.0588235, 1)

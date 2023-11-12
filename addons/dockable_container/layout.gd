@@ -212,7 +212,7 @@ func _ensure_names_in_node(
 
 
 func _remove_leaf(leaf: DockableLayoutPanel) -> void:
-	assert(leaf.is_empty(), "FIXME: trying to remove_at a leaf with nodes")
+	assert(leaf.is_empty(), "FIXME: trying to remove a leaf with nodes")
 	if _root == leaf:
 		return
 	var collapsed_branch := leaf.parent
