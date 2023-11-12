@@ -38,7 +38,7 @@ func _update_property() -> void:
 
 
 func _get_layout() -> DockableLayout:
-	return get_edited_object().get(get_edited_property())
+	return get_edited_object().get(get_edited_property()) as DockableLayout
 
 
 func _create_child_control(named: String) -> Label:
@@ -67,4 +67,3 @@ func _on_hidden_menu_popup_id_pressed(id: int) -> void:
 	var new_hidden := not layout.is_tab_hidden(tab_name)
 	layout.set_tab_hidden(tab_name, new_hidden)
 	_hidden_menu_popup.set_item_checked(id, not new_hidden)
-	emit_changed(get_edited_property(), layout)  # This line may not be needed
