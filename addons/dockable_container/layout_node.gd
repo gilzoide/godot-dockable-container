@@ -5,10 +5,11 @@ extends Resource
 
 var parent: DockableLayoutSplit:
 	get:
-		return _parent_ref.get_ref() if _parent_ref else null
+		return _parent_ref.get_ref()
 	set(value):
 		_parent_ref = weakref(value)
-var _parent_ref: WeakRef
+
+var _parent_ref := WeakRef.new()
 
 
 func emit_tree_changed() -> void:
