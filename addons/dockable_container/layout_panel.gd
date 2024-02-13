@@ -32,10 +32,7 @@ func insert_node(position: int, node: Node) -> void:
 
 
 func find_name(node_name: String) -> int:
-	for i in _names.size():
-		if _names[i] == node_name:
-			return i
-	return -1
+	return _names.find(node_name)
 
 
 func find_child(node: Node) -> int:
