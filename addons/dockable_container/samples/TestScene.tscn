@@ -14,7 +14,7 @@ serialized_data = {
 "first": {
 "direction": 1,
 "first": {
-"current_tab": 1,
+"current_tab": 0,
 "names": PackedStringArray("Control0")
 },
 "percent": 0.5,

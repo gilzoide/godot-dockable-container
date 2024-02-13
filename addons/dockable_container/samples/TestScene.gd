@@ -43,8 +43,10 @@ func _on_save_pressed() -> void:
 
 
 func _on_load_pressed() -> void:
+	if not ResourceLoader.exists(SAVED_LAYOUT_PATH):
+		return
 	var res = load(SAVED_LAYOUT_PATH) as DockableLayout
-	if res:
+	if res and not res.is_empty():
 		_container.set_layout(res.clone())
 	else:
 		print("Error")

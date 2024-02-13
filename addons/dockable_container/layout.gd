@@ -66,6 +66,10 @@ func clone() -> DockableLayout:
 	return duplicate()
 
 
+func is_empty() -> bool:
+	return _root.is_empty()
+
+
 func get_names() -> PackedStringArray:
 	return _root.get_names()
 
