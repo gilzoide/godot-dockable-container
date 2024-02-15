@@ -27,8 +27,9 @@ const DragNDropPanel := preload("drag_n_drop_panel.gd")
 		return _tabs_visible
 	set(value):
 		_tabs_visible = value
-		for panel in _panel_container.get_children():
-			panel.tabs_hidden = not _tabs_visible
+		for i in range(1, _panel_container.get_child_count()):
+			var panel := _panel_container.get_child(i) as DockablePanel
+			panel.show_tabs = _tabs_visible
 ## If [code]true[/code] and a panel only has one tab, it keeps that tab hidden even if
 ## [member tabs_visible] is [code]true[/code].
 ## Only takes effect is [member tabs_visible] is [code]true[/code].
@@ -37,7 +38,8 @@ const DragNDropPanel := preload("drag_n_drop_panel.gd")
 		return _hide_single_tab
 	set(value):
 		_hide_single_tab = value
-		for panel in _panel_container.get_children():
+		for i in range(1, _panel_container.get_child_count()):
+			var panel := _panel_container.get_child(i) as DockablePanel
 			panel.hide_single_tab = _hide_single_tab
 @export var rearrange_group := 0
 @export var layout := DockableLayout.new():
@@ -395,7 +397,7 @@ func _get_panel(idx: int) -> DockablePanel:
 		return _panel_container.get_child(idx)
 	var panel := DockablePanel.new()
 	panel.tab_alignment = _tab_align
-	panel.tabs_hidden = not _tabs_visible
+	panel.show_tabs = _tabs_visible
 	panel.hide_single_tab = _hide_single_tab
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(maxi(0, rearrange_group))

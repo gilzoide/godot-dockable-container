@@ -8,11 +8,11 @@ var leaf: DockableLayoutPanel:
 		return get_leaf()
 	set(value):
 		set_leaf(value)
-var tabs_hidden := false:
+var show_tabs := true:
 	get:
-		return _tabs_hidden
+		return _show_tabs
 	set(value):
-		_tabs_hidden = value
+		_show_tabs = value
 		_handle_tab_visibility()
 var hide_single_tab := false:
 	get:
@@ -22,7 +22,7 @@ var hide_single_tab := false:
 		_handle_tab_visibility()
 
 var _leaf: DockableLayoutPanel
-var _tabs_hidden := false
+var _show_tabs := true
 var _hide_single_tab := false
 
 
@@ -105,4 +105,4 @@ func _handle_tab_visibility() -> void:
 	if _hide_single_tab and get_tab_count() == 1:
 		tabs_visible = false
 	else:
-		tabs_visible = not _tabs_hidden
+		tabs_visible = _show_tabs
