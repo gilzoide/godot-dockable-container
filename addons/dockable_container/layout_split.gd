@@ -5,20 +5,20 @@ extends DockableLayoutNode
 
 enum Direction { HORIZONTAL, VERTICAL }
 
-@export var direction := Direction.HORIZONTAL:
+var direction := Direction.HORIZONTAL:
 	get:
 		return get_direction()
 	set(value):
 		set_direction(value)
-@export_range(0, 1) var percent := 0.5:
+var percent := 0.5:
 	get = get_percent,
 	set = set_percent
-@export var first: DockableLayoutNode = DockableLayoutPanel.new():
+var first: DockableLayoutNode = DockableLayoutPanel.new():
 	get:
 		return get_first()
 	set(value):
 		set_first(value)
-@export var second: DockableLayoutNode = DockableLayoutPanel.new():
+var second: DockableLayoutNode = DockableLayoutPanel.new():
 	get:
 		return get_second()
 	set(value):
@@ -30,17 +30,12 @@ var _first: DockableLayoutNode
 var _second: DockableLayoutNode
 
 
-func _init() -> void:
-	resource_name = "Split"
-
-
 func set_first(value: DockableLayoutNode) -> void:
 	if value == null:
 		_first = DockableLayoutPanel.new()
 	else:
 		_first = value
 	_first.parent = self
-	emit_tree_changed()
 
 
 func get_first() -> DockableLayoutNode:
@@ -53,7 +48,6 @@ func set_second(value: DockableLayoutNode) -> void:
 	else:
 		_second = value
 	_second.parent = self
-	emit_tree_changed()
 
 
 func get_second() -> DockableLayoutNode:
@@ -63,7 +57,6 @@ func get_second() -> DockableLayoutNode:
 func set_direction(value: Direction) -> void:
 	if value != _direction:
 		_direction = value
-		emit_tree_changed()
 
 
 func get_direction() -> Direction:
@@ -74,7 +67,6 @@ func set_percent(value: float) -> void:
 	var clamped_value := clampf(value, 0, 1)
 	if not is_equal_approx(_percent, clamped_value):
 		_percent = clamped_value
-		emit_tree_changed()
 
 
 func get_percent() -> float:
@@ -98,3 +90,21 @@ func is_horizontal() -> bool:
 
 func is_vertical() -> bool:
 	return _direction == Direction.VERTICAL
+
+
+func to_dict() -> Dictionary:
+	return {
+		direction = direction,
+		percent = percent,
+		first = first.to_dict(),
+		second = second.to_dict(),
+	}
+
+
+static func from_dict(dict: Dictionary) -> DockableLayoutNode:
+	var split = DockableLayoutSplit.new()
+	split.direction = dict.get("direction", Direction.HORIZONTAL)
+	split.percent = dict.get("percent", 0.5)
+	split.first = DockableLayoutNode.from_dict(dict["first"])
+	split.second = DockableLayoutNode.from_dict(dict["second"])
+	return split

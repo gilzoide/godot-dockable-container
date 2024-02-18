@@ -1,6 +1,8 @@
 @tool
 extends Control
 
+signal layout_changed
+
 const SPLIT_THEME_CLASS: PackedStringArray = [
 	"HSplitContainer",  # SPLIT_THEME_CLASS[DockableLayoutSplit.Direction.HORIZONTAL]
 	"VSplitContainer",  # SPLIT_THEME_CLASS[DockableLayoutSplit.Direction.VERTICAL]
@@ -45,6 +47,7 @@ func _gui_input(event: InputEvent) -> void:
 			layout_split.percent = (
 				(mouse_in_parent.y - _parent_rect.position.y) / _parent_rect.size.y
 			)
+		layout_changed.emit()
 
 
 func _notification(what: int) -> void:

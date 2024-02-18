@@ -1,7 +1,7 @@
 @tool
 extends TabContainer
 
-signal tab_layout_changed(tab)
+signal tab_layout_changed(tab: int)
 
 var leaf: DockableLayoutPanel:
 	get:
@@ -95,8 +95,7 @@ func _on_tab_changed(tab: int) -> void:
 	var control := get_tab_control(tab)
 	if not control:
 		return
-	var tab_name := control.name
-	var name_index_in_leaf := _leaf.find_name(tab_name)
+	var name_index_in_leaf := _leaf.find_child(control)
 	if name_index_in_leaf != tab:  # NOTE: this handles added tabs (index == -1)
 		tab_layout_changed.emit(tab)
 

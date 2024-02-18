@@ -413,6 +413,7 @@ func _get_split(idx: int) -> SplitHandle:
 		return _split_container.get_child(idx)
 	var split := SplitHandle.new()
 	_split_container.add_child(split)
+	split.layout_changed.connect(_on_split_layout_changed)
 	return split
 
 
@@ -446,3 +447,8 @@ func _on_child_renamed(child: Node) -> void:
 	_children_names[child] = child.name
 	_children_names[child.name] = child
 	_layout.rename_node(old_name, child.name)
+
+
+## Handler for `SplitHandle.layout_changed`, makes layout emit `changed` signal
+func _on_split_layout_changed() -> void:
+	_layout.emit_changed()
