@@ -446,3 +446,8 @@ func _on_child_renamed(child: Node) -> void:
 	_children_names[child] = child.name
 	_children_names[child.name] = child
 	_layout.rename_node(old_name, child.name)
+
+func set_tab_title_for_node_named(node_name: String, tab_title: String):
+	for panel in _panel_container.get_children():
+		if panel.has_method("setup_tab_name_for_node_named"):
+			panel.setup_tab_name_for_node_named(node_name, tab_title)
