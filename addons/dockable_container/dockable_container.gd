@@ -66,6 +66,8 @@ var _current_split_index := 0
 var _children_names := {}
 var _layout_dirty := false
 
+var _tabs_children_names = {}
+
 
 func _init() -> void:
 	child_entered_tree.connect(_child_entered_tree)
@@ -352,7 +354,7 @@ func _calculate_panel_and_split_list(result: Array, layout_node: DockableLayoutN
 		else:
 			var panel := _get_panel(_current_panel_index)
 			_current_panel_index += 1
-			panel.track_nodes(nodes, layout_node)
+			panel.track_nodes(nodes, layout_node, _tabs_children_names)
 			result.append(panel)
 			return panel
 	elif layout_node is DockableLayoutSplit:
@@ -448,6 +450,5 @@ func _on_child_renamed(child: Node) -> void:
 	_layout.rename_node(old_name, child.name)
 
 func set_tab_title_for_node_named(node_name: String, tab_title: String):
-	for panel in _panel_container.get_children():
-		if panel.has_method("setup_tab_name_for_node_named"):
-			panel.setup_tab_name_for_node_named(node_name, tab_title)
+	_tabs_children_names[node_name] = tab_title
+	_resort()

@@ -24,8 +24,6 @@ var hide_single_tab := false:
 var _leaf: DockableLayoutPanel
 var _show_tabs := true
 var _hide_single_tab := false
-var _tabs_children_names = {}
-
 
 func _ready() -> void:
 	drag_to_rearrange_enabled = true
@@ -43,8 +41,7 @@ func _exit_tree() -> void:
 	tab_changed.disconnect(_on_tab_changed)
 
 
-func track_nodes(nodes: Array[Control], new_leaf: DockableLayoutPanel) -> void:
-	_tabs_children_names = {}
+func track_nodes(nodes: Array[Control], new_leaf: DockableLayoutPanel, tab_names_override) -> void:
 	_leaf = null  # avoid using previous leaf in tab_changed signals
 	var min_size := mini(nodes.size(), get_child_count())
 	# remove spare children
@@ -62,17 +59,14 @@ func track_nodes(nodes: Array[Control], new_leaf: DockableLayoutPanel) -> void:
 	for i in nodes.size():
 		var ref_control := get_child(i) as DockableReferenceControl
 		ref_control.reference_to = nodes[i]
-		set_tab_title(i, nodes[i].name)
-		_tabs_children_names[nodes[i].name] = i
+		
+		if tab_names_override.has(nodes[i].name):
+			set_tab_title(i, tab_names_override[nodes[i].name])
+		else:
+			set_tab_title(i, nodes[i].name)
+		
 	set_leaf(new_leaf)
 	_handle_tab_visibility()
-
-
-func setup_tab_name_for_node_named(node_name: String, tab_title: String):
-	if !_tabs_children_names.has(node_name):
-		return
-	set_tab_title(_tabs_children_names[node_name], tab_title)
-
 
 func get_child_rect() -> Rect2:
 	var control := get_current_tab_control()
