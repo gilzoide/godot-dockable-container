@@ -4,8 +4,8 @@ extends Window
 signal data_changed
 
 var window_content: Control
-var _is_initialized := false
 var prevent_data_erasure := false
+var _is_initialized := false
 
 
 func _init(content: Control, data := {}) -> void:
