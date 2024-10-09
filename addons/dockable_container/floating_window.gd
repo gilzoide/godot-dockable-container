@@ -16,6 +16,7 @@ func _init(content: Control, data := {}) -> void:
 	min_size = window_content.get_minimum_size()
 	unresizable = false
 	wrap_controls = true
+	always_on_top = true
 	ready.connect(_deserialize.bind(data))
 
 
