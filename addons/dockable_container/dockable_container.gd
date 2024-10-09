@@ -2,9 +2,6 @@
 class_name DockableContainer
 extends Container
 
-signal window_created
-signal window_closed
-
 const SplitHandle := preload("split_handle.gd")
 const DockablePanel := preload("dockable_panel.gd")
 const DragNDropPanel := preload("drag_n_drop_panel.gd")
@@ -176,7 +173,7 @@ func _add_floating_options(tab_container: TabContainer) -> void:
 	tab_container.set_popup(options)
 
 
-## required when converting a window back to panel
+## Required when converting a window back to panel.
 func _refresh_tabs_visible() -> void:
 	if tabs_visible:
 		tabs_visible = false
@@ -192,6 +189,7 @@ func _toggle_floating(_id: int, tab_container: TabContainer) -> void:
 		_convert_to_window(node)
 
 
+## Converts a panel to floating window.
 func _convert_to_window(content: Control) -> void:
 	var old_owner := content.owner
 	var data := {}
@@ -205,6 +203,7 @@ func _convert_to_window(content: Control) -> void:
 	window.data_changed.connect(layout.save_window_properties)
 
 
+## Converts a floating window into a panel.
 func _convert_to_panel(window: FloatingWindow, old_owner: Node) -> void:
 	var content := window.window_content
 	window.remove_child(content)
@@ -250,12 +249,12 @@ func set_layout(value: DockableLayout) -> void:
 	_layout.changed.connect(queue_sort)
 	for window in _windows_container.get_children():
 		if not window.name in _layout.windows and window is FloatingWindow:
-			window.prevent_data_erasure = true  # We don't want to delete data
-			window.close_requested.emit()  # Removes the window
+			window.prevent_data_erasure = true  # We don't want to delete data.
+			window.close_requested.emit()  # Removes the window.
 			continue
 	for window: String in _layout.windows.keys():
 		var panel := find_child(window, false)
-		# Only those windows get created which were not previously created
+		# Only those windows get created which were not previously created.
 		if panel:
 			_convert_to_window(panel)
 	_layout_dirty = true
@@ -265,7 +264,7 @@ func set_layout(value: DockableLayout) -> void:
 func set_use_hidden_tabs_for_min_size(value: bool) -> void:
 	_use_hidden_tabs_for_min_size = value
 	for i in range(1, _panel_container.get_child_count()):
-		var panel = _panel_container.get_child(i)
+		var panel := _panel_container.get_child(i) as DockablePanel
 		panel.use_hidden_tabs_for_min_size = value
 
 

@@ -1,6 +1,7 @@
 class_name FloatingWindow
 extends Window
 
+## Emitted when the window's position or size changes, or when it's closed.
 signal data_changed
 
 var window_content: Control
@@ -20,12 +21,12 @@ func _init(content: Control, data := {}) -> void:
 
 func _ready() -> void:
 	set_deferred(&"size", Vector2(300, 300))
-	#set_deferred(&"position", DisplayServer.window_get_size() / 2 - size / 2)
 	position = DisplayServer.window_get_size() / 2 - size / 2
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
+		# Emit `data_changed` when the window is being moved.
 		if not window_content.get_rect().has_point(event.position) and _is_initialized:
 			data_changed.emit(name, serialize())
 
@@ -40,11 +41,10 @@ func _deserialize(data: Dictionary) -> void:
 	window_content.global_position = Vector2.ZERO
 	add_child(window_content)
 	size_changed.connect(window_size_changed)
-	if not data.is_empty():
-		if "position" in data:
-			set_position(data["position"])
-		if "size" in data:
-			set_deferred(&"size", data["size"])
+	if "position" in data:
+		set_position(data["position"])
+	if "size" in data:
+		set_deferred(&"size", data["size"])
 	_is_initialized = true
 
 
