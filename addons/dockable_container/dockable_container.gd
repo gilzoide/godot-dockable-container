@@ -164,7 +164,7 @@ func _drop_data(_position: Vector2, data) -> void:
 	queue_sort()
 
 
-func _add_floating_options(tab_container: TabContainer) -> void:
+func _add_floating_options(tab_container: DockablePanel) -> void:
 	var options := PopupMenu.new()
 	options.add_item("Make Floating")
 	options.id_pressed.connect(_toggle_floating.bind(tab_container))
@@ -182,15 +182,18 @@ func _refresh_tabs_visible() -> void:
 		tabs_visible = true
 
 
-func _toggle_floating(_id: int, tab_container: TabContainer) -> void:
+func _toggle_floating(_id: int, tab_container: DockablePanel) -> void:
 	var node_name := tab_container.get_tab_title(tab_container.current_tab)
-	var node := find_child(node_name, false)
-	if node:
-		_convert_to_window(node)
+	var node := get_node(node_name)
+	if is_instance_valid(node):
+		var tab_position := maxi(tab_container.leaf.find_child(node), 0)
+		_convert_to_window(node, {"tab_position": tab_position, "tab_container": tab_container})
+	else:
+		print("Node ", node_name, " not found!")
 
 
 ## Converts a panel to floating window.
-func _convert_to_window(content: Control) -> void:
+func _convert_to_window(content: Control, previous_data := {}) -> void:
 	var old_owner := content.owner
 	var data := {}
 	if content.name in layout.windows:
@@ -199,17 +202,20 @@ func _convert_to_window(content: Control) -> void:
 	_windows_container.add_child(window)
 	window.show()
 	_refresh_tabs_visible()
-	window.close_requested.connect(_convert_to_panel.bind(window, old_owner))
+	window.close_requested.connect(_convert_to_panel.bind(window, old_owner, previous_data))
 	window.data_changed.connect(layout.save_window_properties)
 
 
 ## Converts a floating window into a panel.
-func _convert_to_panel(window: FloatingWindow, old_owner: Node) -> void:
+func _convert_to_panel(window: FloatingWindow, old_owner: Node, previous_data := {}) -> void:
 	var content := window.window_content
 	window.remove_child(content)
 	window.destroy()
 	add_child(content)
 	content.owner = old_owner
+	if previous_data.has("tab_container") and is_instance_valid(previous_data["tab_container"]):
+		var tab_position := previous_data.get("tab_position", 0) as int
+		previous_data["tab_container"].leaf.insert_node(tab_position, content)
 	_refresh_tabs_visible()
 
 
