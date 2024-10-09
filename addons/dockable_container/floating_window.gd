@@ -21,7 +21,12 @@ func _init(content: Control, data := {}) -> void:
 
 func _ready() -> void:
 	set_deferred(&"size", Vector2(300, 300))
-	position = DisplayServer.window_get_size() / 2 - size / 2
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if get_tree().current_scene.get_window().gui_embed_subwindows:
+		position = DisplayServer.window_get_size() / 2 - size / 2
+	else:
+		position = DisplayServer.screen_get_usable_rect().size / 2 - size / 2
 
 
 func _input(event: InputEvent) -> void:
@@ -42,7 +47,9 @@ func _deserialize(data: Dictionary) -> void:
 	add_child(window_content)
 	size_changed.connect(window_size_changed)
 	if "position" in data:
-		set_position(data["position"])
+		await get_tree().process_frame
+		await get_tree().process_frame
+		position = data["position"]
 	if "size" in data:
 		set_deferred(&"size", data["size"])
 	_is_initialized = true
