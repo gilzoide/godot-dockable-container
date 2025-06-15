@@ -1,5 +1,6 @@
 tool
 extends Control
+extends EditorRun
 
 const DRAW_NOTHING = -1
 const DRAW_CENTERED = -2
