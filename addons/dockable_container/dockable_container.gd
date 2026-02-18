@@ -29,18 +29,7 @@ const DragNDropPanel := preload("drag_n_drop_panel.gd")
 		_tabs_visible = value
 		for i in range(1, _panel_container.get_child_count()):
 			var panel := _panel_container.get_child(i) as DockablePanel
-			panel.show_tabs = _tabs_visible
-## If [code]true[/code] and a panel only has one tab, it keeps that tab hidden even if
-## [member tabs_visible] is [code]true[/code].
-## Only takes effect is [member tabs_visible] is [code]true[/code].
-@export var hide_single_tab := false:
-	get:
-		return _hide_single_tab
-	set(value):
-		_hide_single_tab = value
-		for i in range(1, _panel_container.get_child_count()):
-			var panel := _panel_container.get_child(i) as DockablePanel
-			panel.hide_single_tab = _hide_single_tab
+			panel.tabs_visible = value
 @export var rearrange_group := 0
 @export var layout := DockableLayout.new():
 	get:
@@ -60,7 +49,6 @@ var _drag_panel: DockablePanel
 var _tab_align := TabBar.ALIGNMENT_CENTER
 var _tabs_visible := true
 var _use_hidden_tabs_for_min_size := false
-var _hide_single_tab := false
 var _current_panel_index := 0
 var _current_split_index := 0
 var _children_names := {}
@@ -197,6 +185,17 @@ func set_layout(value: DockableLayout) -> void:
 	_layout.changed.connect(queue_sort)
 	_layout_dirty = true
 	queue_sort()
+
+
+func set_tab_alignment(value: TabBar.AlignmentMode) -> void:
+	_tab_align = value
+	for i in range(1, _panel_container.get_child_count()):
+		var panel = _panel_container.get_child(i)
+		panel.tab_alignment = value
+
+
+func get_tab_align() -> int:
+	return _tab_align
 
 
 func set_use_hidden_tabs_for_min_size(value: bool) -> void:
@@ -402,8 +401,7 @@ func _get_panel(idx: int) -> DockablePanel:
 		return _panel_container.get_child(idx)
 	var panel := DockablePanel.new()
 	panel.tab_alignment = _tab_align
-	panel.show_tabs = _tabs_visible
-	panel.hide_single_tab = _hide_single_tab
+	panel.tabs_visible = _tabs_visible
 	panel.use_hidden_tabs_for_min_size = _use_hidden_tabs_for_min_size
 	panel.set_tabs_rearrange_group(maxi(0, rearrange_group))
 	_panel_container.add_child(panel)
