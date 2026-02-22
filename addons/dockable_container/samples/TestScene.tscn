@@ -92,6 +92,7 @@ text = "Load Layout"
 
 [node name="ControlPrefab" type="ColorRect" parent="HBoxContainer" unique_id=399318649]
 visible = false
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0.129412, 0.121569, 0.121569, 1)
 
@@ -127,14 +128,17 @@ script = ExtResource("1")
 layout = SubResource("Resource_ybwqe")
 
 [node name="Control0" type="ColorRect" parent="DockableContainers/DockableContainer" unique_id=1755020147]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
 [node name="Control1" type="ColorRect" parent="DockableContainers/DockableContainer" unique_id=1411986801]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0.141176, 0.0745098, 0.603922, 1)
 
 [node name="Control2" type="ColorRect" parent="DockableContainers/DockableContainer" unique_id=199396917]
 visible = false
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0.533333, 0.380392, 0.380392, 1)
 
@@ -151,14 +155,17 @@ script = ExtResource("1")
 layout = SubResource("Resource_xhxpg")
 
 [node name="Control3" type="ColorRect" parent="DockableContainers/DockableContainer2" unique_id=209835842]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0, 1, 0.905882, 1)
 
 [node name="Control4" type="ColorRect" parent="DockableContainers/DockableContainer2" unique_id=1376035184]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(0, 0.698039, 0.0588235, 1)
 
 [node name="Control5" type="ColorRect" parent="DockableContainers/DockableContainer2" unique_id=32573735]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 color = Color(1, 0.937255, 0, 1)
 
