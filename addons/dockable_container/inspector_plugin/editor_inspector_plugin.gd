@@ -1,14 +1,22 @@
 extends EditorInspectorPlugin
 
-const DockableContainer = preload("res://addons/dockable_container/dockable_container.gd")
-const LayoutEditorProperty = preload("res://addons/dockable_container/inspector_plugin/layout_editor_property.gd")
+const LayoutEditorProperty := preload("layout_editor_property.gd")
 
-func can_handle(object: Object) -> bool:
+
+func _can_handle(object: Object) -> bool:
 	return object is DockableContainer
 
 
-func parse_property(object: Object, type: int, path: String, hint: int, hint_text: String, usage: int) -> bool:
-	if path == "layout":
-		var editor_property = LayoutEditorProperty.new()
+func _parse_property(
+	_object: Object,
+	_type: Variant.Type,
+	name: String,
+	_hint: PropertyHint,
+	_hint_text: String,
+	_usage: int,
+	_wide: bool
+) -> bool:
+	if name == "layout":
+		var editor_property := LayoutEditorProperty.new()
 		add_property_editor("layout", editor_property)
 	return false
