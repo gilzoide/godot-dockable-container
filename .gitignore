@@ -1,4 +1,3 @@
-
 # Godot-specific ignores
 .import/
 .godot/
@@ -12,5 +11,4 @@ build/
 logs/
 
 # web build
-/index.*
-/favicon.*
+docs/
