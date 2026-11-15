@@ -12,10 +12,10 @@ Docking/tiling UI panels Container addon for [Godot](https://godotengine.org/).
 It is composed of a Container script and layout Resources in a binary tree
 structure that store panels division direction and size as well as tab names
 and what tab index is currently selected. As layout information are Resources,
-it's easy to save/load them.
+it's easy to save/load them from disk.
 
-Child Controls are only moved visually and have their NodePaths and position in
-parent maintained.
+Child Controls are only moved visually and have their NodePaths and child index
+in parent maintained.
 
 Available at the [Asset Library](https://godotengine.org/asset-library/asset/916).
 
