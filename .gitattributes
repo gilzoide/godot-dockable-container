@@ -5,10 +5,11 @@
 /.editorconfig      export-ignore
 /.gdlintrc          export-ignore
 /.git*              export-ignore
-/.github/**         export-ignore
+/.github/           export-ignore
 /LICENSE            export-ignore
 /README.md          export-ignore
 /*.cfg              export-ignore
 /*.godot            export-ignore
 /*.png*             export-ignore
-/screenshots/**     export-ignore
+/*.svg*             export-ignore
+/screenshots/       export-ignore
