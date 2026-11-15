@@ -28,6 +28,10 @@ gdscript/warnings/directory_rules={
 "res://addons": 1
 }
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dockable_container/plugin.cfg")
