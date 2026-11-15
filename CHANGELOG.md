@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/godot-dockable-container/compare/1.1.2...HEAD)
+## [Unreleased](https://github.com/gilzoide/godot-dockable-container/compare/1.2.0...HEAD)
+
+
+## [1.2.0](https://github.com/gilzoide/godot-dockable-container/releases/tag/1.2.0)
 ### Added
 - `DockableContainer.hide_single_tab` exported property, passed down unchanged to managed `TabContainer`s
 
