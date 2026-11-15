@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: make dist
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v7
         with:
           name: godot-dockable-container.zip
           archive: false
