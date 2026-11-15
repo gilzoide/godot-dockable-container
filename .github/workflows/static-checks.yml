@@ -4,12 +4,12 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - run: pip3 install gdtoolkit
       - run: gdformat --diff .
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - run: pip3 install gdtoolkit
       - run: gdlint .

@@ -1,0 +1,12 @@
+name: Generate distribution ZIP
+on: push
+jobs:
+  dist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: make dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: godot-dockable-container.zip
+          archive: false
