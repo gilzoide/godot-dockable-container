@@ -8,5 +8,6 @@ jobs:
       - run: make dist
       - uses: actions/upload-artifact@v7
         with:
-          name: godot-dockable-container.zip
+          name: godot-dockable-container
+          path: godot-dockable-container.zip
           archive: false
