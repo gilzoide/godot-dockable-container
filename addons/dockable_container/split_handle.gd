@@ -32,19 +32,34 @@ func _draw() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		_dragging = event.is_pressed()
-		if event.double_click:
-			layout_split.percent = 0.5
-	elif _dragging and event is InputEventMouseMotion:
-		var mouse_in_parent := get_parent_control().get_local_mouse_position()
-		if layout_split.is_horizontal():
-			layout_split.percent = (
-				(mouse_in_parent.x - _parent_rect.position.x) / _parent_rect.size.x
-			)
-		else:
-			layout_split.percent = (
-				(mouse_in_parent.y - _parent_rect.position.y) / _parent_rect.size.y
-			)
+		if event.pressed:
+			_dragging = true
+			if event.double_click:
+				layout_split.percent = 0.5
+			accept_event()
+
+
+func _input(event: InputEvent) -> void:
+	if not _dragging:
+		return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if not event.is_pressed():
+			_dragging = false
+			get_viewport().set_input_as_handled()
+	elif event is InputEventMouseMotion:
+		if (event.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
+			_dragging = false
+			return
+		_perform_resize_logic()
+		get_viewport().set_input_as_handled()
+
+
+func _perform_resize_logic() -> void:
+	var mouse_in_parent := get_parent_control().get_local_mouse_position()
+	if layout_split.is_horizontal():
+		layout_split.percent = ((mouse_in_parent.x - _parent_rect.position.x) / _parent_rect.size.x)
+	else:
+		layout_split.percent = ((mouse_in_parent.y - _parent_rect.position.y) / _parent_rect.size.y)
 
 
 func _notification(what: int) -> void:
